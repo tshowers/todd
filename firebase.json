@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "target": "ask-todd",
+    "public": "dist/ask-todd/browser",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

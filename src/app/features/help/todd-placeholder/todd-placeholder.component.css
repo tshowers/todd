@@ -1,0 +1,27 @@
+.todd-placeholder {
+  max-width: 480px;
+  margin: 20vh auto 0;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.todd-placeholder-logo {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+}
+
+.todd-placeholder h1 {
+  font-size: 1.5rem;
+  margin: 0 0 12px;
+}
+
+.todd-placeholder p {
+  color: var(--todd-subtext, #667085);
+  line-height: 1.5;
+}
+
+.todd-placeholder-auth {
+  margin-top: 24px;
+  font-size: 0.85rem;
+}

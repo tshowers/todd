@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "taliferrotech"
+  },
+  "targets": {
+    "taliferrotech": {
+      "hosting": {
+        "ask-todd": [
+          "ask-todd"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
