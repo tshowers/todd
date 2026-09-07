@@ -35,3 +35,14 @@ body { margin: 0; padding-bottom: 70px; font-family: 'DM Sans', Arial, sans-seri
   }
   body { background: #0b111a; color: #e8f1ff; }
 }
+
+/** Logo **/
+.logo {
+  transition: filter 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo {
+    filter: brightness(4);
+  }
+}

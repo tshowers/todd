@@ -157,8 +157,9 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   // wherever that module actually lives now: Network/Pulse at their own
   // extracted homes, everything else still at todd.taliferro.tech.
   readonly toddHomeUrl = getToddHomeUrl();
+  // No self-link back to '/' here — we're already Ask TODD, and the bottom
+  // nav's own Home button covers "leave this app."
   readonly appLinks = [
-    { label: 'Home', route: '/', image: 'assets/find/entities/todd/logo-icon.png' },
     { label: 'Find', route: getFindHomeUrl(), image: 'assets/find/entities/find/logo-icon.png', external: true },
     { label: 'Email Signature', route: getSignatureBuilderUrl(), image: 'assets/find/entities/email-signature-builder/logo-icon.png', external: true },
     { label: 'SayIt', route: getSayitHomeUrl(), image: 'assets/find/entities/sayit/logo.png', external: true },
@@ -413,6 +414,30 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
   closeAppsMenu (): void {
     this.showSystemStatus = false;
+  }
+
+  // There's no multi-conversation history to browse yet — AssistantHistoryService
+  // keeps exactly one ongoing conversation per user, already auto-loaded on
+  // sign-in. This just surfaces that state honestly instead of pretending to
+  // open a saved-conversations list that doesn't exist. Revisit once there's
+  // a real "list past conversations" capability to link to.
+  openSaved (): void {
+    if ( this.isLoggedIn ) {
+      this.onMessage( {
+        role: 'assistant',
+        content: this.assistantBoxUtilityService.normalizeModelOutputToHtml(
+          'This conversation is saved automatically while you are signed in — it will be here next time you come back.'
+        )
+      } );
+      return;
+    }
+
+    this.onMessage( {
+      role: 'assistant',
+      content: this.assistantBoxUtilityService.normalizeModelOutputToHtml(
+        'Sign in to save this conversation and pick up where you left off next time.'
+      )
+    } );
   }
 
   private handleQueryPrompt (): void {

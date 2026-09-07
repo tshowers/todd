@@ -11,7 +11,7 @@ custom domain `ask.taliferro.tech`).
 If you're picking this up in a fresh session: read this whole file first,
 then `README.md` for the day-to-day dev commands.
 
-## Status: Phase 1 and Phase 2 done (uncommitted), Phase 3 (main-app shim) not started
+## Status: Phase 1 and Phase 2 done (uncommitted here); Phase 3 (main-app shim) mostly done (uncommitted in taliferrotech/frontend) — deletion step deferred
 
 **Phase 1 (scaffold) — done, commit `4bb900a`:**
 - Forked from `web-products/maya-marketing` rather than built from
@@ -188,25 +188,66 @@ so query params like `q`, `onboarding`, `guided`, `activationStage` (all
 real, in use) survive the hop. This keeps every one of those ~25 call
 sites working untouched.
 
-Concrete steps once this app's chat experience actually works end to end:
-1. `public-app-url.util.ts`: add `getAskToddHomeUrl()` → `https://ask.taliferro.tech`.
-2. `external-redirect.component.ts`: forward `window.location.search`.
-3. `app.routes.ts`: swap the `ask-todd` route's `loadComponent` to
-   `ExternalRedirectComponent`, providing `EXTERNAL_REDIRECT_URL` via
+Concrete steps (done in `taliferrotech/frontend`, on branch
+`work-in-progress`, **uncommitted** as of this writing — verify before
+assuming this landed):
+1. ✅ `public-app-url.util.ts`: added `getAskToddHomeUrl()` → `https://ask.taliferro.tech`.
+2. ✅ `external-redirect.component.ts`: forwards `window.location.search`;
+   also swapped its hardcoded "Redirecting to Taliferro Careers…" text for
+   a generic "Redirecting…" since it's now shared by two destinations.
+3. ✅ `app.routes.ts`: the `ask-todd` route's `loadComponent` is now
+   `ExternalRedirectComponent`, with `EXTERNAL_REDIRECT_URL` provided via
    `getAskToddHomeUrl()`.
-4. `todd-assistant.component.ts`'s `openAskTodd()`: external nav instead
-   of `router.navigate(['/ask-todd'])`.
-5. `nav-config.service.ts` + `command-palette-entries.ts`: flip the
-   `ask-todd` entries to `external: true`, same shape as the Maya entries.
-6. `app.component.ts`: review/remove the `isToddPage()`-style path check
-   that special-cases `/ask-todd` chrome.
-7. Delete `features/help/todd/` (+ `todd-video-library.ts`) from the main
-   app only after all of the above is verified working end to end.
-8. Leave every other `/ask-todd` reference alone — they resolve through
-   the shim automatically.
+4. ✅ `todd-assistant.component.ts`'s `openAskTodd()`: now
+   `window.location.href = getAskToddHomeUrl()` instead of
+   `router.navigate(['/ask-todd'])`.
+5. ✅ `nav-config.service.ts`'s `global-ask-todd` flipped to
+   `kind: 'callback'` + `openInNewTab(getAskToddHomeUrl())` (Maya's exact
+   shape); `command-palette-entries.ts`'s `ask-todd` entry now has an
+   absolute `path` + `external: true`.
+6. ✅ `app.component.ts` / `.html`: removed `isAskToddRouteActive` and its
+   one usage (was only hiding `<app-page-actions>` on `/ask-todd`).
+7. ⏳ **Not done, deliberately** — delete `features/help/todd/` (+
+   `todd-video-library.ts`) from the main app only after all of the above
+   is verified working end to end in production.
+8. Every other `/ask-todd` reference (public-home.guard, auth-flow
+   service, finish-sign-in, onboarding, daily-momentum, marketing CTAs)
+   was deliberately left alone — they resolve through the shim
+   automatically. **Except one, below.**
+
+### TODD is now the site's landing page, not just its post-login destination
+
+Decided in this session: there's no longer a separate marketing landing
+page for logged-out visitors. `public-home.guard.ts` (guards the root
+route `/`) used to send only *logged-in* users to `/ask-todd` and let
+logged-out visitors see `ToddLandingPageComponent`; it now sends
+everyone there unconditionally (still carving out the dedicated
+`sayit.taliferro.tech` host, same as before). This relies on
+`ToddComponent`'s own guest-mode content (the `publicProducts` block,
+`introAnswers`, the proactive guest intro) to carry the marketing job
+TODD's chat is now expected to do that work for anonymous visitors too.
+`ToddLandingPageComponent` itself was left in place, unreferenced from
+`/`, for the same reason step 7 above is deferred — don't delete code
+that's only provably dead once this is verified live. Its
+`public-home.guard.spec.ts` was rewritten to match (no more
+signed-in/signed-out branch — single synchronous redirect + the
+dedicated-host carve-out).
+
+**Explicitly out of scope for this pass** (confirmed with the user):
+`/products`, `/proof`, `/pricing`, `/suite/pricing` are untouched — this
+was scoped to the root route only.
 
 ## Don't re-derive these decisions from scratch
 
+- **This app has exactly one real route: `/`.** Confirmed explicitly by
+  the user. `app.routes.ts` should stay a single `''` route (`ToddComponent`)
+  plus a wildcard back to it — never add second-class routes here for
+  things like a dedicated "saved" view or a settings page; those are
+  either embedded components inside the TODD chat itself (the
+  `embeddedAppPath`/`embeddedAppUrl` iframe mechanism, or genuinely new
+  UI state within `ToddComponent`) or they belong in a different app
+  entirely. If a future request implies "add a route to ask-todd,"
+  that's a signal to stop and check with the user first.
 - Redirect-shim over rewriting call sites: deliberate, because of the
   ~25-site blast radius above.
 - Accept-for-v1 on cross-origin auth: deliberate, confirmed with the user

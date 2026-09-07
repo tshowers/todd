@@ -732,6 +732,20 @@
   color: #8a94a6;
 }
 
+.todd-welcome-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.todd-welcome-actions .todd-primary-button {
+  flex: 1;
+}
+
+.todd-welcome-reset {
+  flex: 0 0 42px;
+}
+
 .todd-primary-button {
   display: flex;
   align-items: center;
@@ -918,20 +932,24 @@
   text-decoration: none;
 }
 
-.todd-bottom-nav a span {
+.todd-bottom-nav a span,
+.todd-bottom-nav-more span,
+.todd-bottom-nav-action span {
   color: #cbd5e1;
-  font-size: 1.1rem;
   line-height: 1;
 }
 
-.todd-bottom-nav a i,
+.todd-bottom-nav a i {
+  margin-bottom: 2px;
+  color: #cbd5e1;
+}
+
 .todd-bottom-nav a img {
   width: 22px;
   height: 22px;
   margin-bottom: 2px;
   color: #cbd5e1;
   object-fit: contain;
-  font-size: 1.05rem;
 }
 
 .todd-bottom-nav a.active,
@@ -939,7 +957,8 @@
   color: var(--todd-focus-accent);
 }
 
-.todd-bottom-nav-more {
+.todd-bottom-nav-more,
+.todd-bottom-nav-action {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -955,10 +974,40 @@
   cursor: pointer;
 }
 
-.todd-bottom-nav-more span {
-  color: #cbd5e1;
-  font-size: 1.1rem;
+.todd-bottom-nav-action i {
+  margin-bottom: 2px;
+}
+
+.todd-session-action {
+  flex-direction: column;
+}
+
+.todd-session-action > i {
+  font-size: .9rem;
   line-height: 1;
+}
+
+.todd-session-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.todd-session-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.todd-session-dot--in {
+  background: #22c55e;
+  box-shadow: 0 0 7px rgba(34, 197, 94, .7);
+}
+
+.todd-session-dot--out {
+  background: #ef4444;
+  box-shadow: 0 0 7px rgba(239, 68, 68, .55);
 }
 
 .todd-bottom-nav-more.active,
