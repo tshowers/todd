@@ -48,6 +48,47 @@ export function getSignatureBuilderUrl (): string {
   return 'https://signature.taliferro.tech';
 }
 
+export function getMayaHomeUrl (): string {
+  return 'https://maya.taliferro.tech';
+}
+
+export function getLeadVaultHomeUrl (): string {
+  return 'https://lead-vault.taliferro.tech';
+}
+
+export function getNetworkHomeUrl (): string {
+  return 'https://network.taliferro.tech';
+}
+
+export function getPulseHomeUrl (): string {
+  return 'https://pulse.taliferro.tech';
+}
+
+/**
+ * TODD's chat carries a lot of internal-route strings (e.g. '/network/app',
+ * 'compose-email') inherited from the monolith, where they resolve on the
+ * same origin. This app has no such routes of its own, so every one of them
+ * has to resolve to an external origin instead: Network/Pulse got their own
+ * extracted homes, everything else still only exists at todd.taliferro.tech.
+ */
+export function resolveExternalAppUrl ( path: string ): string {
+  const trimmed = String( path || '' ).trim();
+  if ( !trimmed ) return getToddHomeUrl();
+  if ( /^https?:\/\//i.test( trimmed ) ) return trimmed;
+
+  const normalized = trimmed.startsWith( '/' ) ? trimmed : `/${trimmed}`;
+
+  if ( normalized === '/network' || normalized.startsWith( '/network/' ) ) {
+    return `${getNetworkHomeUrl()}${normalized.slice( '/network'.length )}`;
+  }
+
+  if ( normalized === '/pulse' || normalized.startsWith( '/pulse/' ) ) {
+    return `${getPulseHomeUrl()}${normalized.slice( '/pulse'.length )}`;
+  }
+
+  return `${getToddHomeUrl()}${normalized}`;
+}
+
 export function getSayitHomeUrl (): string {
   if ( isSayitHost() ) {
     return getOrigin();

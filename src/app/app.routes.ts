@@ -4,8 +4,8 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import( './features/help/todd-placeholder/todd-placeholder.component' ).then(
-        ( m ) => m.ToddPlaceholderComponent
+      import( './features/help/todd/todd.component' ).then(
+        ( m ) => m.ToddComponent
       ),
     title: 'Ask TODD',
   },

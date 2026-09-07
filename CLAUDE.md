@@ -11,7 +11,7 @@ custom domain `ask.taliferro.tech`).
 If you're picking this up in a fresh session: read this whole file first,
 then `README.md` for the day-to-day dev commands.
 
-## Status: Phase 1 done, Phase 2 not started
+## Status: Phase 1 and Phase 2 done (uncommitted), Phase 3 (main-app shim) not started
 
 **Phase 1 (scaffold) — done, commit `4bb900a`:**
 - Forked from `web-products/maya-marketing` rather than built from
@@ -42,13 +42,94 @@ Firebase console and returns `404 Site Not Found` as of the last check —
 DNS/domain-verification still needs to be finished (registrar-side,
 only the user can do this).
 
-## Phase 2 (next): port the real ToddComponent
+## Phase 2 (done, uncommitted): the real ToddComponent is ported
 
-Source: `taliferrotech/frontend/src/app/features/help/todd/todd.component.ts`
-(~2,500 lines) + `todd-video-library.ts`, plus its dependency graph
-(mostly already copied in via the maya-marketing fork — verify nothing's
-missing by tracing imports from a fresh `todd.component.ts` copy, same
-methodology `maya-marketing`'s own README documents).
+`ToddPlaceholderComponent` is gone; `app.routes.ts`'s `''` route now loads
+the real `ToddComponent` from
+`src/app/features/help/todd/todd.component.ts` (copied from
+`taliferrotech/frontend`'s ~2,500-line source, same relative import depth
+so most of its own imports needed no path changes at all).
+
+**Dependency graph gaps found and filled** (these did *not* already exist
+in the maya-marketing fork and were copied over verbatim from
+`taliferrotech/frontend`):
+- `services/assistant-history.service.ts`, `services/daily-command.service.ts`,
+  `services/admin-control.service.ts`, `services/helpers/phone-normalization.helper.ts`,
+  `features/contact/utils/grading-engine.util.ts` (all of `daily-command.service.ts`'s
+  own dependency chain, needed for the system-status rail).
+- `shared/page/todd-system-outcomes/*`, `shared/utils/todd-status-indicator.util.ts`.
+- `shared/page/command-palette/command-palette-entries.ts` (verbatim) +
+  `command-palette-match.ts` (adapted — see below).
+- `shared/styles/todd-status-indicators.css` (referenced by `todd.component.css`).
+- `assets/ads/*` (an already-present service, `todd-guest-preview.service.ts`,
+  imports `ads-manifest.json` — it was unreachable and silently uncompiled
+  under the placeholder, only surfaced once `ToddComponent` pulled it in).
+- Various `assets/*` image files the component and command palette
+  reference directly (network/pulse/outreach/moves/docs icons, TODD
+  solution/problem statement images, etc.).
+- `GoalService` and everything else CLAUDE.md previously assumed was
+  "already carried over" turned out to actually be byte-for-byte in sync
+  with the main app already — no changes needed there.
+
+**Not chased down (pre-existing, cosmetic, unrelated to this port):**
+`assets/sounds/*.wav`/`.mp3` referenced by the already-present
+`SoundService` 404 in the console. This gap predates Phase 2 — it was
+just unreachable under the placeholder route, same as the `ads-manifest`
+gap above, except this one doesn't block compilation so it was left
+alone. Fix by copying `taliferrotech/frontend/src/assets/sounds/` over if
+it starts to matter.
+
+### Every internal route reference had to become external
+
+The monolith's `ToddComponent` is full of same-origin navigation —
+`router.navigate(['/network/app'])`, `appLinks`, the bottom nav, the
+command-palette route-suggestions dropdown, suggested-product-action
+routes, the "getting started" flow, `onClickRoute` (inherited from
+`TopDogComponent`). None of those routes exist in this standalone app.
+This is the same class of problem CLAUDE.md had already flagged for the
+iframe embed mechanism below — it just turned out to be much bigger in
+scope than only the embeds. The fix generalizes the same already-decided
+rule (Network/Pulse external to their own domains, everything else
+external to `todd.taliferro.tech`) to the whole component:
+
+- `shared/utils/public-app-url.util.ts` gained `getMayaHomeUrl()`,
+  `getLeadVaultHomeUrl()`, `getNetworkHomeUrl()`, `getPulseHomeUrl()`
+  (copied from the main app, which already had them post-extraction) and
+  a new `resolveExternalAppUrl(path)` — the one place that decides which
+  origin a bare path like `/network/app` or `compose-email` resolves to.
+- `todd.component.ts` gained a private `goExternal(path, queryParams?, newTab?)`
+  that calls `resolveExternalAppUrl` and does `window.location.href` /
+  `window.open` instead of `router.navigate` / `router.navigateByUrl`.
+  Every call site that used to route internally (`askAssistant`'s
+  auto-navigate, `onProductCardClick`, `onPublicProductClick`,
+  `tryHandleToddHomeShortcut`'s direct-nav branch, `goToShowcasePrompt`,
+  `goToSuggestedProduct`, `goToMomentumAction`) now goes through it.
+  `onClickRoute` (from `TopDogComponent`) is overridden the same way.
+- `command-palette-match.ts`'s `navigateToEntry` was adapted the same
+  way; `command-palette-entries.ts` itself was copied verbatim (still the
+  main app's route index) since the URL resolution happens in
+  `navigateToEntry`, not in the entries.
+- `appLinks` and the bottom nav (`todd.component.html`) were updated the
+  same way — `external: true` + an absolute URL for everything except the
+  chat's own `/`.
+- **Known gap, accepted rather than solved:** the "draft an email" chat
+  shortcut used to hand off `subject`/`body` via Angular router `state`,
+  which can't cross an origin boundary. Since Compose Email isn't
+  extracted anywhere, TODD now posts the drafted subject/body into the
+  chat itself and sends the user to `todd.taliferro.tech/compose-email`
+  with no prefill, instead of silently dropping the draft. Revisit if
+  Compose Email ever gets its own extracted home with a URL-based
+  handoff.
+
+**Verified:** `npm run typecheck`, `npm run build:production`, and a
+`ng serve` + headless-browser pass — the chat input renders on load
+(no more placeholder), a quick-pill prompt gets a real assistant reply
+with its image, and the only console errors are the pre-existing sound
+404s above. The logged-in vs. logged-out answer-shaping code
+(`buildProspectProfileContext`, `watchSystemOutcomes`, showcase prompts,
+momentum briefing — all gated on `this.isLoggedIn`) was carried over
+unchanged and wasn't independently re-verified against a real
+authenticated session in this pass.
 
 ### The embedded-app / quick-nav iframe mechanism
 
@@ -68,16 +149,15 @@ The current (pre-extraction) targets:
 have since been separately extracted and are live at
 `network.taliferro.tech` and `pulse.taliferro.tech` (real landing page at
 `/`, real functional cockpit at `/app`, and — checked directly — both
-already support `?embedded=true` in their own ported code). So when
-porting this mechanism, point the Network and Pulse embed targets at
-`https://network.taliferro.tech/app?embedded=true` and
-`https://pulse.taliferro.tech/app?embedded=true` instead of the internal
-`todd.taliferro.tech` routes — that's their canonical home now. The other
-targets (contact-list, documents, knowledge-base, survey-list,
-moves-view, docs/app, outreach/app, moves/app) should stay pointed at
-`todd.taliferro.tech` internal routes for now — Docs/Outreach/Moves/Social
-are code-complete in their own `web-products/*` repos but have no Hosting
-site wired yet, so they aren't live anywhere external.
+already support `?embedded=true` in their own ported code). This is now
+implemented in `tryOpenEmbeddedApp()`: Network and Pulse embed targets
+point at `https://network.taliferro.tech/app?embedded=true` and
+`https://pulse.taliferro.tech/app?embedded=true`; the other targets
+(contact-list, documents, knowledge-base, survey-list, moves-view,
+docs/app, outreach/app, moves/app) point at `todd.taliferro.tech`
+internal routes — Docs/Outreach/Moves/Social are code-complete in their
+own `web-products/*` repos but have no Hosting site wired yet, so they
+aren't live anywhere external.
 
 ### Accepted auth tradeoff (v1, confirmed with user — do not relitigate without reason)
 
@@ -134,4 +214,12 @@ Concrete steps once this app's chat experience actually works end to end:
 - Network/Pulse embed targets point external, everything else internal:
   deliberate, based on what's actually deployed as of this writing — if
   Docs/Outreach/Moves/Social go live later, revisit their embed targets
-  too.
+  too. This same rule now also governs every other internal-route
+  reference in `ToddComponent` (see Phase 2 above,
+  `resolveExternalAppUrl`) — it's one rule applied consistently, not two
+  separate decisions.
+- Compose Email's draft handoff degrades to "post the draft in chat, open
+  the composer with no prefill" rather than being silently dropped or
+  blocked on building a cross-origin state-passing mechanism: deliberate,
+  matches the spirit of the accepted auth tradeoff above (document a
+  known cross-origin limitation instead of solving it now).

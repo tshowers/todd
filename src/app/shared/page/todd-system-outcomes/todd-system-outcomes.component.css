@@ -1,0 +1,133 @@
+.todd-system-outcomes {
+  margin-top: 1rem;
+  padding: 1.2rem 1.2rem 1.25rem;
+  border-radius: 28px;
+}
+
+.today-cockpit__panel-title {
+  margin: 0.9rem 0 0;
+  font-size: clamp(1.7rem, 2.4vw, 2.4rem);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: var(--cockpit-text);
+}
+
+.today-cockpit__module-action-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.today-cockpit__evidence-item {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.82rem;
+  padding: 1rem 1.05rem;
+  border-radius: 22px;
+  border: 1px solid rgba(117, 138, 168, 0.14);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.today-cockpit__evidence-item--action {
+  align-items: flex-start;
+}
+
+.today-cockpit__module-action-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.today-cockpit__evidence-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.today-cockpit__evidence-label {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--cockpit-text);
+}
+
+.today-cockpit__state-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.today-cockpit__evidence-summary,
+.today-cockpit__module-proof {
+  color: var(--cockpit-muted);
+}
+
+.today-cockpit__evidence-summary {
+  margin-top: 0.35rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.today-cockpit__module-proof {
+  margin-top: 0.45rem;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.today-cockpit__inline-action {
+  margin-top: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0.72rem 1.05rem;
+  border-radius: 999px;
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  background: linear-gradient(180deg, #1e293b, #0f172a);
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.today-cockpit__inline-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  .today-cockpit__evidence-item {
+    border-color: rgba(148, 163, 184, 0.16);
+    background: rgba(15, 23, 42, 0.62);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .today-cockpit__inline-action {
+    border-color: rgba(125, 211, 252, 0.28);
+    background: linear-gradient(180deg, #38bdf8, #0284c7);
+    color: #020617;
+  }
+
+  .today-cockpit__inline-action:hover {
+    box-shadow: 0 12px 26px rgba(2, 132, 199, 0.24);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .today-cockpit__module-action-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

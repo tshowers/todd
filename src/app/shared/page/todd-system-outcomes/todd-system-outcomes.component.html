@@ -1,0 +1,17 @@
+<section class="cockpit-panel todd-system-outcomes">
+  <div class="cockpit-panel__kicker">{{ kicker }}</div>
+  <h2 class="today-cockpit__panel-title">{{ title }}</h2>
+  <div class="today-cockpit__module-action-grid">
+    <article class="today-cockpit__evidence-item today-cockpit__evidence-item--action" *ngFor="let row of rows; trackBy: trackById">
+      <app-status-led [tone]="getStatusLedTone(row.tone)"></app-status-led>
+      <div class="today-cockpit__module-action-copy">
+        <div class="today-cockpit__evidence-topline">
+          <span class="today-cockpit__evidence-label">{{ row.moduleLabel }}</span>
+          <span class="today-cockpit__state-chip" [ngClass]="row.toneClass">{{ row.stateLabel }}</span>
+        </div>
+        <div class="today-cockpit__evidence-summary">{{ row.summary }}</div>
+        <div class="today-cockpit__module-proof" *ngIf="row.detail">{{ row.detail }}</div>
+      </div>
+    </article>
+  </div>
+</section>

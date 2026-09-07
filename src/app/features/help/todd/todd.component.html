@@ -1,0 +1,189 @@
+<div class="todd-page todd-focused-screen">
+  <main class="todd-focused-main">
+    <section class="todd-focused-conversation" [class.todd-focused-conversation--started]="messages.length > 0">
+      <div class="todd-welcome" *ngIf="messages.length === 0">
+        <img class="todd-logo logo" src="assets/TODD-icon.png" alt="TODD" />
+        <div class="todd-welcome-composer">
+          <textarea #assistantInput rows="4" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask TODD anything..." aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
+          <button type="button" class="todd-primary-button" (click)="askAssistant()" [disabled]="askToddTourInputLocked">Ask TODD <span aria-hidden="true">↗</span></button>
+          <ul class="todd-route-suggestions" *ngIf="routeSuggestions.length" role="listbox" aria-label="Matching pages">
+            <li *ngFor="let suggestion of routeSuggestions" role="option" (click)="selectRouteSuggestion(suggestion)">
+              <img [src]="suggestion.icon" alt="" aria-hidden="true" />
+              <span class="todd-route-suggestion-label">{{ suggestion.label }}</span>
+              <span class="todd-route-suggestion-group" *ngIf="suggestion.group !== suggestion.label">{{ suggestion.group }}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="todd-prompt-chips" aria-label="TODD prompts">
+          <button type="button" (click)="onQuickPill('What is TODD?')">What is TODD? <span>↗</span></button>
+          <button type="button" (click)="onQuickPill('How can TODD help me?')">How can TODD help me? <span>↗</span></button>
+          <button type="button" (click)="onQuickPill('What is a Momentum System?')">What is a Momentum System? <span>↗</span></button>
+        </div>
+      </div>
+      <div class="todd-focused-history" *ngIf="messages.length > 0">
+        <div #history class="todd-chat-history todd-chat-history-active todd-chat-history-full" data-demo="assistant-history">
+          <!-- <div *ngIf="!isLoading && messages.length === 0 && !proactiveMomentumAction && !proactiveMomentumChecklist && !proactiveShowcasePrompt && !suggestedProductAction && !suggestedVideo" class="todd-empty-prompt"> Ask TODD what needs to move next. </div> -->
+          <div *ngIf="proactiveShowcasePrompt && !isLoading" class="todd-product-card todd-showcase-card" aria-label="TODD showcase prompt" data-demo="assistant-proactive">
+            <div class="todd-product-card-eyebrow">Let TODD show off</div>
+            <div class="todd-product-card-header">
+              <div class="todd-product-card-title">
+                {{ proactiveShowcasePrompt.headline }}
+              </div>
+            </div>
+            <div class="todd-product-card-description">{{ proactiveShowcasePrompt.body }}</div>
+            <div *ngIf="proactiveShowcasePrompt.rewardText" class="todd-product-card-description todd-showcase-card-reward">
+              {{ proactiveShowcasePrompt.rewardText }}
+            </div>
+            <div class="todd-product-card-actions">
+              <button type="button" class="quick-guidance-pill quick-guidance-pill--primary" (click)="goToShowcasePrompt()">
+                {{ proactiveShowcasePrompt.ctaLabel }}
+              </button>
+              <button type="button" class="quick-guidance-pill" (click)="dismissShowcasePrompt()"> Not now </button>
+            </div>
+          </div>
+          <div *ngFor="let m of messages" class="bubble" [ngClass]="{ 'user': m.role === 'user', 'assistant': m.role === 'assistant' }">
+            <div class="bubble-inner" [innerHTML]="m.content"></div>
+          </div>
+          <section *ngIf="embeddedAppPath" class="todd-embedded-app" [attr.aria-label]="'Embedded ' + embeddedAppLabel">
+            <div class="todd-embedded-app-header">
+              <div>
+                <div class="todd-embedded-app-eyebrow">Embedded app</div>
+                <strong>{{ embeddedAppLabel }}</strong>
+              </div>
+              <button type="button" class="todd-embedded-app-close" (click)="closeEmbeddedNetwork()" aria-label="Close Network status">×</button>
+            </div>
+            <iframe class="todd-embedded-app-frame" [src]="embeddedAppUrl" [title]="embeddedAppLabel" (load)="scrollToEmbeddedApp()"></iframe>
+          </section>
+          <div *ngIf="isLoading" class="bubble assistant bubble-thinking" aria-live="polite" aria-label="TODD is thinking">
+            <div class="bubble-inner bubble-inner-thinking">
+              <span class="thinking-label">TODD is thinking <i class="fa-solid fa-circle-notch fa-spin"></i> </span>
+              <span class="thinking-dots" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </div>
+          </div>
+          <div *ngIf="proactiveMomentumAction && !isLoading" class="todd-product-card todd-momentum-action-card" aria-label="Momentum next action">
+            <div class="todd-product-card-eyebrow">Momentum next move</div>
+            <div class="todd-product-card-header">
+              <div class="todd-product-card-title">
+                {{ proactiveMomentumAction.title }}
+              </div>
+            </div>
+            <div class="todd-product-card-description">{{ proactiveMomentumAction.detail }}</div>
+            <div class="todd-momentum-action-meta">
+              <span class="todd-momentum-action-state todd-status-pill" [attr.data-state]="proactiveMomentumAction.state" [attr.data-tone]="getMomentumActionStatusTone(proactiveMomentumAction.state)" [attr.data-pulse]="shouldPulseMomentumActionStatus(proactiveMomentumAction.state) ? 'true' : null">
+                {{ getMomentumActionStatusLabel(proactiveMomentumAction.state) }}
+              </span>
+              <span *ngIf="proactiveMomentumAction.actionPath" class="todd-momentum-action-path">{{ proactiveMomentumAction.actionPath }}</span>
+            </div>
+            <div *ngIf="proactiveMomentumAction.route" class="todd-product-card-actions">
+              <button type="button" class="quick-guidance-pill quick-guidance-pill--primary" (click)="goToMomentumAction()">
+                {{ proactiveMomentumAction.ctaLabel || 'Open next step' }}
+              </button>
+            </div>
+          </div>
+          <div *ngIf="proactiveMomentumChecklist && !isLoading" class="todd-product-card todd-momentum-approval-card" aria-label="Momentum approval checklist">
+            <div class="todd-product-card-eyebrow">TODD Needs Permission</div>
+            <div class="todd-product-card-title todd-momentum-approval-title">{{ proactiveMomentumChecklist.headline }}</div>
+            <div class="todd-product-card-description">{{ proactiveMomentumChecklist.summary }}</div>
+            <div class="todd-momentum-approval-grid">
+              <div>
+                <div class="todd-momentum-approval-label">What TODD tried</div>
+                <ul class="todd-momentum-approval-list">
+                  <li *ngFor="let item of proactiveMomentumChecklist.tried">{{ item }}</li>
+                </ul>
+              </div>
+              <div>
+                <div class="todd-momentum-approval-label">What blocked TODD</div>
+                <ul class="todd-momentum-approval-list todd-momentum-approval-list--blocked">
+                  <li *ngFor="let item of proactiveMomentumChecklist.blockedBy">{{ item }}</li>
+                </ul>
+              </div>
+            </div>
+            <div class="todd-momentum-approval-actions">
+              <div *ngFor="let action of proactiveMomentumChecklist.actions" class="todd-momentum-approval-action" [attr.data-risk]="action.risk">
+                <div class="todd-momentum-approval-action-top">
+                  <div class="todd-product-card-title">{{ action.label }}</div>
+                  <span class="todd-momentum-risk-pill" [attr.data-risk]="action.risk">
+                    {{ action.risk === 'high' ? 'High risk' : 'Low risk' }}
+                  </span>
+                </div>
+                <div class="todd-product-card-description">{{ action.description }}</div>
+                <div class="todd-momentum-action-path">{{ action.missingApproval }}</div>
+              </div>
+            </div>
+            <div class="todd-product-card-actions">
+              <button *ngIf="proactiveMomentumChecklist.primaryCta as primaryCta" type="button" class="quick-guidance-pill quick-guidance-pill--primary" (click)="onClickRoute(primaryCta.route)">
+                {{ primaryCta.label }}
+              </button>
+              <button *ngIf="proactiveMomentumChecklist.secondaryCta as secondaryCta" type="button" class="quick-guidance-pill" (click)="onClickRoute(secondaryCta.route)">
+                {{ secondaryCta.label }}
+              </button>
+            </div>
+          </div>
+          <div *ngIf="suggestedProductAction && !isLoading" class="todd-product-card" aria-label="Suggested product action">
+            <div class="todd-product-card-eyebrow">Recommended next step</div>
+            <div class="todd-product-card-header">
+              <img *ngIf="suggestedProductAction.image" [src]="suggestedProductAction.image" [alt]="suggestedProductAction.label" class="todd-product-card-icon">
+              <div class="todd-product-card-title">
+                {{ suggestedProductAction.label }}
+              </div>
+            </div>
+            <div class="todd-product-card-description">{{ suggestedProductAction.description }}</div>
+            <div class="todd-product-card-actions">
+              <button type="button" class="quick-guidance-pill quick-guidance-pill--primary" (click)="goToSuggestedProduct()"> Go now </button>
+            </div>
+          </div>
+          <div *ngIf="suggestedVideo && !isLoading" class="todd-video-card" aria-label="Suggested video">
+            <div class="todd-video-card-eyebrow">
+              {{ suggestedVideo.type === 'testimonial' ? 'Suggested testimonial' : (suggestedVideo.orientation === 'short' ? 'Suggested short' : 'Suggested video') }}
+            </div>
+            <div class="todd-video-card-title">{{ suggestedVideo.description }}</div>
+            <div *ngIf="suggestedVideoReason" class="todd-video-card-reason"> Why this video? {{ suggestedVideoReason }}
+            </div>
+            <div class="todd-video-card-actions">
+              <button type="button" class="quick-guidance-pill quick-guidance-pill--primary" (click)="playSuggestedVideo()">
+                <i class="fa-solid fa-play me-2"></i>{{ suggestedVideo.orientation === 'short' ? 'Play short' : 'Play video' }}
+              </button>
+              <button type="button" class="quick-guidance-pill" (click)="dismissSuggestedVideo()">Not now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="activeVideo" class="todd-video-modal" role="dialog" aria-modal="true" aria-label="Video player">
+        <div class="todd-video-modal-backdrop" (click)="closeActiveVideo()"></div>
+        <div class="todd-video-modal-card" [ngClass]="activeVideo.orientation === 'short' ? 'short' : 'wide'">
+          <button type="button" class="todd-video-modal-close" aria-label="Close video" (click)="closeActiveVideo()"><i class="fa-solid fa-xmark"></i></button>
+          <div class="todd-video-modal-header">{{ activeVideo.description }}</div>
+          <div class="todd-video-frame-wrap" [ngClass]="activeVideo.orientation === 'short' ? 'short' : 'wide'">
+            <iframe *ngIf="activeVideoEmbedUrl" class="todd-video-frame" [src]="activeVideoEmbedUrl" title="TODD video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="todd-compact-composer" *ngIf="messages.length > 0">
+        <textarea rows="2" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask TODD anything..." aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
+        <button type="button" class="todd-reset" (click)="resetConversation()" [disabled]="askToddTourInputLocked" aria-label="Reset conversation">↺</button>
+        <button type="button" class="todd-send" (click)="askAssistant()" [disabled]="askToddTourInputLocked" aria-label="Ask TODD">↗</button>
+        <ul class="todd-route-suggestions todd-route-suggestions--compact" *ngIf="routeSuggestions.length" role="listbox" aria-label="Matching pages">
+          <li *ngFor="let suggestion of routeSuggestions" role="option" (click)="selectRouteSuggestion(suggestion)">
+            <img [src]="suggestion.icon" alt="" aria-hidden="true" />
+            <span class="todd-route-suggestion-label">{{ suggestion.label }}</span>
+            <span class="todd-route-suggestion-group" *ngIf="suggestion.group !== suggestion.label">{{ suggestion.group }}</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <aside *ngIf="showSystemStatus" class="todd-apps-card" aria-label="All apps">
+    <div class="todd-apps-card-header"><strong>All apps</strong><button type="button" (click)="closeAppsMenu()" aria-label="Close apps">×</button></div>
+    <div class="todd-app-grid"><ng-container *ngFor="let app of appLinks"><a *ngIf="app.external; else internalToddApp" [href]="app.route" (click)="closeAppsMenu()"><img [src]="app.image" [alt]="app.label"><span>{{ app.label }}</span></a><ng-template #internalToddApp><a [routerLink]="app.route" (click)="closeAppsMenu()"><img [src]="app.image" [alt]="app.label"><span>{{ app.label }}</span></a></ng-template></ng-container></div>
+  </aside>
+  <nav class="todd-bottom-nav" aria-label="TODD navigation">
+    <a class="active" [href]="toddHomeUrl" aria-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Home</span></a>
+    <a routerLink="/" (click)="resetConversation()" aria-label="Start a new TODD conversation"><i class="fa-solid fa-message" aria-hidden="true"></i><span>Ask</span></a>
+    <a routerLink="/" aria-label="Saved"><i class="fa-regular fa-bookmark" aria-hidden="true"></i><span>Saved</span></a>
+    <button type="button" class="todd-bottom-nav-more" [class.active]="showSystemStatus" (click)="toggleSystemStatus()"><span>•••</span>More</button>
+  </nav>
+</div>
