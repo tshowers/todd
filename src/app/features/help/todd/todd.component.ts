@@ -160,18 +160,18 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   // No self-link back to '/' here — we're already Ask TODD, and the bottom
   // nav's own Home button covers "leave this app."
   readonly appLinks = [
-    { label: 'Find', route: getFindHomeUrl(), image: 'assets/find/entities/find/logo-icon.png', external: true },
-    { label: 'Email Signature', route: getSignatureBuilderUrl(), image: 'assets/find/entities/email-signature-builder/logo-icon.png', external: true },
-    { label: 'SayIt', route: getSayitHomeUrl(), image: 'assets/find/entities/sayit/logo.png', external: true },
-    { label: 'Lead Vault', route: getLeadVaultHomeUrl(), image: 'assets/find/entities/lead-vault/logo-icon.png', external: true },
-    { label: 'Maya', route: getMayaHomeUrl(), image: 'assets/find/entities/maya/logo-icon.png', external: true },
-    { label: 'Music', route: 'https://music.taliferro.com', image: 'assets/find/entities/music/logo-icon.png', external: true },
-    { label: 'Pulse', route: `${getPulseHomeUrl()}/app`, image: 'assets/icons/pulse.png', external: true },
-    { label: 'Network', route: `${getNetworkHomeUrl()}/app`, image: 'assets/icons/network.png', external: true },
-    { label: 'Outreach', route: `${this.toddHomeUrl}/outreach/app`, image: 'assets/icons/outreach.png', external: true },
-    { label: 'Moves', route: `${this.toddHomeUrl}/moves/app`, image: 'assets/icons/moves.png', external: true },
-    { label: 'Social', route: `${this.toddHomeUrl}/outreach/social`, image: 'assets/todd-social-icon.png', external: true },
-    { label: 'Docs', route: `${this.toddHomeUrl}/docs/app`, image: 'assets/icons/docs.png', external: true }
+    { label: 'Find', route: getFindHomeUrl(), image: 'assets/find/entities/find/logo-bw-icon.png', external: true },
+    { label: 'Email Signature', route: getSignatureBuilderUrl(), image: 'assets/find/entities/email-signature-builder/logo-bw-icon.png', external: true },
+    { label: 'SayIt', route: getSayitHomeUrl(), image: 'assets/find/entities/sayit/logo-bw-icon.png', external: true },
+    { label: 'Lead Vault', route: getLeadVaultHomeUrl(), image: 'assets/find/entities/lead-vault/logo-bw-icon.png', external: true },
+    { label: 'Maya', route: getMayaHomeUrl(), image: 'assets/find/entities/maya/logo-bw-icon.png', external: true },
+    { label: 'Music', route: 'https://music.taliferro.com', image: 'assets/find/entities/music/logo-bw-icon.png', external: true },
+    { label: 'Pulse', route: `${getPulseHomeUrl()}/app`, image: 'assets/find/entities/pulse/logo-bw-icon.png', external: true },
+    { label: 'Network', route: `${getNetworkHomeUrl()}/app`, image: 'assets/find/entities/network/logo-bw-icon.png', external: true },
+    { label: 'Outreach', route: `${this.toddHomeUrl}/outreach/app`, image: 'assets/find/entities/outreach/logo-bw-icon.png', external: true },
+    { label: 'Moves', route: `${this.toddHomeUrl}/moves/app`, image: 'assets/find/entities/moves/logo-bw-icon.png', external: true },
+    { label: 'Social', route: `${this.toddHomeUrl}/outreach/social`, image: 'assets/find/entities/social/logo-bw-icon.png', external: true },
+    { label: 'Docs', route: `${this.toddHomeUrl}/docs/app`, image: 'assets/find/entities/docs/logo-bw-icon.png', external: true }
   ];
   private proactiveMomentumStateSubscription?: Subscription;
   private proactiveMomentumInFlight: boolean = false;

@@ -23,3 +23,17 @@ src/environments/*
 
 # Generated at build time (scripts/generate-version.js)
 src/app/version.ts
+
+# Firebase CLI's local deploy cache — regenerated on every `firebase deploy`,
+# never needs to be committed.
+.firebase/
+
+# Full-resolution source logos carried over wholesale from the entity asset
+# pack. Only the small logo-bw-icon.png (app grid) and the four in-use
+# logo-icon.png files (find/music/sayit/email-signature-builder, referenced
+# by nav-config.service.ts) are actually used by the app — these originals
+# just bloat the repo and pushes.
+src/assets/find/entities/*/logo.png
+src/assets/find/entities/*/logo-bw.png
+src/assets/find/entities/*/logo-ios-icon.png
+src/assets/find/entities/todd/logo-icon.png
