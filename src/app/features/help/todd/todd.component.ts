@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, PLA
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Router, NavigationStart, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { LoggerService } from '../../../services/logger.service';
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -27,10 +27,9 @@ import { DailyCommandInstrumentationLight, DailyCommandPlan, DailyCommandService
 import { ToddSystemOutcomeRow } from '../../../shared/page/todd-system-outcomes/todd-system-outcomes.component';
 import { TESTIMONIALS, ToddMediaItem, VIDEOS } from './todd-video-library';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { environment } from '../../../../environments/environment';
 import { ToddStatusTone, mapToddStatusTone, shouldPulseToddStatus } from '../../../shared/utils/todd-status-indicator.util';
 import { CommandPaletteResult, navigateToEntry, searchEntriesLoose, withIcons } from '../../../shared/page/command-palette/command-palette-match';
-import { getFindHomeUrl, getLeadVaultHomeUrl, getMayaHomeUrl, getNetworkHomeUrl, getPulseHomeUrl, getSayitHomeUrl, getSignatureBuilderUrl, getToddHomeUrl, resolveExternalAppUrl } from '../../../shared/utils/public-app-url.util';
+import { getDocsHomeUrl, getFindHomeUrl, getLeadVaultHomeUrl, getMayaHomeUrl, getMovesHomeUrl, getNetworkHomeUrl, getOutreachHomeUrl, getPulseHomeUrl, getSayitHomeUrl, getSignatureBuilderUrl, getSocialHomeUrl, getToddHomeUrl, resolveExternalAppUrl } from '../../../shared/utils/public-app-url.util';
 import { ToddActivationResolution, ToddActivationStateService } from '../../../services/todd-activation-state.service';
 
 
@@ -100,13 +99,6 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   suggestedVideoReason: string = '';
   activeVideo: ToddMediaItem | null = null;
   activeVideoEmbedUrl: SafeResourceUrl | '' = '';
-  private exitIntentSent = false;
-  private visibilityChangeHandler?: () => void;
-  private beforeUnloadHandler?: () => void;
-  private pageHideHandler?: () => void;
-  private routerNavigationSubscription?: Subscription;
-  private guestProactiveTimerId: ReturnType<typeof setTimeout> | null = null;
-  private guestProactiveIntroShown = false;
 
 
   suggestedProductAction: {
@@ -168,10 +160,10 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     { label: 'Music', route: 'https://music.taliferro.com', image: 'assets/find/entities/music/logo-bw-icon.png', external: true },
     { label: 'Pulse', route: `${getPulseHomeUrl()}/app`, image: 'assets/find/entities/pulse/logo-bw-icon.png', external: true },
     { label: 'Network', route: `${getNetworkHomeUrl()}/app`, image: 'assets/find/entities/network/logo-bw-icon.png', external: true },
-    { label: 'Outreach', route: `${this.toddHomeUrl}/outreach/app`, image: 'assets/find/entities/outreach/logo-bw-icon.png', external: true },
-    { label: 'Moves', route: `${this.toddHomeUrl}/moves/app`, image: 'assets/find/entities/moves/logo-bw-icon.png', external: true },
-    { label: 'Social', route: `${this.toddHomeUrl}/outreach/social`, image: 'assets/find/entities/social/logo-bw-icon.png', external: true },
-    { label: 'Docs', route: `${this.toddHomeUrl}/docs/app`, image: 'assets/find/entities/docs/logo-bw-icon.png', external: true }
+    { label: 'Outreach', route: getOutreachHomeUrl(), image: 'assets/find/entities/outreach/logo-bw-icon.png', external: true },
+    { label: 'Moves', route: getMovesHomeUrl(), image: 'assets/find/entities/moves/logo-bw-icon.png', external: true },
+    { label: 'Social', route: getSocialHomeUrl(), image: 'assets/find/entities/social/logo-bw-icon.png', external: true },
+    { label: 'Docs', route: getDocsHomeUrl(), image: 'assets/find/entities/docs/logo-bw-icon.png', external: true }
   ];
   private proactiveMomentumStateSubscription?: Subscription;
   private proactiveMomentumInFlight: boolean = false;
@@ -222,21 +214,17 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     this.processLoggedInContact();
     this.watchSystemOutcomes();
     this.watchMomentumBriefingReadiness();
-    this.initExitIntentListeners();
     this.handleQueryPrompt();
   }
 
   override ngOnDestroy (): void {
-    this.sendExitIntent( 'component_destroy' );
     super.ngOnDestroy();
     this.getLoggedInContactInfoSubscription?.unsubscribe();
     this.askSubscription?.unsubscribe();
     this.systemOutcomesIdentitySubscription?.unsubscribe();
     this.systemOutcomesPlanSubscription?.unsubscribe();
     this.proactiveMomentumStateSubscription?.unsubscribe();
-    this.routerNavigationSubscription?.unsubscribe();
     this.pageContextSubscription?.unsubscribe();
-    this.teardownExitIntentListeners();
   }
 
 
@@ -416,6 +404,12 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     this.showSystemStatus = false;
   }
 
+  openAppLink ( url: string, event: Event ): void {
+    event.preventDefault();
+    this.closeAppsMenu();
+    window.open( url, '_blank', 'noopener,noreferrer' );
+  }
+
   // There's no multi-conversation history to browse yet — AssistantHistoryService
   // keeps exactly one ongoing conversation per user, already auto-loaded on
   // sign-in. This just surfaces that state honestly instead of pretending to
@@ -473,8 +467,6 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     if ( this.handleActiveTourInputInterruption() ) {
       return;
     }
-
-    this.cancelGuestProactiveTimer();
 
     if ( this.askSubscription ) {
       this.askSubscription.unsubscribe();
@@ -1525,99 +1517,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     } );
   }
 
-  private cancelGuestProactiveTimer (): void {
-    if ( !this.guestProactiveTimerId ) return;
-    clearTimeout( this.guestProactiveTimerId );
-    this.guestProactiveTimerId = null;
-  }
-
-
-  private shouldTriggerGuestProactiveIntro (): boolean {
-    return !this.isLoggedIn
-      && !this.guestProactiveIntroShown
-      && !this.isLoading
-      && !this.hasAnyConversationStarted();
-  }
-
-  private hasAnyConversationStarted (): boolean {
-    return Array.isArray( this.messages ) && this.messages.length > 0;
-  }
-
-  private showGuestProactiveIntro ( trigger: 'idle' | 'exit_intent' ): void {
-    if ( !this.shouldTriggerGuestProactiveIntro() ) return;
-
-    this.cancelGuestProactiveTimer();
-    this.guestProactiveIntroShown = true;
-
-    this.onMessage( {
-      role: 'assistant',
-      content: this.buildGuestProactiveIntroHtml( trigger )
-    } );
-
-    this.logger.info( 'TODD guest proactive intro shown', {
-      trigger,
-      campaignSource: this.getGuestCampaignSource(),
-      audienceHint: this.getGuestAudienceHint()
-    } );
-  }
-
-  private buildGuestProactiveIntroHtml ( trigger: 'idle' | 'exit_intent' ): string {
-    const opener = trigger === 'exit_intent'
-      ? 'Before you go, I may be able to point you to the fastest next step.'
-      : 'I am TODD. I help teams get more customers, keep projects moving, and make AI adoption practical.';
-    const campaignSource = this.getGuestCampaignSource();
-    const audienceHint = this.getGuestAudienceHint();
-    const painLine = audienceHint
-      ? `If you are here because of <strong>${audienceHint}</strong>, I can start there.`
-      : campaignSource
-        ? `If you came here from <strong>${campaignSource}</strong>, I can pick up from that thread.`
-        : 'I just need to know what is giving you the most trouble right now.';
-
-    return [
-      `<p>${opener}</p>`,
-      `<p>${painLine}</p>`,
-      '<p><strong>Pick a lane or ask me directly:</strong> more customers, project follow-through, or AI adoption.</p>'
-    ].join( '' );
-  }
-
-  private getGuestCampaignSource (): string {
-    if ( !this.isBrowser ) return '';
-
-    try {
-      const params = new URLSearchParams( window.location.search );
-      const source = String( params.get( 'utm_source' ) || params.get( 'source' ) || '' ).trim();
-      const campaign = String( params.get( 'utm_campaign' ) || '' ).trim();
-      return campaign || source;
-    } catch {
-      return '';
-    }
-  }
-
-  private getGuestAudienceHint (): string {
-    if ( !this.isBrowser ) return '';
-
-    try {
-      const params = new URLSearchParams( window.location.search );
-      const raw = String(
-        params.get( 'audience' )
-        || params.get( 'utm_content' )
-        || params.get( 'utm_term' )
-        || ''
-      ).trim().toLowerCase();
-
-      if ( !raw ) return '';
-      if ( /ai|automation|copilot/.test( raw ) ) return 'AI adoption';
-      if ( /project|delivery|moves|operations/.test( raw ) ) return 'project follow-through';
-      if ( /customer|pipeline|sales|outreach|growth|lead/.test( raw ) ) return 'getting more customers';
-      return raw.replace( /[-_]+/g, ' ' );
-    } catch {
-      return '';
-    }
-  }
-
-
   onMessage ( msg: { role: 'user' | 'assistant'; content: string; } ) {
-    this.cancelGuestProactiveTimer();
     this.messages.push( msg );
 
 
@@ -2152,175 +2052,6 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       } );
     } catch {
       // no-op
-    }
-  }
-
-  private initExitIntentListeners (): void {
-    if ( !this.isBrowser ) return;
-
-    this.visibilityChangeHandler = () => {
-      try {
-        if ( document.hidden ) {
-          this.logger.info( 'TODD exit intent visibilitychange hidden detected' );
-          this.sendExitIntent( 'visibilitychange' );
-        }
-      } catch {
-        // no-op
-      }
-    };
-
-    this.beforeUnloadHandler = () => {
-      this.logger.info( 'TODD exit intent beforeunload detected' );
-      this.sendExitIntent( 'beforeunload' );
-    };
-
-    this.pageHideHandler = () => {
-      this.logger.info( 'TODD exit intent pagehide detected' );
-      this.sendExitIntent( 'pagehide' );
-    };
-
-    try {
-      document.addEventListener( 'visibilitychange', this.visibilityChangeHandler );
-      window.addEventListener( 'beforeunload', this.beforeUnloadHandler );
-      window.addEventListener( 'pagehide', this.pageHideHandler );
-    } catch {
-      // no-op
-    }
-
-    this.routerNavigationSubscription = this.router.events
-      .pipe( filter( event => event instanceof NavigationStart ) )
-      .subscribe( () => {
-        this.logger.info( 'TODD exit intent Angular navigation detected' );
-        this.sendExitIntent( 'angular_navigation' );
-      } );
-  }
-
-  private teardownExitIntentListeners (): void {
-    if ( !this.isBrowser ) return;
-
-    try {
-      if ( this.visibilityChangeHandler ) {
-        document.removeEventListener( 'visibilitychange', this.visibilityChangeHandler );
-      }
-      if ( this.beforeUnloadHandler ) {
-        window.removeEventListener( 'beforeunload', this.beforeUnloadHandler );
-      }
-      if ( this.pageHideHandler ) {
-        window.removeEventListener( 'pagehide', this.pageHideHandler );
-      }
-    } catch {
-      // no-op
-    }
-  }
-
-  private shouldSendExitIntent (): boolean {
-    if ( this.shouldTriggerGuestProactiveIntro() ) {
-      return false;
-    }
-
-    const totalMessages = Array.isArray( this.messages ) ? this.messages.length : 0;
-    const userMessageCount = Array.isArray( this.messages )
-      ? this.messages.filter( m => m?.role === 'user' ).length
-      : 0;
-
-    this.logger.info( 'TODD exit intent shouldSendExitIntent evaluated', {
-      exitIntentSent: this.exitIntentSent,
-      totalMessages,
-      userMessageCount
-    } );
-
-    if ( this.exitIntentSent ) {
-      this.logger.info( 'TODD exit intent blocked: already sent' );
-      return false;
-    }
-
-    if ( !Array.isArray( this.messages ) || this.messages.length === 0 ) {
-      this.logger.info( 'TODD exit intent blocked: no messages' );
-      return false;
-    }
-
-    if ( userMessageCount < 2 ) {
-      this.logger.info( 'TODD exit intent blocked: fewer than 2 user messages', {
-        userMessageCount
-      } );
-      return false;
-    }
-
-    return true;
-  }
-
-  private buildExitIntentPayload (): Record<string, any> {
-    return {
-      source: 'todd',
-      isLoggedIn: this.isLoggedIn,
-      userId: this.userId || null,
-      name: this.firstName || this.firebaseUser?.displayName || null,
-      messages: this.messages,
-      playedVideoIds: Array.from( this.playedVideoIds ),
-      suggestedVideoId: this.suggestedVideo?.module_id || this.activeVideo?.module_id || null,
-      sentAt: new Date().toISOString()
-    };
-  }
-
-  private sendExitIntent ( trigger: string = 'unknown' ): void {
-    this.logger.info( 'TODD exit intent sendExitIntent entered', {
-      trigger,
-      exitIntentSent: this.exitIntentSent,
-      totalMessages: Array.isArray( this.messages ) ? this.messages.length : 0,
-      userMessageCount: Array.isArray( this.messages ) ? this.messages.filter( m => m?.role === 'user' ).length : 0
-    } );
-
-    if ( this.shouldTriggerGuestProactiveIntro() ) {
-      this.showGuestProactiveIntro( 'exit_intent' );
-      return;
-    }
-
-    if ( !this.shouldSendExitIntent() ) return;
-
-    const payload = this.buildExitIntentPayload();
-    const endpoint = `${environment.backendURL}/todd-exit-intent`;
-
-    try {
-      const body = JSON.stringify( payload );
-
-      if ( typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function' ) {
-        const blob = new Blob( [body], { type: 'application/json' } );
-        const accepted = navigator.sendBeacon( endpoint, blob );
-        this.logger.info( 'TODD exit intent beacon attempted', { accepted, endpoint, trigger } );
-        if ( accepted ) {
-          this.exitIntentSent = true;
-          return;
-        }
-      }
-
-      if ( typeof fetch === 'function' ) {
-        void fetch( endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body,
-          keepalive: true
-        } )
-          .then( response => {
-            this.logger.info( 'TODD exit intent fetch completed', {
-              endpoint,
-              trigger,
-              status: response.status,
-              ok: response.ok
-            } );
-
-            if ( response.ok ) {
-              this.exitIntentSent = true;
-            }
-          } )
-          .catch( err => {
-            this.logger.error( 'TODD exit intent fetch failed', err );
-          } );
-
-        this.logger.info( 'TODD exit intent fetch fallback attempted', { endpoint, trigger } );
-      }
-    } catch ( err ) {
-      this.exitIntentSent = false;
-      this.logger.error( 'TODD exit intent send failed', err );
     }
   }
 

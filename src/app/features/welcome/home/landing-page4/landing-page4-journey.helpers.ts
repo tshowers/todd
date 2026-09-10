@@ -73,17 +73,6 @@ export interface LandingPage4AdViewModel {
   image6?: string;
 }
 
-export interface LandingPage4ExitIntentContent {
-  eyebrow: string;
-  title: string;
-  body: string;
-  imageSrc: string;
-  imageAlt: string;
-  formTitle: string;
-  formBody: string;
-  ctaLabel: string;
-}
-
 export function resolveLandingPage4VisitContext (
   rawParams: Record<string, string | null | undefined>,
   referrer: string
@@ -243,27 +232,6 @@ export function buildJourneyBannerCopy ( context: LandingPage4VisitContext ): {
     body: context.interestArea !== 'general'
       ? `If ${context.interestLabel} is what brought you here, the next sections are tuned to that interest.`
       : 'This page is designed to help you quickly see where TODD fits and whether it is worth a conversation.'
-  };
-}
-
-export function buildExitIntentContent ( context: LandingPage4VisitContext ): LandingPage4ExitIntentContent {
-  const sourceLead = context.source === 'google' || context.source === 'bing' || context.source === 'search'
-    ? `Thanks for checking us out from ${context.sourceLabel}.`
-    : context.isKnownEmailJourney
-      ? 'Thanks for following the email through to here.'
-      : `Thanks for stopping by from ${context.sourceLabel}.`;
-
-  return {
-    eyebrow: 'Before You Go',
-    title: 'Most software gives you more work - Nobody says that part aloud',
-    body: `${sourceLead} If you want, leave your info and we will explain how TODD reduces the extra work most systems quietly create.`,
-    imageSrc: '/assets/ads/todd-asset9.webp',
-    imageAlt: 'Most software gives you more work - Nobody says that part aloud',
-    formTitle: context.interestArea !== 'general'
-      ? `Want to talk about ${context.interestLabel}?`
-      : 'Want to stay in touch?',
-    formBody: 'Leave your name, email, and phone, or book a meeting if you want the faster path.',
-    ctaLabel: 'Book a meeting'
   };
 }
 

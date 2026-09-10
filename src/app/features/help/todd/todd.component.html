@@ -181,11 +181,11 @@
   </main>
   <aside *ngIf="showSystemStatus" class="todd-apps-card" aria-label="All apps">
     <div class="todd-apps-card-header"><strong>All apps</strong><button type="button" (click)="closeAppsMenu()" aria-label="Close apps">×</button></div>
-    <div class="todd-app-grid"><a *ngFor="let app of appLinks" [href]="app.route" (click)="closeAppsMenu()"><img [src]="app.image" [alt]="app.label"><span>{{ app.label }}</span></a></div>
+    <div class="todd-app-grid"><a *ngFor="let app of appLinks" [href]="app.route" target="_blank" rel="noopener noreferrer" (click)="openAppLink(app.route, $event)"><img [src]="app.image" [alt]="app.label"><span>{{ app.label }}</span></a></div>
   </aside>
   <nav class="todd-bottom-nav" aria-label="TODD navigation">
     <a [href]="toddHomeUrl" aria-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Home</span></a>
-    <a [href]="toddHomeUrl + '/help'" aria-label="Help"><i class="fa-solid fa-circle-question" aria-hidden="true"></i><span>Help</span></a>
+    <button type="button" class="todd-bottom-nav-action" (click)="onQuickPill('How can TODD help me?')" aria-label="Help"><i class="fa-solid fa-circle-question" aria-hidden="true"></i><span>Help</span></button>
     <button type="button" class="todd-bottom-nav-action" (click)="openSaved()" aria-label="Saved conversation"><i class="fa-regular fa-bookmark" aria-hidden="true"></i><span>Saved</span></button>
     <a *ngIf="isLoggedIn; else signInLink" [href]="toddHomeUrl + '/user-profile'" class="todd-session-action" aria-label="Account">
       <i class="fa-solid fa-user" aria-hidden="true"></i>

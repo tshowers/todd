@@ -64,6 +64,22 @@ export function getPulseHomeUrl (): string {
   return 'https://pulse.taliferro.tech';
 }
 
+export function getOutreachHomeUrl (): string {
+  return 'https://outreach.taliferro.tech';
+}
+
+export function getMovesHomeUrl (): string {
+  return 'https://moves.taliferro.tech';
+}
+
+export function getSocialHomeUrl (): string {
+  return 'https://social.taliferro.tech';
+}
+
+export function getDocsHomeUrl (): string {
+  return 'https://docs.taliferro.tech';
+}
+
 /**
  * TODD's chat carries a lot of internal-route strings (e.g. '/network/app',
  * 'compose-email') inherited from the monolith, where they resolve on the
@@ -84,6 +100,22 @@ export function resolveExternalAppUrl ( path: string ): string {
 
   if ( normalized === '/pulse' || normalized.startsWith( '/pulse/' ) ) {
     return `${getPulseHomeUrl()}${normalized.slice( '/pulse'.length )}`;
+  }
+
+  if ( normalized === '/outreach' || normalized.startsWith( '/outreach/' ) ) {
+    return `${getOutreachHomeUrl()}${normalized.slice( '/outreach'.length )}`;
+  }
+
+  if ( normalized === '/moves' || normalized.startsWith( '/moves/' ) ) {
+    return `${getMovesHomeUrl()}${normalized.slice( '/moves'.length )}`;
+  }
+
+  if ( normalized === '/social' || normalized.startsWith( '/social/' ) ) {
+    return `${getSocialHomeUrl()}${normalized.slice( '/social'.length )}`;
+  }
+
+  if ( normalized === '/docs' || normalized.startsWith( '/docs/' ) ) {
+    return `${getDocsHomeUrl()}${normalized.slice( '/docs'.length )}`;
   }
 
   return `${getToddHomeUrl()}${normalized}`;

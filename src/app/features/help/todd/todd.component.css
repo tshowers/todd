@@ -1087,7 +1087,7 @@
   .todd-embedded-app-frame { height: min(68vh, 560px); }
 }
 
-.todd-apps-card { position:fixed; right:18px; bottom:82px; z-index:9; width:min(390px,calc(100% - 28px)); padding:16px; border:1px solid var(--todd-focus-border); border-radius:22px; background:#fff; color:var(--todd-focus-navy); box-shadow:0 18px 44px rgba(15,23,42,.18); }
+.todd-apps-card { position:fixed; right:18px; bottom:82px; z-index:10001; width:min(390px,calc(100% - 28px)); padding:16px; border:1px solid var(--todd-focus-border); border-radius:22px; background:#fff; color:var(--todd-focus-navy); box-shadow:0 18px 44px rgba(15,23,42,.18); }
 .todd-apps-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }.todd-apps-card-header button { border:0; background:transparent; color:var(--todd-focus-muted); font-size:1.5rem; cursor:pointer; }.todd-app-grid { display:grid; grid-template-columns:repeat(3,minmax(88px,1fr)); gap:.55rem; }.todd-app-grid a { display:flex; min-height:78px; flex-direction:column; align-items:center; justify-content:center; gap:5px; padding:.55rem .35rem; border:1px solid var(--todd-focus-border); border-radius:14px; color:var(--todd-focus-navy); font-size:.72rem; text-align:center; text-decoration:none; transition:color .15s ease, border-color .15s ease; }.todd-app-grid a:hover { color:var(--tl-blue); border-color:var(--tl-blue); }.todd-app-grid img { width:30px; height:30px; object-fit:contain; border-radius:9px; }
 
 .todd-system-status-card {
@@ -2247,8 +2247,8 @@
   .todd-welcome-composer textarea, .todd-compact-composer textarea, .todd-apps-card-header, .todd-app-grid a { color:var(--todd-focus-navy); }
   .todd-reset { background:#1f2d40; color:#e8f4ff; }
   .todd-apps-card-header button { color:#9aadc1; }
-  /* App menu icons are monochrome black PNGs; invert them for contrast
-     against the dark card. */
+  /* The shared menu assets are black artwork on white; invert them for the
+     dark menu so the artwork remains visible. */
   .todd-app-grid img { filter: invert(1) brightness(1.15); }
   .todd-focused-history .bubble-inner { background:#131c27; color:var(--todd-focus-navy); border-color:var(--todd-focus-border); }
   .todd-focused-history .bubble.user .bubble-inner { background:rgba(0,191,255,.12); border-color:rgba(0,191,255,.28); }

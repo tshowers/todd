@@ -2,5 +2,5 @@
   "extends": "./tsconfig.json",
   "compilerOptions": { "outDir": "./out-tsc/app", "types": ["node"], "noUnusedLocals": true, "noUnusedParameters": false },
   "files": ["src/main.ts"],
-  "include": ["src/**/*.d.ts"]
+  "include": ["src/**/*.d.ts", "../../taliferro-ui/**/*.ts"]
 }

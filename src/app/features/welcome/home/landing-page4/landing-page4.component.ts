@@ -24,9 +24,7 @@ import { AppleTransitionSection } from '../../../../shared/page/apple-transition
 import { HomeSectionsComponent } from '../../../../shared/page/home-sections/home-sections.component';
 import {
   applyVisitContextToAd,
-  buildExitIntentContent,
   LandingPage4AdViewModel,
-  LandingPage4ExitIntentContent,
   LandingPage4VisitContext,
   resolveLandingPage4VisitContext
 } from './landing-page4-journey.helpers';
@@ -582,14 +580,10 @@ export class LandingPage4Component implements OnInit, OnDestroy, AfterViewInit {
 
   showForm: boolean = false;
   aiResponse!: string | null;
-  exitAppeal!: string | null;
   selectedAds: LandingPage4AdViewModel[] = [];
   selectedAd: LandingPage4AdViewModel | null = null;
   landingSections: AppleTransitionSection[] = [];
   visitContext!: LandingPage4VisitContext;
-  exitIntentContent!: LandingPage4ExitIntentContent;
-  showExitIntentModal = false;
-  exitIntentDismissed = false;
 
   public userMeta: any = null;
   offer: OfferConfig | null = null;
@@ -768,13 +762,11 @@ export class LandingPage4Component implements OnInit, OnDestroy, AfterViewInit {
     this.adStartTime = performance.now();
     this.isLoading = true;
     this.visitContext = this.resolveVisitContext();
-    this.exitIntentContent = buildExitIntentContent( this.visitContext );
     this.setUser();
     this.determineContentToDisplay();
     this.setOfferFromQuery();
     this.initInsightExperiment();
     this.rebuildLandingSections();
-    document.addEventListener( 'mouseout', this.handleExitIntent );
     setTimeout( () => {
       this.userMeta = this.authService.getUserMeta() ?? null;
       if ( this.userMeta ) {
@@ -1034,7 +1026,6 @@ export class LandingPage4Component implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy (): void {
     window.removeEventListener( 'beforeunload', this.beforeUnloadHandler );
-    document.removeEventListener( 'mouseout', this.handleExitIntent );
     if ( this.getUserSubscription )
       this.getUserSubscription.unsubscribe();
     if ( this.sendSubscription )
@@ -1735,7 +1726,6 @@ export class LandingPage4Component implements OnInit, OnDestroy, AfterViewInit {
         this.contactForm.reset();
         ( window as any ).grecaptcha.reset();
         this.showForm = false;
-        this.showExitIntentModal = false;
       };
 
       if ( this.contact?.id ) {
@@ -1868,72 +1858,10 @@ export class LandingPage4Component implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  handleExitIntent = ( e: MouseEvent ) => {
-    try {
-      if (
-        ( e.relatedTarget === null || ( e as any ).toElement === null ) &&
-        e.clientY <= 0 &&
-        !this.showExitIntentModal &&
-        !this.exitIntentDismissed &&
-        !this.isLoggedIn
-      ) {
-        this.showExitIntentModal = true;
-        this.exitAppeal = this.exitIntentContent.body;
-        this.logAdEngagement( 'click', 'exit_intent_shown' );
-        this.cd.detectChanges();
-        this.showForm = false;
-        if ( this.shouldSendEmail() && this.contact && this.contact.email ) {
-          const prompt = `
-          Write a short HTML email (under 120 words) that speaks to someone who visited our website about TODD but is leaving without taking action. 
-          Make it deep and human—skip the typical sales pitch. 
-          Focus on a lesser-known benefit like reduced decision fatigue, cognitive offloading, or the emotional relief of not dropping the ball. 
-          Avoid cliches. 
-          Make them feel seen, not sold.
-          Return only the HTML, no intro or explanation.  --- Important: Use the following real details in the email:
-          - Name: Ty Showers
-          - Position: Partner
-          - Company: Taliferro Tech
-
-          Do not use placeholders like [Your Name] or [Your Company]. Write as if the message is ready to send as-is.
-          Return only valid HTML—no intro, no commentary, and do NOT begin with the word "html" or any labels.
-          For context, we are sending the email to this contact: ${JSON.stringify( this.contact )}
-          `;
-
-          this.openAIService.getAssistance( prompt, 'general', 'homePage', null ).subscribe( {
-            next: ( res: any ) => {
-              const html = typeof res?.response === 'string' ? res.response.trim() : '';
-              const email: Email = {
-                to: this.contact.email, // fallback if we don't have their email
-                cc: 'support@taliferro.tech',
-                subject: 'A quiet nudge before you go',
-                html,
-                text: html.replace( /<[^>]+>/g, '' ),
-                textAsHtml: html,
-                contactName: this.contact.firstName || '',
-                from: 'ty.showers@taliferro.tech'
-              };
-
-              this.emailService.sendEmail( email, environment.taliferroTenantId, 'TODD' ).subscribe( () => {
-                localStorage.setItem( 'toddEmailSentAt', Date.now().toString() );
-              } );
-            },
-            error: ( err ) => this.logger.error( "OpenAI exit email generation failed", err )
-          } );
-        }
-      }
-    } catch ( error ) {
-
-    }
-  };
-
   toggleFormPopup ( show: boolean ) {
     try {
-      this.showExitIntentModal = show || this.showExitIntentModal;
       this.showForm = show;
       this.recaptchaVerified = false;
-      if ( !show ) {
-        this.exitAppeal = null;
-      }
 
       if ( show ) {
         try {
@@ -1985,23 +1913,6 @@ export class LandingPage4Component implements OnInit, OnDestroy, AfterViewInit {
     } catch ( error ) {
       this.logger.warn( "Pop Form not stable", error );
     }
-  }
-
-  dismissExitIntentModal (): void {
-    this.showExitIntentModal = false;
-    this.showForm = false;
-    this.exitIntentDismissed = true;
-    this.exitAppeal = null;
-  }
-
-  openExitIntentForm (): void {
-    this.toggleFormPopup( true );
-  }
-
-  bookExitIntentMeeting (): void {
-    this.buttonClick();
-    this.logAdEngagement( 'click', 'exit_intent_book_meeting' );
-    window.open( 'https://calendar.app.google/Z4zHCJ8Xq3EuwTPd9', '_blank', 'noopener,noreferrer' );
   }
 
   get showJourneyBanner (): boolean {
