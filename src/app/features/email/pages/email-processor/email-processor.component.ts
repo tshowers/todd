@@ -437,7 +437,7 @@ export class EmailProcessorComponent extends TopDogComponent {
       return `Lead Vault inclusion is locked until ${this.formatLeadVaultTimestamp( this.leadVaultPreview.nextAvailableAt )}.`;
     }
 
-    return this.leadVaultPreview.message || 'Lead Vault campaign inclusion is unavailable.';
+    return this.leadVaultPreview.message || 'Lead Vault contact inclusion is unavailable.';
   }
 
   private get leadVaultQueueLimit (): number {

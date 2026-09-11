@@ -53,7 +53,7 @@ export const toddFallbackOfferCatalog: ToddFallbackOfferCatalogItem[] = [
     fastestClose: true,
     deliveryEffort: 'medium',
     cta: 'Buy Outreach',
-    relatedCapabilities: ['Email Campaigns', 'Social Media', 'Autonomous Mode']
+    relatedCapabilities: ['Individual Email Follow-up', 'Social Media', 'Autonomous Mode']
   },
   {
     id: 'network-fallback-offer',

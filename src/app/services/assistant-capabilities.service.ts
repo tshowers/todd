@@ -187,11 +187,9 @@ export class AssistantCapabilitiesService {
         /\bcreate (an |a )?campaign\b/i,
       ],
       message: [
-        '<p><strong>There is no campaign to build anymore - Maya drafts individual outreach automatically.</strong></p>',
-        '<p><strong>A.</strong> If you already know who should receive individual follow-up, open <strong>/outreach/app</strong> and let Maya help prepare the next move.</p>',
-        '<p><strong>B.</strong> If you want TODD to choose from the strongest contacts, open Catalyst at <strong>/email-processor</strong>.</p>',
-        '<p><strong>C.</strong> If you need guidance on the angle, offer, or messaging, use Maya at <strong>/marketing-director/session</strong>.</p>',
-        '<p><strong>D.</strong> Import contacts and Maya will start drafting thoughtful, individual outreach and follow-up on her own - review what she drafts at <strong>/signal-engine</strong>.</p>'
+        '<p><strong>There is no campaign to create anymore.</strong> In Outreach, Maya handles the email and follow-up workflow for you.</p>',
+        '<p>Maya drafts thoughtful, individual messages and keeps each follow-up connected to the previous conversation, so the thread stays relevant instead of feeling like a generic sequence.</p>',
+        '<p>Open <strong>/outreach/app</strong> to review the outreach workflow, or use <strong>/signal-engine</strong> to review what Maya has prepared. If you need help with the angle, offer, or messaging, use Maya at <strong>/marketing-director/session</strong>.</p>'
       ].join( '' )
     },
     {

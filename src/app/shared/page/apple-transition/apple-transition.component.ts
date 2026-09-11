@@ -193,7 +193,7 @@ export class AppleTransitionComponent implements AfterViewInit, OnChanges, OnDes
       type: 'cta',
       eyebrow: 'First win',
       heading: 'Let Maya draft the first email.',
-      body: 'Import a few contacts and Maya starts drafting thoughtful, individual outreach automatically - no campaign to build first.',
+      body: 'Import a few contacts and Maya starts drafting thoughtful, individual outreach automatically, with each follow-up connected to the conversation before it.',
       actions: [
         { label: 'Import Contacts', route: '/contact-import', variant: 'primary' }
       ],

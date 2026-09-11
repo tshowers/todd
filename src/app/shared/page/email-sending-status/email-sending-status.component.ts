@@ -173,14 +173,14 @@ export class EmailSendingStatusComponent implements OnChanges {
       ? 'Your email account is too new to send email out in bulk. We start slowly so providers do not flag you as spam.'
       : this.emailState.level === 'warming'
         ? 'We are gradually increasing how many emails you can send so inbox providers trust your messages.'
-        : 'Your sending reputation is established. You can now send full campaigns safely.';
+        : 'Your sending reputation is established. Maya can now continue preparing individual outreach safely.';
   }
 
   get campaignHintText (): string {
     if ( !this.emailState ) return '';
-    if ( this.emailState.campaignStatus === 'recent' ) return 'Campaigns active. Emails are still sending from recent campaigns.';
-    if ( this.emailState.campaignStatus === 'stale' ) return 'Emails are sending, but no new campaigns in a few days.';
-    return 'No recent campaigns. Start a new one to keep momentum going.';
+    if ( this.emailState.campaignStatus === 'recent' ) return 'Outreach active. Maya is still working from recent conversations.';
+    if ( this.emailState.campaignStatus === 'stale' ) return 'Emails are sending, but Maya has no recent conversation to continue.';
+    return 'No recent outreach activity. Give Maya a qualified relationship and a clear next step.';
   }
 
 }

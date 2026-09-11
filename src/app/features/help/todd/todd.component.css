@@ -866,7 +866,7 @@
   transform: translateX(-50%);
   z-index: 5;
   display: grid;
-  grid-template-columns: 1fr 42px 48px;
+  grid-template-columns: 1fr 42px 42px 48px;
   gap: 8px;
   align-items: center;
   width: min(calc(100% - 32px), 760px);
@@ -885,7 +885,8 @@
 }
 
 .todd-send,
-.todd-reset {
+.todd-reset,
+.todd-export {
   border: 0;
   border-radius: 13px;
   width: 42px;
@@ -904,6 +905,12 @@
   background: var(--todd-focus-bg);
   color: var(--todd-focus-muted);
   font-size: 1.2rem;
+}
+
+.todd-export {
+  background: var(--todd-focus-bg);
+  color: var(--todd-focus-muted);
+  font-size: 1rem;
 }
 
 .todd-bottom-nav {
@@ -2245,7 +2252,7 @@
   .todd-focused-screen { --todd-focus-navy:#f0f6ff; --todd-focus-muted:#9aadc1; --todd-focus-border:rgba(0,191,255,.18); --todd-focus-bg:#0d1117; }
   .todd-welcome-composer, .todd-prompt-chips button, .todd-compact-composer, .todd-apps-card { background:#131c27; color:var(--todd-focus-navy); border-color:var(--todd-focus-border); }
   .todd-welcome-composer textarea, .todd-compact-composer textarea, .todd-apps-card-header, .todd-app-grid a { color:var(--todd-focus-navy); }
-  .todd-reset { background:#1f2d40; color:#e8f4ff; }
+  .todd-reset, .todd-export { background:#1f2d40; color:#e8f4ff; }
   .todd-apps-card-header button { color:#9aadc1; }
   /* The shared menu assets are black artwork on white; invert them for the
      dark menu so the artwork remains visible. */

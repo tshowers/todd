@@ -29,7 +29,7 @@ import { TESTIMONIALS, ToddMediaItem, VIDEOS } from './todd-video-library';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ToddStatusTone, mapToddStatusTone, shouldPulseToddStatus } from '../../../shared/utils/todd-status-indicator.util';
 import { CommandPaletteResult, navigateToEntry, searchEntriesLoose, withIcons } from '../../../shared/page/command-palette/command-palette-match';
-import { getDocsHomeUrl, getFindHomeUrl, getLeadVaultHomeUrl, getMayaHomeUrl, getMovesHomeUrl, getNetworkHomeUrl, getOutreachHomeUrl, getPulseHomeUrl, getSayitHomeUrl, getSignatureBuilderUrl, getSocialHomeUrl, getToddHomeUrl, resolveExternalAppUrl } from '../../../shared/utils/public-app-url.util';
+import { getFindHomeUrl, getMayaHomeUrl, getNetworkHomeUrl, getPulseHomeUrl, getSayitHomeUrl, getSignatureBuilderUrl, getSocialHomeUrl, getToddHomeUrl, resolveExternalAppUrl } from '../../../shared/utils/public-app-url.util';
 import { ToddActivationResolution, ToddActivationStateService } from '../../../services/todd-activation-state.service';
 
 
@@ -82,6 +82,11 @@ interface ToddAssistantPresentation {
   responseMode?: string | null;
 }
 
+interface ToddFindHandoff {
+  product: 'find';
+  query: string;
+}
+
 @Component( {
   selector: 'app-todd',
   standalone: true,
@@ -128,6 +133,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   assistantPrompt: string = '';
   routeSuggestions: CommandPaletteResult[] = [];
   private askSubscription?: Subscription;
+  private findHandoffTimer?: ReturnType<typeof setTimeout>;
   private pageContextSubscription?: Subscription;
   private assistantPageContext: AssistantPageContext | null = null;
   private queryPromptHandled = false;
@@ -140,7 +146,6 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   systemOutcomeRows: ToddSystemOutcomeRow[] = [];
   systemOutcomesLoading = false;
   systemStatusLights: DailyCommandInstrumentationLight[] = [];
-  showSystemStatus = false;
   embeddedAppPath: string | null = null;
   embeddedAppUrl: SafeResourceUrl | '' = '';
   embeddedAppLabel = '';
@@ -149,22 +154,6 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   // wherever that module actually lives now: Network/Pulse at their own
   // extracted homes, everything else still at todd.taliferro.tech.
   readonly toddHomeUrl = getToddHomeUrl();
-  // No self-link back to '/' here — we're already Ask TODD, and the bottom
-  // nav's own Home button covers "leave this app."
-  readonly appLinks = [
-    { label: 'Find', route: getFindHomeUrl(), image: 'assets/find/entities/find/logo-bw-icon.png', external: true },
-    { label: 'Email Signature', route: getSignatureBuilderUrl(), image: 'assets/find/entities/email-signature-builder/logo-bw-icon.png', external: true },
-    { label: 'SayIt', route: getSayitHomeUrl(), image: 'assets/find/entities/sayit/logo-bw-icon.png', external: true },
-    { label: 'Lead Vault', route: getLeadVaultHomeUrl(), image: 'assets/find/entities/lead-vault/logo-bw-icon.png', external: true },
-    { label: 'Maya', route: getMayaHomeUrl(), image: 'assets/find/entities/maya/logo-bw-icon.png', external: true },
-    { label: 'Music', route: 'https://music.taliferro.com', image: 'assets/find/entities/music/logo-bw-icon.png', external: true },
-    { label: 'Pulse', route: `${getPulseHomeUrl()}/app`, image: 'assets/find/entities/pulse/logo-bw-icon.png', external: true },
-    { label: 'Network', route: `${getNetworkHomeUrl()}/app`, image: 'assets/find/entities/network/logo-bw-icon.png', external: true },
-    { label: 'Outreach', route: getOutreachHomeUrl(), image: 'assets/find/entities/outreach/logo-bw-icon.png', external: true },
-    { label: 'Moves', route: getMovesHomeUrl(), image: 'assets/find/entities/moves/logo-bw-icon.png', external: true },
-    { label: 'Social', route: getSocialHomeUrl(), image: 'assets/find/entities/social/logo-bw-icon.png', external: true },
-    { label: 'Docs', route: getDocsHomeUrl(), image: 'assets/find/entities/docs/logo-bw-icon.png', external: true }
-  ];
   private proactiveMomentumStateSubscription?: Subscription;
   private proactiveMomentumInFlight: boolean = false;
   private readonly proactiveMomentumStoragePrefix = 'todd:daily-momentum-briefing';
@@ -225,6 +214,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     this.systemOutcomesPlanSubscription?.unsubscribe();
     this.proactiveMomentumStateSubscription?.unsubscribe();
     this.pageContextSubscription?.unsubscribe();
+    if ( this.findHandoffTimer ) clearTimeout( this.findHandoffTimer );
   }
 
 
@@ -396,20 +386,6 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     this.askAssistant();
   }
 
-  toggleSystemStatus (): void {
-    this.showSystemStatus = !this.showSystemStatus;
-  }
-
-  closeAppsMenu (): void {
-    this.showSystemStatus = false;
-  }
-
-  openAppLink ( url: string, event: Event ): void {
-    event.preventDefault();
-    this.closeAppsMenu();
-    window.open( url, '_blank', 'noopener,noreferrer' );
-  }
-
   // There's no multi-conversation history to browse yet — AssistantHistoryService
   // keeps exactly one ongoing conversation per user, already auto-loaded on
   // sign-in. This just surfaces that state honestly instead of pretending to
@@ -511,12 +487,19 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
           const assistantText = this.extractAssistantHtml( reply );
           const presentation = this.extractAssistantPresentation( reply );
           const route = this.extractAssistantRoute( reply );
+          const findHandoff = this.extractFindHandoff( reply, prompt );
           const category = this.resolveSuggestedProductCategory( prompt, assistantText );
           this.logger.info( 'TODD normalized assistant html', assistantText );
           this.onMessage( {
             role: 'assistant',
-            content: assistantText || 'I did not get a usable answer back. Please try again.'
+            content: findHandoff
+              ? '<p>This is a question more for <strong>Find</strong>. I’ll open it for you in a moment.</p>'
+              : assistantText || 'I did not get a usable answer back. Please try again.'
           } );
+
+          if ( findHandoff ) {
+            this.scheduleFindHandoff( findHandoff.query );
+          }
           const suppressSuggestedProduct = presentation?.suppressSuggestedProduct === true;
           const suppressSuggestedMedia = presentation?.suppressSuggestedMedia === true;
 
@@ -559,10 +542,10 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
         error: ( err: any ) => {
           this.logger.error( 'TODD askAssistant failed', err );
           this.suggestedProductAction = {
-            label: 'Open Momentum',
-            description: 'TODD can still help you move work forward from the Momentum page.',
-            route: '/daily-momentum',
-            image: 'assets/images/todd-overview.webp'
+            label: 'Open Help',
+            description: 'Open Help for guidance on TODD, its products, and the next step for your situation.',
+            route: `${this.toddHomeUrl}/help`,
+            image: 'assets/TODD-icon.png'
           };
           this.onMessage( {
             role: 'assistant',
@@ -590,6 +573,26 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     this.embeddedAppUrl = '';
     this.embeddedAppLabel = '';
     this.focusAssistantInput();
+  }
+
+  exportTranscript (): void {
+    if ( !this.messages.length || !this.isBrowser ) return;
+
+    const stamp = new Date();
+    const lines = this.messages.map( message => {
+      const speaker = message.role === 'user' ? 'You' : 'TODD';
+      const content = this.stripHtmlForPrompt( String( message.content || '' ) );
+      return `${speaker}:\n${content}`;
+    } );
+    const transcript = `TODD conversation transcript — ${stamp.toLocaleString()}\n\n${lines.join( '\n\n' )}\n`;
+
+    const blob = new Blob( [transcript], { type: 'text/plain;charset=utf-8' } );
+    const url = URL.createObjectURL( blob );
+    const anchor = document.createElement( 'a' );
+    anchor.href = url;
+    anchor.download = `todd-transcript-${stamp.toISOString().slice( 0, 10 )}.txt`;
+    anchor.click();
+    URL.revokeObjectURL( url );
   }
 
   /**
@@ -637,6 +640,10 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   }
 
   private tryOpenEmbeddedApp ( prompt: string ): boolean {
+    // Embedded views are authenticated workspace surfaces. Guests should get
+    // the product explanation and value path instead of an empty/private app.
+    if ( !this.isLoggedIn ) return false;
+
     const normalized = String( prompt || '' ).trim().toLowerCase();
     if ( /\b(list|show|find|search)\b.*\b(contacts?|companies)\b/.test( normalized ) ) {
       const path = `${this.toddHomeUrl}/contact-list?embedded=true&q=${encodeURIComponent( normalized )}`;
@@ -737,6 +744,24 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     } catch {
       return rawUrl;
     }
+  }
+
+  /**
+   * Product recommendation cards introduce a product to visitors, so their
+   * primary action belongs on the product landing page. Explicit assistant
+   * routes still use `/app` when the user asked to open the working area.
+   */
+  private getProductLandingRoute ( route: string ): string {
+    const normalized = String( route || '' ).trim();
+    const landingRoutes: Record<string, string> = {
+      '/network/app': getNetworkHomeUrl(),
+      '/pulse/app': getPulseHomeUrl(),
+      '/outreach/app': 'https://outreach.taliferro.tech',
+      '/moves/app': 'https://moves.taliferro.tech',
+      '/docs/app': 'https://docs.taliferro.tech'
+    };
+
+    return landingRoutes[normalized] || normalized;
   }
 
   public getProductImage ( product: ToddProfileProduct | null | undefined ): string {
@@ -858,7 +883,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   private formatAssistantError ( err: any ): string {
     return [
       '<p>I could not finish that answer right now.</p>',
-      '<p>But you are not stuck. Open Momentum and TODD can still help you decide what to do next.</p>'
+      '<p>But you are not stuck. Open <strong>Help</strong> for guidance on TODD, its products, and the next step for your situation.</p>'
     ].join( '' );
   }
 
@@ -882,6 +907,26 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
         ? presentation.responseMode
         : null
     };
+  }
+
+  private extractFindHandoff ( reply: any, fallbackQuery: string ): ToddFindHandoff | null {
+    const handoff = reply?.response?.handoff;
+    if ( handoff?.product !== 'find' || !String( handoff.query || '' ).trim() ) return null;
+
+    return {
+      product: 'find',
+      query: String( handoff.query || fallbackQuery ).trim()
+    };
+  }
+
+  private scheduleFindHandoff ( query: string ): void {
+    if ( !this.isBrowser || !query.trim() ) return;
+
+    const findUrl = new URL( getFindHomeUrl() );
+    findUrl.searchParams.set( 'q', query.trim() );
+    this.findHandoffTimer = setTimeout( () => {
+      window.open( findUrl.toString(), '_blank', 'noopener' );
+    }, 5000 );
   }
 
   private extractAssistantRoute ( reply: any ): string | null {
@@ -1198,7 +1243,13 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   }
 
   private buildProspectHistory (): string {
-    const lines: string[] = [];
+    const lines: string[] = this.isLoggedIn
+      ? []
+      : [
+        'TODD GUEST SALES MODE: The visitor is not signed in. Answer as a product guide and sales advisor, not as an internal workspace assistant.',
+        'Do not claim to see, load, diagnose, or summarize the visitor\'s private business data. Explain the problem, the business value, and which Taliferro product is the best fit.',
+        'Use plain language and a helpful, consultative tone. When a product is relevant, explain why it helps and invite the visitor to explore its public landing page or sign in to continue.'
+      ];
 
     for ( const msg of this.messages ) {
       const raw = typeof msg?.content === 'string' ? msg.content : '';
@@ -1521,7 +1572,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     this.messages.push( msg );
 
 
-    const audience = ( !this.isLoggedIn ) ? 'internal' : 'public';
+    const audience = this.isLoggedIn ? 'internal' : 'public';
     const isPublic = audience === 'public';
 
     // Persist to assistant history if we have an active conversation
@@ -1753,7 +1804,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         module: 'outreach',
         headline: 'You have people. Now create motion.',
-        body: 'Give TODD a campaign idea and I will help shape the angle, message direction, and next move for Outreach.',
+        body: 'Give TODD an outreach goal and Maya will shape the angle, draft the emails, and keep the follow-up connected to the conversation.',
         ctaLabel: 'Try Outreach',
         route: '/outreach/app',
         launchMode: 'campaign-idea',
@@ -2090,7 +2141,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
         return {
           label: String( matchedProduct?.callToAction || `Explore ${name}` ).trim(),
           description: this.getProductDescription( matchedProduct ) || `See how ${name} can help with this next step.`,
-          route,
+          route: this.getProductLandingRoute( route ),
           image: this.getProductImage( matchedProduct )
         };
       }
@@ -2105,7 +2156,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
         return {
           label: String( product?.callToAction || `Explore ${name}` ).trim(),
           description: this.getProductDescription( product ) || `Start with ${name}.`,
-          route,
+          route: this.getProductLandingRoute( route ),
           image: this.getProductImage( product )
         };
       }
@@ -2135,7 +2186,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Pulse',
         description: 'Collect feedback and turn responses into action.',
-        route: '/pulse/app',
+        route: getPulseHomeUrl(),
         image: 'assets/pulse/pulse.png'
       };
     }
@@ -2144,7 +2195,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Network',
         description: 'Manage contacts, leads, and relationship data in one place.',
-        route: '/network/app',
+        route: getNetworkHomeUrl(),
         image: 'assets/network/network.png'
       };
     }
@@ -2152,8 +2203,8 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     if ( /outreach|campaign|email|follow up|follow-up|pipeline|sales/.test( promptText ) ) {
       return {
         label: 'Open Outreach',
-        description: 'Write, queue, and track outbound campaigns and follow-up.',
-        route: '/outreach/app',
+        description: 'Let Maya prepare relevant individual email and follow-up from the conversation context.',
+        route: 'https://outreach.taliferro.tech',
         image: 'assets/outreach/outreach.png'
       };
     }
@@ -2162,7 +2213,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Moves',
         description: 'Track next actions and keep work moving.',
-        route: '/moves/app',
+        route: 'https://moves.taliferro.tech',
         image: 'assets/moves/moves.png'
       };
     }
@@ -2171,8 +2222,17 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Docs',
         description: 'Store, refine, and generate business documents.',
-        route: '/docs/app',
+        route: 'https://docs.taliferro.tech',
         image: 'assets/docs/docs.png'
+      };
+    }
+
+    if ( /social|linkedin|threads|bluesky|reddit|instagram|facebook|visibility|content/.test( promptText ) ) {
+      return {
+        label: 'Open Social',
+        description: 'Turn useful business activity into platform-ready posts, review the drafts, and keep your public visibility moving.',
+        route: getSocialHomeUrl(),
+        image: 'assets/todd-social-icon.png'
       };
     }
 
@@ -2190,7 +2250,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Pulse',
         description: 'Collect feedback and turn responses into action.',
-        route: '/pulse/app',
+        route: getPulseHomeUrl(),
         image: 'assets/pulse/pulse.png'
       };
     }
@@ -2199,7 +2259,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Network',
         description: 'Manage contacts, leads, and relationship data in one place.',
-        route: '/network/app',
+        route: getNetworkHomeUrl(),
         image: 'assets/network/network.png'
       };
     }
@@ -2207,8 +2267,8 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     if ( /outreach|campaign|email|follow up|follow-up|pipeline|sales/.test( text ) ) {
       return {
         label: 'Open Outreach',
-        description: 'Write, queue, and track outbound campaigns and follow-up.',
-        route: '/outreach/app',
+        description: 'Let Maya prepare relevant individual email and follow-up from the conversation context.',
+        route: 'https://outreach.taliferro.tech',
         image: 'assets/outreach/outreach.png'
       };
     }
@@ -2217,7 +2277,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Moves',
         description: 'Track next actions and keep work moving.',
-        route: '/moves/app',
+        route: 'https://moves.taliferro.tech',
         image: 'assets/moves/moves.png'
       };
     }
@@ -2226,8 +2286,17 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Docs',
         description: 'Store, refine, and generate business documents.',
-        route: '/docs/app',
+        route: 'https://docs.taliferro.tech',
         image: 'assets/docs/docs.png'
+      };
+    }
+
+    if ( /social|linkedin|threads|bluesky|reddit|instagram|facebook|visibility|content/.test( text ) ) {
+      return {
+        label: 'Open Social',
+        description: 'Turn useful business activity into platform-ready posts, review the drafts, and keep your public visibility moving.',
+        route: getSocialHomeUrl(),
+        image: 'assets/todd-social-icon.png'
       };
     }
 
@@ -2244,7 +2313,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     return {
       label: 'Open Network',
       description: 'Start with the core system that keeps momentum organized.',
-      route: '/network/app',
+      route: getNetworkHomeUrl(),
       image: 'assets/network/network.png'
     };
   }

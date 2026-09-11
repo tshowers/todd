@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://api.taliferro.tech",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "warn"
+  }
+}

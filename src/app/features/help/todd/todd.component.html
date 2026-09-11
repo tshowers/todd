@@ -167,6 +167,9 @@
       </div>
       <div class="todd-compact-composer" *ngIf="messages.length > 0">
         <textarea rows="2" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask TODD anything..." aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
+        <button type="button" class="todd-export" (click)="exportTranscript()" aria-label="Export transcript" title="Export transcript">
+          <i class="fa-solid fa-download" aria-hidden="true"></i>
+        </button>
         <button type="button" class="todd-reset" (click)="resetConversation()" [disabled]="askToddTourInputLocked" aria-label="Reset conversation">↺</button>
         <button type="button" class="todd-send" (click)="askAssistant()" [disabled]="askToddTourInputLocked" aria-label="Ask TODD">↗</button>
         <ul class="todd-route-suggestions todd-route-suggestions--compact" *ngIf="routeSuggestions.length" role="listbox" aria-label="Matching pages">
@@ -179,10 +182,6 @@
       </div>
     </section>
   </main>
-  <aside *ngIf="showSystemStatus" class="todd-apps-card" aria-label="All apps">
-    <div class="todd-apps-card-header"><strong>All apps</strong><button type="button" (click)="closeAppsMenu()" aria-label="Close apps">×</button></div>
-    <div class="todd-app-grid"><a *ngFor="let app of appLinks" [href]="app.route" target="_blank" rel="noopener noreferrer" (click)="openAppLink(app.route, $event)"><img [src]="app.image" [alt]="app.label"><span>{{ app.label }}</span></a></div>
-  </aside>
   <nav class="todd-bottom-nav" aria-label="TODD navigation">
     <a [href]="toddHomeUrl" aria-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Home</span></a>
     <button type="button" class="todd-bottom-nav-action" (click)="onQuickPill('How can TODD help me?')" aria-label="Help"><i class="fa-solid fa-circle-question" aria-hidden="true"></i><span>Help</span></button>
@@ -197,6 +196,5 @@
         <span class="todd-session-label"><span class="todd-session-dot todd-session-dot--out"></span>Sign In</span>
       </a>
     </ng-template>
-    <button type="button" class="todd-bottom-nav-more" [class.active]="showSystemStatus" (click)="toggleSystemStatus()"><span>•••</span><span>More</span></button>
   </nav>
 </div>

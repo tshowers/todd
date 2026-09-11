@@ -1,5 +1,51 @@
+/**
+ * Self-contained on purpose: this used to borrow --todd-* variables from
+ * the host app's own stylesheet, which turned out not to be consistent
+ * across apps - several define none of them, so the panel's
+ * background/text/border resolved to nothing and the page underneath
+ * showed straight through. Defining every color locally guarantees this
+ * renders correctly regardless of what design system the app around it
+ * happens to use.
+ */
 :host {
   display: contents;
+  --pm-bg: #ffffff;
+  --pm-text: #1b2023;
+  --pm-subtext: #5b6469;
+  --pm-border: #d8dcd9;
+  --pm-accent: #2c6cb0;
+  --pm-icon-bg: rgba(27, 32, 35, 0.05);
+  --pm-overlay: rgba(10, 14, 22, 0.4);
+  --pm-shadow: 0 32px 70px rgba(15, 23, 42, 0.26);
+}
+
+/* System dark preference, when the app has no manual toggle of its own. */
+@media (prefers-color-scheme: dark) {
+  :host {
+    --pm-bg: #1c2226;
+    --pm-text: #e7ebec;
+    --pm-subtext: #97a3a7;
+    --pm-border: #333c40;
+    --pm-accent: #7fb3d8;
+    --pm-icon-bg: rgba(231, 235, 236, 0.08);
+    --pm-overlay: rgba(0, 0, 0, 0.55);
+    --pm-shadow: 0 32px 70px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* A manual toggle should win over the OS preference - covers apps using
+   either a .dark class or [data-theme="dark"] on <html>, whichever
+   convention that particular app happens to use. */
+:host-context(html.dark),
+:host-context([data-theme="dark"]) {
+  --pm-bg: #1c2226;
+  --pm-text: #e7ebec;
+  --pm-subtext: #97a3a7;
+  --pm-border: #333c40;
+  --pm-accent: #7fb3d8;
+  --pm-icon-bg: rgba(231, 235, 236, 0.08);
+  --pm-overlay: rgba(0, 0, 0, 0.55);
+  --pm-shadow: 0 32px 70px rgba(0, 0, 0, 0.5);
 }
 
 .platform-menu-trigger {
@@ -11,10 +57,10 @@
   align-items: center;
   gap: 8px;
   padding: 7px 14px 7px 11px;
-  border: 1px solid var(--todd-panel-border);
+  border: 1px solid var(--pm-border);
   border-radius: 999px;
-  background: var(--todd-card-bg);
-  color: var(--todd-text);
+  background: var(--pm-bg);
+  color: var(--pm-text);
   cursor: pointer;
 }
 
@@ -55,7 +101,7 @@
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background: rgba(10, 14, 22, 0.4);
+  background: var(--pm-overlay);
 }
 
 .platform-menu-panel {
@@ -64,24 +110,28 @@
   left: 0;
   right: 0;
   z-index: 10001;
-  max-height: min(720px, 92vh);
+  height: 100dvh;
+  max-height: 100dvh;
   overflow-y: auto;
-  background: var(--todd-card-bg);
-  border-bottom: 1px solid var(--todd-panel-border);
-  border-radius: 0 0 28px 28px;
-  box-shadow: 0 32px 70px rgba(15, 23, 42, 0.26);
+  background: var(--pm-bg);
+  border-bottom: 1px solid var(--pm-border);
+  border-radius: 0;
   transform: translateY(-100%);
   transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .platform-menu-panel--open {
   transform: translateY(0);
+  box-shadow: var(--pm-shadow);
 }
 
 .platform-menu-panel__inner {
+  min-height: 100%;
   padding: 76px clamp(24px, 5vw, 64px) 48px;
   max-width: 1160px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .platform-menu-panel__columns {
@@ -98,7 +148,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--todd-subtext);
+  color: var(--pm-subtext);
 }
 
 .platform-menu-launcher {
@@ -113,7 +163,7 @@
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  color: var(--todd-text);
+  color: var(--pm-text);
 }
 
 .platform-menu-app__icon {
@@ -123,8 +173,8 @@
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  background: color-mix(in srgb, var(--todd-text) 5%, transparent);
-  border: 1px solid var(--todd-panel-border);
+  background: var(--pm-icon-bg);
+  border: 1px solid var(--pm-border);
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
@@ -141,12 +191,12 @@
 }
 
 .platform-menu-app:hover .platform-menu-app__icon {
-  border-color: var(--tl-blue);
+  border-color: var(--pm-accent);
   transform: translateY(-2px);
 }
 
 .platform-menu-app:hover .platform-menu-app__label {
-  color: var(--tl-blue);
+  color: var(--pm-accent);
 }
 
 .platform-menu-editorial {
@@ -160,8 +210,8 @@
   justify-content: space-between;
   gap: 12px;
   padding: 14px 0;
-  border-bottom: 1px solid var(--todd-panel-border);
-  color: var(--todd-text);
+  border-bottom: 1px solid var(--pm-border);
+  color: var(--pm-text);
   text-decoration: none;
   font-size: clamp(1.5rem, 2.6vw, 2.15rem);
   font-weight: 800;
@@ -180,7 +230,7 @@
 }
 
 .platform-menu-editorial__link:hover {
-  color: var(--tl-blue);
+  color: var(--pm-accent);
   padding-left: 10px;
 }
 
@@ -188,6 +238,71 @@
   .platform-menu-app__icon img {
     filter: invert(1) brightness(1.15);
   }
+}
+
+:host-context(html.dark) .platform-menu-app__icon img,
+:host-context([data-theme="dark"]) .platform-menu-app__icon img {
+  filter: invert(1) brightness(1.15);
+}
+
+
+.platform-menu-contact {
+  margin-top: auto;
+  padding-top: 56px;
+  border-top: 1px solid var(--pm-border);
+}
+
+.platform-menu-contact .platform-menu-eyebrow {
+  margin-bottom: 14px;
+}
+
+.platform-menu-contact__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  color: var(--pm-subtext);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.platform-menu-contact__details b {
+  color: var(--pm-text);
+}
+
+.platform-menu-legal {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--pm-border);
+  color: var(--pm-subtext);
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.platform-menu-legal p {
+  margin: 0;
+  max-width: 92ch;
+}
+
+.platform-menu-legal a {
+  color: inherit;
+  text-underline-offset: 0.15em;
+  transition: color 0.15s ease;
+}
+
+.platform-menu-legal a:hover {
+  color: var(--pm-accent);
+}
+
+.platform-menu-legal__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.platform-menu-legal__links span {
+  color: var(--pm-subtext);
 }
 
 @media (max-width: 760px) {

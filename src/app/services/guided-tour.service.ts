@@ -174,10 +174,10 @@ export class GuidedTourService {
         <li>Fills in missing info from public sources</li>
         <li>Validates email addresses</li>
         <li>Generates email drafts with segmented messaging</li>
-        <li>Preps the campaign list in under an hour</li>
+        <li>Prepares relevant individual outreach and follow-up</li>
       </ul>
     `,
-      summary: "You shouldn’t need an ops team to send 200 emails. TODD makes messy lists usable and campaigns feel effortless.",
+      summary: "You shouldn’t need an ops team to manage every follow-up. TODD makes messy lists usable and helps Maya keep each conversation relevant.",
       image: "/assets/images/contacts-in-california.webp"
 
     },
@@ -246,18 +246,18 @@ export class GuidedTourService {
 
     },
     {
-      title: 'Running a Campaign Without Burning Out',
+      title: 'Following Up Without Burning Out',
       instruction: `
-      <p>A solo operator needs to run a full email campaign and handle replies.</p>
+      <p>A solo operator needs to manage email conversations and handle replies without losing context.</p>
       <p><strong>What TODD Does:</strong></p>
       <ul>
-        <li>Writes campaign emails by tone and intent</li>
-        <li>Queues messages and shows real-time open stats</li>
+        <li>Drafts individual emails by tone and intent</li>
+        <li>Connects each follow-up to the previous conversation</li>
         <li>Suggests smart replies for interested leads</li>
         <li>Schedules follow-ups at the right time</li>
       </ul>
     `,
-      summary: "You shouldn’t burn out trying to sound strategic. TODD drafts, times, and tracks the entire thing—so you can focus on the wins.",
+      summary: "You shouldn’t burn out trying to sound strategic. Maya keeps outreach relevant and handles the follow-up rhythm—so you can focus on the wins.",
       image: "/assets/images/todd-on-laptop.webp"
 
     }

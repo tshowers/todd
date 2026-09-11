@@ -65,7 +65,7 @@ export class PreloaderComponent implements OnInit {
     "Did you know TODD uses AI to research your competitors and provide insights?",
     "Did you know you can automate your email follow-ups with TODD?",
     "Did you know TODD can help you clean up your contact list by merging duplicates?",
-    "Did you know TODD offers real-time analytics on your email campaigns?",
+    "Did you know TODD can help Maya keep email follow-up connected to the conversation?",
     "Did you know TODD can generate email subject lines based on your content?",
     "Did you know TODD's survey tool allows you to create branded surveys in minutes?",
     "Did you know TODD can automatically categorize your tasks based on priority?",
