@@ -149,6 +149,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   embeddedAppPath: string | null = null;
   embeddedAppUrl: SafeResourceUrl | '' = '';
   embeddedAppLabel = '';
+  findHandoff: ToddFindHandoff | null = null;
   // Every entry here used to be a same-origin route inside the monolith.
   // This app only has '/' of its own, so everything else routes out to
   // wherever that module actually lives now: Network/Pulse at their own
@@ -437,6 +438,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
   async askAssistant (): Promise<void> {
     this.suggestedProductAction = null;
+    this.findHandoff = null;
     const prompt = ( this.assistantPrompt || '' ).trim();
     if ( !prompt ) return;
 
@@ -498,6 +500,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
           } );
 
           if ( findHandoff ) {
+            this.findHandoff = findHandoff;
             this.scheduleFindHandoff( findHandoff.query );
           }
           const suppressSuggestedProduct = presentation?.suppressSuggestedProduct === true;
@@ -927,6 +930,12 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     this.findHandoffTimer = setTimeout( () => {
       window.open( findUrl.toString(), '_blank', 'noopener' );
     }, 5000 );
+  }
+
+  getFindHandoffUrl ( query: string ): string {
+    const findUrl = new URL( getFindHomeUrl() );
+    findUrl.searchParams.set( 'q', String( query || '' ).trim() );
+    return findUrl.toString();
   }
 
   private extractAssistantRoute ( reply: any ): string | null {

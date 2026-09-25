@@ -25,7 +25,7 @@
         <span class="platform-menu-eyebrow">Products</span>
         <div class="platform-menu-launcher">
           <a
-            *ngFor="let link of productLinks"
+            *ngFor="let link of productLinks; trackBy: trackByLabel"
             class="platform-menu-app"
             [href]="link.url"
             target="_blank"
@@ -34,10 +34,10 @@
           >
             <span class="platform-menu-app__icon"><img [src]="link.icon" alt="" aria-hidden="true" /></span>
             <span class="platform-menu-app__label">{{ link.label }}</span>
+            <span class="platform-menu-app__description">{{ link.description }}</span>
           </a>
         </div>
       </div>
-
 
       <div class="platform-menu-col">
         <span class="platform-menu-eyebrow">Ask TODD</span>
@@ -55,7 +55,7 @@
         <span class="platform-menu-eyebrow">Account</span>
         <nav class="platform-menu-editorial">
           <a
-            *ngFor="let item of accountItems"
+            *ngFor="let item of accountItems; trackBy: trackByLabel"
             class="platform-menu-editorial__link"
             [href]="item.url"
             target="_blank"
@@ -87,7 +87,7 @@
           <a href="https://todd.taliferro.tech/privacy-rights" target="_blank" rel="noopener noreferrer">Privacy Rights</a>
           <a href="https://todd.taliferro.tech/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
           <a href="https://taliferro.com/careers/" target="_blank" rel="noopener noreferrer">Careers</a>
-          <span>Version: 2026.9.3-build.3</span>
+          <span>Version: {{ appVersion }}</span>
         </nav>
       </div>
     </footer>

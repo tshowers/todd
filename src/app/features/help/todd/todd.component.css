@@ -1031,6 +1031,63 @@
   background: var(--todd-focus-card, #fff);
 }
 
+.todd-find-handoff {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 12px 0 0;
+  padding: 14px 16px;
+  border: 1px solid var(--todd-focus-border);
+  border-radius: 18px;
+  background: var(--todd-focus-card, #fff);
+}
+
+.todd-find-handoff__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--todd-focus-navy);
+}
+
+.todd-find-handoff__logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.todd-find-handoff__eyebrow {
+  margin-bottom: 3px;
+  color: var(--todd-focus-accent);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.todd-find-handoff__link {
+  flex: 0 0 auto;
+  padding: 9px 13px;
+  border: 1px solid var(--todd-focus-border);
+  border-radius: 999px;
+  color: var(--todd-focus-navy);
+  background: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.todd-find-handoff__link:hover {
+  border-color: var(--todd-focus-accent);
+}
+
+@media (max-width: 560px) {
+  .todd-find-handoff {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 .todd-embedded-app-header {
   display: flex;
   align-items: center;
