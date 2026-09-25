@@ -1,0 +1,41 @@
+<div class="ask-awards" role="dialog" aria-modal="true" aria-labelledby="ask-awards-title">
+  <div class="ask-awards__backdrop" *ngIf="!overlayOnly" (click)="close.emit()"></div>
+  <section class="ask-awards__panel" *ngIf="!overlayOnly">
+    <header class="ask-awards__header">
+      <div>
+        <span class="ask-awards__eyebrow">Ask TODD</span>
+        <h2 id="ask-awards-title">Awards</h2>
+        <p>Good questions create better movement.</p>
+      </div>
+      <button type="button" class="ask-awards__close" aria-label="Close Awards" (click)="close.emit()">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    <div class="ask-awards__progress">
+      <div class="ask-awards__progress-track"><div class="ask-awards__progress-fill" [style.width.%]="progress.percent"></div></div>
+      <span>{{ progress.unlockedCount }} of {{ progress.totalCount }} unlocked</span>
+    </div>
+
+    <div class="ask-awards__grid">
+      <article class="ask-award-card" *ngFor="let award of awards" [class]="stateClass(award.state)">
+        <div class="ask-award-card__icon">
+          <i *ngIf="award.state !== 'mystery'; else mysteryIcon" [class]="iconClass(award.icon)" aria-hidden="true"></i>
+          <ng-template #mysteryIcon>?</ng-template>
+        </div>
+        <h3>{{ award.state === 'mystery' ? '— — —' : award.title }}</h3>
+        <p>{{ award.state === 'mystery' ? 'Keep asking to reveal this one.' : award.copy }}</p>
+      </article>
+    </div>
+  </section>
+
+  <div class="ask-award-unlock" *ngIf="pendingAward" role="alertdialog" aria-modal="true" aria-labelledby="ask-award-unlock-title">
+    <div class="ask-award-unlock__card">
+      <span class="ask-award-unlock__eyebrow">Award Unlocked</span>
+      <div class="ask-award-unlock__icon"><i [class]="iconClass(pendingAward.icon)" aria-hidden="true"></i></div>
+      <h2 id="ask-award-unlock-title">{{ pendingAward.title }}</h2>
+      <p>“{{ pendingAward.copy }}”</p>
+      <button type="button" (click)="dismiss()">Continue</button>
+    </div>
+  </div>
+</div>

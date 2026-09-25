@@ -31,6 +31,8 @@ import { ToddStatusTone, mapToddStatusTone, shouldPulseToddStatus } from '../../
 import { CommandPaletteResult, navigateToEntry, searchEntriesLoose, withIcons } from '../../../shared/page/command-palette/command-palette-match';
 import { getFindHomeUrl, getMayaHomeUrl, getNetworkHomeUrl, getPulseHomeUrl, getSayitHomeUrl, getSignatureBuilderUrl, getSocialHomeUrl, getToddHomeUrl, resolveExternalAppUrl } from '../../../shared/utils/public-app-url.util';
 import { ToddActivationResolution, ToddActivationStateService } from '../../../services/todd-activation-state.service';
+import { AskAward, AskAwardsService } from '../../../services/ask-awards.service';
+import { AskAwardsComponent } from '../../../shared/ask-awards/ask-awards.component';
 
 
 type ToddShowcaseModule = string;
@@ -90,7 +92,7 @@ interface ToddFindHandoff {
 @Component( {
   selector: 'app-todd',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, AskAwardsComponent],
   templateUrl: './todd.component.html',
   styleUrl: './todd.component.css'
 } )
@@ -162,6 +164,8 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   private readonly isBrowser = isPlatformBrowser( this.platformId );
   public profileProducts: ToddProfileProduct[] = [];
   askToddTourInputLocked = false;
+  awardsOpen = false;
+  pendingAwardUnlock: AskAward | null = null;
   public readonly publicProducts: ToddPublicProduct[] = [
     {
       name: 'Taliferro Group',
@@ -192,7 +196,8 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     private contactService: ContactService,
     private dailyCommandService: DailyCommandService,
     private assistantBus: ToddAssistantBusService,
-    private toddActivationStateService: ToddActivationStateService ) {
+    private toddActivationStateService: ToddActivationStateService,
+    private readonly askAwardsService: AskAwardsService ) {
     super( authService, settingsService, soundService, logger, router, nomenclatureService );
   }
 
@@ -499,6 +504,9 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
               : assistantText || 'I did not get a usable answer back. Please try again.'
           } );
 
+          const newlyUnlocked = this.askAwardsService.recordQuestion();
+          if ( newlyUnlocked ) this.pendingAwardUnlock = newlyUnlocked;
+
           if ( findHandoff ) {
             this.findHandoff = findHandoff;
             this.scheduleFindHandoff( findHandoff.query );
@@ -558,6 +566,19 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
           this.focusAssistantInput();
         }
       } );
+  }
+
+  openAwards (): void {
+    this.awardsOpen = true;
+  }
+
+  closeAwards (): void {
+    this.awardsOpen = false;
+    this.pendingAwardUnlock = null;
+  }
+
+  dismissAwardUnlock (): void {
+    this.pendingAwardUnlock = null;
   }
 
   resetConversation (): void {

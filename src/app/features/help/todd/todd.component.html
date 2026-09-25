@@ -193,10 +193,22 @@
         </ul>
       </div>
     </section>
-  </main>
-  <nav class="todd-bottom-nav" aria-label="TODD navigation">
-    <a [href]="toddHomeUrl" aria-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Home</span></a>
-    <button type="button" class="todd-bottom-nav-action" (click)="onQuickPill('How can TODD help me?')" aria-label="Help"><i class="fa-solid fa-circle-question" aria-hidden="true"></i><span>Help</span></button>
+</main>
+<app-ask-awards
+  *ngIf="awardsOpen"
+  [pendingAward]="pendingAwardUnlock"
+  (close)="closeAwards()"
+  (dismissUnlock)="dismissAwardUnlock()"
+></app-ask-awards>
+<app-ask-awards
+  *ngIf="pendingAwardUnlock && !awardsOpen"
+  [overlayOnly]="true"
+  [pendingAward]="pendingAwardUnlock"
+  (dismissUnlock)="dismissAwardUnlock()"
+></app-ask-awards>
+<nav class="todd-bottom-nav" aria-label="TODD navigation">
+  <a [href]="toddHomeUrl" aria-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Home</span></a>
+    <button type="button" class="todd-bottom-nav-action" (click)="openAwards()" aria-label="Awards"><i class="fa-solid fa-award" aria-hidden="true"></i><span>Awards</span></button>
     <button type="button" class="todd-bottom-nav-action" (click)="openSaved()" aria-label="Saved conversation"><i class="fa-regular fa-bookmark" aria-hidden="true"></i><span>Saved</span></button>
     <a *ngIf="isLoggedIn; else signInLink" [href]="toddHomeUrl + '/user-profile'" class="todd-session-action" aria-label="Account">
       <i class="fa-solid fa-user" aria-hidden="true"></i>

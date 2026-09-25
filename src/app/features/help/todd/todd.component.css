@@ -567,6 +567,9 @@
   --todd-focus-muted: #667085;
   --todd-focus-border: #dfe4ea;
   --todd-focus-accent: var(--color-primary);
+  --todd-focus-card: #ffffff;
+  --todd-focus-bg: #f4f7fa;
+  --todd-focus-text: var(--todd-focus-navy);
   box-sizing: border-box;
   min-height: 100vh;
   min-height: 100svh;
@@ -1128,6 +1131,16 @@
 }
 
 @media (prefers-color-scheme: dark) {
+  .todd-focused-screen {
+    --todd-focus-navy: #e7eef4;
+    --todd-focus-muted: #94a3b8;
+    --todd-focus-border: #263647;
+    --todd-focus-accent: #7dd3fc;
+    --todd-focus-card: #111923;
+    --todd-focus-bg: #0b0f15;
+    --todd-focus-text: #f8fafc;
+  }
+
   .todd-embedded-app {
     background: var(--todd-focus-card, #111923);
     box-shadow: 0 18px 44px rgba(0, 0, 0, .28);
@@ -1144,6 +1157,22 @@
 
   .todd-embedded-app-frame {
     background: var(--todd-focus-bg, #0b0f15);
+  }
+
+  .todd-find-handoff {
+    background: var(--todd-focus-card);
+    border-color: var(--todd-focus-border);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, .28);
+  }
+
+  .todd-find-handoff__header {
+    color: var(--todd-focus-text);
+  }
+
+  .todd-find-handoff__link {
+    color: var(--todd-focus-text);
+    background: #172536;
+    border-color: #38536a;
   }
 }
 

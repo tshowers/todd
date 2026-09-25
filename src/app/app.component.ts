@@ -12,11 +12,13 @@ import { PlatformMenuComponent } from './shared/platform-menu/platform-menu.comp
   selector: 'ask-todd-root',
   standalone: true,
   imports: [RouterOutlet, CommandPaletteComponent, PlatformMenuComponent, AsyncPipe, NgIf],
-  template: '<app-platform-menu *ngIf="!isEmbedded" [isAdmin]="(isAdmin$ | async) ?? false" /><app-command-palette /><router-outlet />',
+  template: '<app-platform-menu *ngIf="!isEmbedded" [isAdmin]="(isAdmin$ | async) ?? false" [isLoggedIn]="(isLoggedIn$ | async) ?? false" /><app-command-palette /><router-outlet />',
 } )
 export class AppComponent {
   private readonly authService = inject( AuthService );
-  readonly isAdmin$ = this.authService.getUser().pipe( map( user => user?.uid === environment.taliferroTenantId ) );
+  readonly user$ = this.authService.getUser();
+  readonly isLoggedIn$ = this.user$.pipe( map( user => !!user?.uid ) );
+  readonly isAdmin$ = this.user$.pipe( map( user => user?.uid === environment.taliferroTenantId ) );
   readonly isEmbedded = typeof window !== 'undefined'
     && new URLSearchParams( window.location.search ).get( 'embedded' ) === 'true';
 }

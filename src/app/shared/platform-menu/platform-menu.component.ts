@@ -28,6 +28,7 @@ interface ProductLink {
 } )
 export class PlatformMenuComponent implements OnChanges {
   @Input() isAdmin = false;
+  @Input() isLoggedIn = false;
 
   isOpen = false;
   readonly appVersion = String(packageJson.version || '').trim();
@@ -59,7 +60,21 @@ export class PlatformMenuComponent implements OnChanges {
   }
 
   private recompute (): void {
-    this.accountItems = getPlatformMenuItems().filter( ( item ) => !item.adminOnly || this.isAdmin );
+    // Help has its own Ask TODD column. Before sign-in, API Docs is the only
+    // account destination that should be offered; the rest require an account.
+    const hidden = new Set( [ 'platform-help' ] );
+    const signedInOnly = new Set( [
+      'platform-momentum',
+      'platform-profile',
+      'platform-billing',
+      'platform-settings',
+      'platform-admin',
+    ] );
+    this.accountItems = getPlatformMenuItems().filter( ( item ) =>
+      !hidden.has( item.id ) &&
+      ( this.isLoggedIn ? item.id !== 'platform-api-docs' : item.id === 'platform-api-docs' ) &&
+      ( !item.adminOnly || this.isAdmin ) &&
+      ( this.isLoggedIn || !signedInOnly.has( item.id ) ) );
   }
 
   trackByLabel ( _index: number, item: { label: string } ): string {
