@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /finish-sign-in
+Disallow: /auth/
+
+Sitemap: https://ask.taliferro.tech/sitemap.xml

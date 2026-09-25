@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { getPlatformMenuItems, PlatformMenuItem } from '@taliferro/ui/platform/account-menu.model';
 
@@ -19,7 +20,7 @@ interface ProductLink {
 @Component( {
   selector: 'app-platform-menu',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './platform-menu.component.html',
   styleUrl: './platform-menu.component.css',
 } )
