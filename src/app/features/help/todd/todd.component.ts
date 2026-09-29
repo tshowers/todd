@@ -29,7 +29,7 @@ import { TESTIMONIALS, ToddMediaItem, VIDEOS } from './todd-video-library';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ToddStatusTone, mapToddStatusTone, shouldPulseToddStatus } from '../../../shared/utils/todd-status-indicator.util';
 import { CommandPaletteResult, navigateToEntry, searchEntriesLoose, withIcons } from '../../../shared/page/command-palette/command-palette-match';
-import { getFindHomeUrl, getMayaHomeUrl, getNetworkHomeUrl, getPulseHomeUrl, getSayitHomeUrl, getSignatureBuilderUrl, getSocialHomeUrl, getToddHomeUrl, resolveExternalAppUrl } from '../../../shared/utils/public-app-url.util';
+import { getFindHomeUrl, getLeadVaultHomeUrl, getMayaHomeUrl, getNetworkHomeUrl, getPulseHomeUrl, getSayitHomeUrl, getSignatureBuilderUrl, getSocialHomeUrl, getToddHomeUrl, resolveExternalAppUrl } from '../../../shared/utils/public-app-url.util';
 import { ToddActivationResolution, ToddActivationStateService } from '../../../services/todd-activation-state.service';
 import { AskAward, AskAwardsService } from '../../../services/ask-awards.service';
 import { AskAwardsComponent } from '../../../shared/ask-awards/ask-awards.component';
@@ -84,9 +84,17 @@ interface ToddAssistantPresentation {
   responseMode?: string | null;
 }
 
-interface ToddFindHandoff {
-  product: 'find';
-  query: string;
+/**
+ * The backend decides when a question belongs to another TODD tool (Find,
+ * Lead Vault, Maya, Image Creator, ...) and resolves the link from its
+ * referral catalog (todd-backend/functions/toddProductReferrals.js). TODD
+ * just shows that link; nothing auto-opens.
+ */
+interface ToddProductHandoff {
+  product: string;
+  name: string;
+  summary: string;
+  url: string;
 }
 
 @Component( {
@@ -135,7 +143,6 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   assistantPrompt: string = '';
   routeSuggestions: CommandPaletteResult[] = [];
   private askSubscription?: Subscription;
-  private findHandoffTimer?: ReturnType<typeof setTimeout>;
   private pageContextSubscription?: Subscription;
   private assistantPageContext: AssistantPageContext | null = null;
   private queryPromptHandled = false;
@@ -151,7 +158,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   embeddedAppPath: string | null = null;
   embeddedAppUrl: SafeResourceUrl | '' = '';
   embeddedAppLabel = '';
-  findHandoff: ToddFindHandoff | null = null;
+  productHandoff: ToddProductHandoff | null = null;
   // Every entry here used to be a same-origin route inside the monolith.
   // This app only has '/' of its own, so everything else routes out to
   // wherever that module actually lives now: Network/Pulse at their own
@@ -220,7 +227,6 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     this.systemOutcomesPlanSubscription?.unsubscribe();
     this.proactiveMomentumStateSubscription?.unsubscribe();
     this.pageContextSubscription?.unsubscribe();
-    if ( this.findHandoffTimer ) clearTimeout( this.findHandoffTimer );
   }
 
 
@@ -443,7 +449,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
   async askAssistant (): Promise<void> {
     this.suggestedProductAction = null;
-    this.findHandoff = null;
+    this.productHandoff = null;
     const prompt = ( this.assistantPrompt || '' ).trim();
     if ( !prompt ) return;
 
@@ -494,24 +500,21 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
           const assistantText = this.extractAssistantHtml( reply );
           const presentation = this.extractAssistantPresentation( reply );
           const route = this.extractAssistantRoute( reply );
-          const findHandoff = this.extractFindHandoff( reply, prompt );
+          const productHandoff = this.extractProductHandoff( reply, prompt );
           const category = this.resolveSuggestedProductCategory( prompt, assistantText );
           this.logger.info( 'TODD normalized assistant html', assistantText );
           this.onMessage( {
             role: 'assistant',
-            content: findHandoff
-              ? '<p>This is a question more for <strong>Find</strong>. I’ll open it for you in a moment.</p>'
+            content: productHandoff
+              ? `<p>This is a question more for <strong>${this.escapeHtml( productHandoff.name )}</strong>.</p>`
               : assistantText || 'I did not get a usable answer back. Please try again.'
           } );
 
           const newlyUnlocked = this.askAwardsService.recordQuestion();
           if ( newlyUnlocked ) this.pendingAwardUnlock = newlyUnlocked;
 
-          if ( findHandoff ) {
-            this.findHandoff = findHandoff;
-            this.scheduleFindHandoff( findHandoff.query );
-          }
-          const suppressSuggestedProduct = presentation?.suppressSuggestedProduct === true;
+          this.productHandoff = productHandoff;
+          const suppressSuggestedProduct = !!productHandoff || presentation?.suppressSuggestedProduct === true;
           const suppressSuggestedMedia = presentation?.suppressSuggestedMedia === true;
 
           this.suggestedProductAction = suppressSuggestedProduct
@@ -933,30 +936,62 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     };
   }
 
-  private extractFindHandoff ( reply: any, fallbackQuery: string ): ToddFindHandoff | null {
+  private extractProductHandoff ( reply: any, fallbackQuery: string ): ToddProductHandoff | null {
     const handoff = reply?.response?.handoff;
-    if ( handoff?.product !== 'find' || !String( handoff.query || '' ).trim() ) return null;
+    const product = String( handoff?.product || '' ).trim();
+    if ( !product ) return null;
+
+    // Older backends only sent { product: 'find', query } with no url.
+    if ( product === 'find' && !handoff.url ) {
+      const query = String( handoff.query || fallbackQuery ).trim();
+      if ( !query ) return null;
+      const findUrl = new URL( getFindHomeUrl() );
+      findUrl.searchParams.set( 'q', query );
+      return {
+        product,
+        name: 'Find',
+        summary: 'Find answers general questions with one strong result instead of a page of links.',
+        url: findUrl.toString()
+      };
+    }
+
+    const url = this.toTrustedProductUrl( handoff.url );
+    if ( !url ) return null;
 
     return {
-      product: 'find',
-      query: String( handoff.query || fallbackQuery ).trim()
+      product,
+      name: String( handoff.name || product ).trim(),
+      summary: String( handoff.summary || '' ).trim(),
+      url
     };
   }
 
-  private scheduleFindHandoff ( query: string ): void {
-    if ( !this.isBrowser || !query.trim() ) return;
-
-    const findUrl = new URL( getFindHomeUrl() );
-    findUrl.searchParams.set( 'q', query.trim() );
-    this.findHandoffTimer = setTimeout( () => {
-      window.open( findUrl.toString(), '_blank', 'noopener' );
-    }, 5000 );
+  /** Only link out to TODD's own products, whatever the model returned. */
+  private toTrustedProductUrl ( rawUrl: unknown ): string | null {
+    try {
+      const parsed = new URL( String( rawUrl || '' ) );
+      const host = parsed.hostname.toLowerCase();
+      const trusted = parsed.protocol === 'https:'
+        && ( host === 'taliferro.tech' || host.endsWith( '.taliferro.tech' ) );
+      return trusted ? parsed.toString() : null;
+    } catch {
+      return null;
+    }
   }
 
-  getFindHandoffUrl ( query: string ): string {
-    const findUrl = new URL( getFindHomeUrl() );
-    findUrl.searchParams.set( 'q', String( query || '' ).trim() );
-    return findUrl.toString();
+  private escapeHtml ( value: string ): string {
+    return String( value || '' )
+      .replace( /&/g, '&amp;' )
+      .replace( /</g, '&lt;' )
+      .replace( />/g, '&gt;' )
+      .replace( /"/g, '&quot;' );
+  }
+
+  getProductHandoffLogo ( product: string ): string {
+    const logos: Record<string, string> = {
+      'find': 'assets/find/entities/find/logo.png'
+    };
+    return logos[product] || 'assets/TODD-icon.png';
   }
 
   private extractAssistantRoute ( reply: any ): string | null {
@@ -2209,6 +2244,15 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
         description: 'Create a polished email signature your team can use.',
         route: getSignatureBuilderUrl(),
         image: 'assets/outreach/email-signature-builder.png'
+      };
+    }
+
+    if ( /lead vault|list of (people|contacts|leads)|contact list|prospect list/.test( promptText ) ) {
+      return {
+        label: 'Open Lead Vault',
+        description: 'Search business contacts by company, industry, role, or location.',
+        route: getLeadVaultHomeUrl(),
+        image: 'assets/TODD-icon.png'
       };
     }
 

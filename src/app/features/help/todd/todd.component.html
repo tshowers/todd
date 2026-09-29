@@ -47,16 +47,16 @@
           <div *ngFor="let m of messages" class="bubble" [ngClass]="{ 'user': m.role === 'user', 'assistant': m.role === 'assistant' }">
             <div class="bubble-inner" [innerHTML]="m.content"></div>
           </div>
-          <div *ngIf="findHandoff as handoff" class="todd-find-handoff" aria-label="Continue this question in Find">
+          <div *ngIf="productHandoff as handoff" class="todd-find-handoff" [attr.aria-label]="'Continue this question in ' + handoff.name">
             <div class="todd-find-handoff__header">
-              <img src="assets/find/entities/find/logo.png" alt="Find" class="todd-find-handoff__logo">
+              <img [src]="getProductHandoffLogo(handoff.product)" [alt]="handoff.name" class="todd-find-handoff__logo">
               <div>
-                <div class="todd-find-handoff__eyebrow">Continue in Find</div>
-                <strong>Find can answer this question.</strong>
+                <div class="todd-find-handoff__eyebrow">Continue in {{ handoff.name }}</div>
+                <strong>{{ handoff.summary || (handoff.name + ' can help with this.') }}</strong>
               </div>
             </div>
-            <a class="todd-find-handoff__link" [href]="getFindHandoffUrl(handoff.query)" target="_blank" rel="noopener noreferrer">
-              Open Find <span aria-hidden="true">↗</span>
+            <a class="todd-find-handoff__link" [href]="handoff.url" target="_blank" rel="noopener noreferrer">
+              Open {{ handoff.name }} <span aria-hidden="true">↗</span>
             </a>
           </div>
           <section *ngIf="embeddedAppPath" class="todd-embedded-app" [attr.aria-label]="'Embedded ' + embeddedAppLabel">
