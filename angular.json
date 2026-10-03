@@ -68,7 +68,12 @@
               "proxyConfig": "src/proxy.conf.json"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "prebundle": {
+              "exclude": ["@taliferro/ui"]
+            }
+          }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
