@@ -109,7 +109,7 @@ export class TopDogComponent implements OnInit, OnDestroy, AfterViewInit {
       this.nomenclature = {} as any;
     }
 
-    this.isMobile = window.innerWidth < 768;
+    this.isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   }
 
   /**
@@ -129,7 +129,7 @@ export class TopDogComponent implements OnInit, OnDestroy, AfterViewInit {
    * This implementation waits for both auth/nomenclature readiness and page content readiness before marking render.
    */
   ngAfterViewInit (): void {
-    if ( this.shouldScrollPageToTopOnInit() ) {
+    if ( typeof window !== 'undefined' && this.shouldScrollPageToTopOnInit() ) {
       window.scrollTo( 0, 0 );
     }
     this.isLoading = false;

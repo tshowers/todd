@@ -12,7 +12,8 @@ import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { tenantInterceptor } from './core/interceptors/tenant.interceptor';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+// No client hydration: public pages are prerendered for search engines, and
+// the browser renders fresh (the conversation can't hydrate cleanly).
 import { idTokenInterceptor } from './core/interceptors/id-token.interceptor';
 
 export const appConfig: ApplicationConfig = {
@@ -25,6 +26,6 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     provideFunctions(() => getFunctions()),
-    provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode(), registrationStrategy: 'registerWhenStable:30000' }), provideClientHydration(withEventReplay())
+    provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode(), registrationStrategy: 'registerWhenStable:30000' })
   ]
 };

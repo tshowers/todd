@@ -2169,4 +2169,36 @@ export class AuthService implements OnDestroy {
     this.clearRecaptchaVerifier();
     this.recaptchaElementId = null;
   }
+
+  // ── Hosted sign-in (TODD's login page, like Email and Image Creator) ──
+  // Sign in sends people to todd.taliferro.tech/login with this app's
+  // registered client id (todd-backend/functions/authClients.js). TODD
+  // signs them in with any provider and sends them back to /auth/callback
+  // with a one-time token. `state` guards against a forged callback.
+
+  private readonly pendingHostedLoginKey = 'ask_todd_hosted_login_pending';
+
+  startHostedSignIn ( returnUrl = '/' ): void {
+    const state = crypto.randomUUID();
+    sessionStorage.setItem( this.pendingHostedLoginKey, JSON.stringify( { state, returnUrl } ) );
+    const isLocal = [ 'localhost', '127.0.0.1' ].includes( window.location.hostname );
+    const client = isLocal ? 'ask-todd-web-local' : 'ask-todd-web';
+    window.location.href = `https://todd.taliferro.tech/login?client=${ client }&state=${ state }`;
+  }
+
+  consumePendingHostedSignIn ( state: string | null ): { returnUrl?: string } | null {
+    const raw = sessionStorage.getItem( this.pendingHostedLoginKey );
+    sessionStorage.removeItem( this.pendingHostedLoginKey );
+    if ( !raw ) return null;
+    try {
+      const pending = JSON.parse( raw ) as { state: string; returnUrl?: string };
+      return state && pending.state === state ? { returnUrl: pending.returnUrl } : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async completeHostedSignIn ( token: string ): Promise<void> {
+    await signInWithCustomToken( this.auth, token );
+  }
 }

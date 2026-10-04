@@ -1,0 +1,78 @@
+/* Ask TODD header (design 10a/10b): logo + name, New question, Saved, Sign in, Menu. */
+:host { display: block; }
+
+.ask-head {
+  /* No stacking of its own: overlays such as Awards must cover it (the
+     menu moves its own panel to <body>, so it needs nothing here). */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 40px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+.ask-head__brand { display: flex; align-items: center; gap: 12px; min-width: 0; color: var(--text) !important; text-decoration: none; }
+
+/* The small TODD icon sits in a white circle with a hairline ring. */
+.ask-head__logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--surface2);
+}
+
+.ask-head__logo img { width: 26px; height: 26px; object-fit: contain; }
+.ask-head__title { min-width: 0; font-size: 20px; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+
+.ask-head__actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+
+.ask-pill {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  min-height: 0;
+  margin: 0;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text) !important;
+  font: 600 15px var(--font);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ask-pill:hover { background: var(--surface2); }
+.ask-pill:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.ask-pill svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 760px) {
+  .ask-head { padding: 14px 16px; gap: 8px; }
+  .ask-head__logo { width: 32px; height: 32px; }
+  .ask-head__logo img { width: 23px; height: 23px; }
+  .ask-head__title { font-size: 17px; }
+  .ask-pill:not(.ask-pill--text) { width: 40px; height: 40px; padding: 0; justify-content: center; }
+  .ask-pill:not(.ask-pill--text) span { display: none; }
+  /* Sign in is also in the menu; on a phone the header keeps only icons. */
+  .ask-pill--text { display: none; }
+  .ask-head__brand { flex: 1; }
+  .ask-head__title { overflow: hidden; text-overflow: ellipsis; }
+  .ask-head__actions { gap: 6px; }
+}

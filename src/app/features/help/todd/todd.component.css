@@ -2349,3 +2349,117 @@
   .todd-route-suggestions li:hover { background:rgba(0,191,255,.12); }
   .todd-route-suggestion-group { color:#9aadc1; }
 }
+
+/* ── Ask TODD facelift (design_handoff_todd_tools 10a-10c). Find family
+   tokens (tokens.css); Ask TODD is green. These rules override the older
+   ones above for the home, the answers and the composer. ─────────────── */
+.todd-page.todd-focused-screen { min-height: calc(100vh - 82px); padding-bottom: 0; background: var(--bg); color: var(--text); font-family: var(--font); }
+.todd-focused-main { width: min(100%, 860px); margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
+.todd-focused-conversation { min-height: calc(100vh - 82px); }
+
+/* Home (10a) */
+.ask-home { display: flex; flex-direction: column; align-items: center; width: min(100%, 760px); margin: auto; padding: 40px 0 72px; text-align: center; }
+.ask-home__logo { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px var(--surface2); }
+.ask-home__logo img { width: 60px; height: 60px; object-fit: contain; }
+.ask-home__title { margin: 18px 0 28px; font-size: 64px; font-weight: 700; line-height: 1; letter-spacing: -.045em; }
+
+.ask-search { position: relative; display: flex; align-items: center; gap: 10px; width: 100%; max-width: 760px; padding: 8px 8px 8px 26px; box-sizing: border-box; border-radius: 999px; background: var(--surface); text-align: left; }
+.ask-search:focus-within { box-shadow: 0 0 0 2px var(--t-green-fg); }
+.ask-search textarea, .ask-composer textarea {
+  flex: 1; min-width: 0; min-height: 26px; max-height: 140px; padding: 0; margin: 0;
+  border: 0 !important; outline: 0; box-shadow: none !important; resize: none;
+  background: transparent !important; color: var(--text); font: 17px/1.5 var(--font);
+}
+.ask-search textarea::placeholder, .ask-composer textarea::placeholder { color: var(--muted); }
+
+.ask-search__go {
+  box-sizing: border-box; display: inline-flex; align-items: center; gap: 8px; flex: none;
+  height: 52px; min-height: 0; margin: 0; padding: 0 22px; border: 0; border-radius: 999px;
+  background: var(--blue); color: #fff; font: 700 16px var(--font); cursor: pointer;
+}
+.ask-search__go:disabled { opacity: .6; cursor: default; }
+
+.ask-search svg, .ask-send svg, .ask-answer__actions svg, .ask-followups svg {
+  width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+}
+
+.ask-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+.ask-chips button, .ask-followups button {
+  box-sizing: border-box; display: inline-flex; align-items: center; gap: 6px; height: 44px; min-height: 0; margin: 0;
+  padding: 0 18px; border: 0; border-radius: 999px; background: var(--t-green); color: var(--t-green-fg);
+  font: 600 15px var(--font); cursor: pointer;
+}
+.ask-chips button:hover, .ask-followups button:hover { filter: brightness(.96); }
+
+/* Answers (10b): no boxes. User questions are dark bubbles. */
+.todd-focused-history { width: min(100%, 820px); margin: 0 auto; padding: 16px 0 200px; }
+.todd-chat-history { display: flex; flex-direction: column; gap: 22px; background: transparent !important; border: 0 !important; box-shadow: none !important; }
+.todd-chat-history .bubble { display: flex; align-items: flex-start; gap: 12px; max-width: 100%; margin: 0; padding: 0; border: 0; background: transparent !important; box-shadow: none !important; }
+.todd-chat-history .bubble .bubble-inner { padding: 0; border: 0; background: transparent !important; box-shadow: none !important; color: var(--text); font-size: 17px; line-height: 1.55; }
+.todd-chat-history .bubble.user { justify-content: flex-end; }
+.todd-chat-history .bubble.user .ask-answer__body { max-width: 88%; flex: none; }
+.todd-chat-history .bubble.user .bubble-inner { padding: 12px 16px; border-radius: 20px 20px 6px 20px; background: var(--text) !important; color: var(--bg); font-size: 16px; line-height: 1.45; }
+.ask-answer__avatar { flex: none; width: 30px; height: 30px; margin-top: -2px; padding: 3px; box-sizing: border-box; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px var(--surface2); object-fit: contain; }
+.ask-answer__body { min-width: 0; flex: 1; }
+.todd-chat-history .bubble .bubble-inner p { margin: 0 0 12px; }
+.todd-chat-history .bubble .bubble-inner p:last-child { margin-bottom: 0; }
+
+.ask-answer__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.ask-answer__actions button {
+  box-sizing: border-box; display: inline-flex; align-items: center; gap: 7px; height: 36px; min-height: 0; margin: 0;
+  padding: 0 14px; border: 0; border-radius: 999px; background: var(--surface); color: var(--text);
+  font: 600 14px var(--font); cursor: pointer;
+}
+.ask-answer__actions button:hover { background: var(--surface2); }
+
+/* Native diagrams (10b), not images. They reflow to a list on phones (10c). */
+:host ::ng-deep .todd-diagram { margin: 18px 0 4px; padding: 24px 26px; border-radius: 24px; background: var(--surface); }
+:host ::ng-deep .todd-diagram__kicker { color: var(--t-green-fg); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+:host ::ng-deep .todd-diagram--problem .todd-diagram__kicker { color: var(--t-pink-fg); }
+:host ::ng-deep .todd-diagram__title { margin: 6px 0 4px; font-size: 26px; font-weight: 700; line-height: 1.15; letter-spacing: -.02em; }
+:host ::ng-deep .todd-diagram__sub { color: var(--muted); font-size: 15px; }
+:host ::ng-deep .todd-diagram__steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 18px 0 14px; padding: 0; list-style: none; }
+:host ::ng-deep .todd-diagram__steps li { display: flex; flex-direction: column; gap: 4px; padding: 14px; border-radius: 18px; background: var(--bg); }
+:host ::ng-deep .todd-diagram__steps strong { margin-top: 8px; font-size: 15px; font-weight: 700; line-height: 1.25; }
+:host ::ng-deep .todd-diagram__steps li > span:last-child { color: var(--muted); font-size: 13px; line-height: 1.4; }
+:host ::ng-deep .todd-diagram__num { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--t-blue); color: var(--t-blue-fg); font-size: 12px; font-weight: 700; }
+:host ::ng-deep .todd-diagram__last .todd-diagram__num { background: var(--t-green); color: var(--t-green-fg); }
+:host ::ng-deep .todd-diagram--problem .todd-diagram__last .todd-diagram__num { background: var(--t-pink); color: var(--t-pink-fg); }
+:host ::ng-deep .todd-diagram__outcome { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; padding: 12px 16px; border-radius: 14px; background: var(--t-green); color: var(--t-green-fg); font-size: 15px; font-weight: 700; }
+:host ::ng-deep .todd-diagram--problem .todd-diagram__outcome { background: var(--t-pink); color: var(--t-pink-fg); }
+:host ::ng-deep .todd-diagram__outcome span { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+
+/* Composer, docked to the bottom, with follow-up chips above it. */
+.ask-dock { position: fixed; left: 50%; bottom: 24px; z-index: 5; display: flex; flex-direction: column; gap: 10px; width: min(calc(100% - 32px), 812px); transform: translateX(-50%); }
+.ask-followups { display: flex; flex-wrap: wrap; gap: 8px; }
+.ask-dock .todd-compact-composer.ask-composer {
+  position: relative; inset: auto; transform: none; display: flex; align-items: center; gap: 10px; width: auto;
+  padding: 10px 10px 10px 22px; border: 0; border-radius: 28px; background: var(--surface);
+  box-shadow: 0 0 0 6px var(--bg);
+}
+.ask-dock .ask-composer:focus-within { box-shadow: 0 0 0 6px var(--bg), 0 0 0 8px var(--t-green-fg); }
+.ask-send {
+  box-sizing: border-box; display: grid; place-items: center; flex: none; width: 40px; height: 40px; min-width: 0; min-height: 0;
+  margin: 0; padding: 0 !important; border: 0; border-radius: 50%; background: var(--surface2); color: var(--muted); cursor: pointer;
+}
+.ask-send.is-ready { background: var(--blue); color: #fff; }
+.ask-send svg { display: block; width: 18px; height: 18px; }
+
+@media (max-width: 760px) {
+  .todd-focused-main { padding: 0 16px; }
+  .ask-home { padding-top: 20px; }
+  .ask-home__logo { width: 72px; height: 72px; }
+  .ask-home__logo img { width: 50px; height: 50px; }
+  .ask-home__title { font-size: 44px; }
+  .ask-search { padding-left: 18px; }
+  .ask-search__go { height: 46px; padding: 0 16px; }
+  .ask-chips { flex-direction: column; align-items: stretch; width: 100%; }
+  .ask-chips button { justify-content: flex-start; height: auto; padding: 14px 18px; border-radius: 18px; font-size: 16px; }
+  :host ::ng-deep .todd-diagram { padding: 18px; }
+  :host ::ng-deep .todd-diagram__title { font-size: 21px; }
+  :host ::ng-deep .todd-diagram__steps { grid-template-columns: 1fr; }
+  :host ::ng-deep .todd-diagram__steps li { flex-direction: row; flex-wrap: wrap; align-items: center; column-gap: 12px; }
+  :host ::ng-deep .todd-diagram__steps strong { margin-top: 0; }
+  :host ::ng-deep .todd-diagram__steps li > span:last-child { flex-basis: 100%; padding-left: 44px; }
+  .ask-dock { bottom: 12px; width: calc(100% - 24px); }
+}

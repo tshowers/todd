@@ -31,6 +31,7 @@ import { ToddStatusTone, mapToddStatusTone, shouldPulseToddStatus } from '../../
 import { CommandPaletteResult, navigateToEntry, searchEntriesLoose, withIcons } from '../../../shared/page/command-palette/command-palette-match';
 import { getFindHomeUrl, getLeadVaultHomeUrl, getMayaHomeUrl, getNetworkHomeUrl, getPulseHomeUrl, getSayitHomeUrl, getSignatureBuilderUrl, getSocialHomeUrl, getToddHomeUrl, resolveExternalAppUrl } from '../../../shared/utils/public-app-url.util';
 import { ToddActivationResolution, ToddActivationStateService } from '../../../services/todd-activation-state.service';
+import { AskChatStateService } from '../../../services/ask-chat-state.service';
 import { AskAward, AskAwardsService } from '../../../services/ask-awards.service';
 import { AskAwardsComponent } from '../../../shared/ask-awards/ask-awards.component';
 
@@ -164,6 +165,17 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   // wherever that module actually lives now: Network/Pulse at their own
   // extracted homes, everything else still at todd.taliferro.tech.
   readonly toddHomeUrl = getToddHomeUrl();
+  /** The header's New question and Saved buttons act on this conversation. */
+  private readonly chatState = inject( AskChatStateService );
+  /** Index of the answer whose Copy was just pressed (shows "Copied"). */
+  copiedIndex = -1;
+
+  /** Suggested next questions under an answer (design 10b). */
+  private static readonly followUpsFor: Record<string, string[]> = {
+    'what is todd': ['How is TODD different from a CRM?', 'How can TODD help me?'],
+    'how can todd help me': ['What is a Momentum System?', 'How do I get started?'],
+    'what is a momentum system': ['How can TODD help me?', 'How do I get started?'],
+  };
   private proactiveMomentumStateSubscription?: Subscription;
   private proactiveMomentumInFlight: boolean = false;
   private readonly proactiveMomentumStoragePrefix = 'todd:daily-momentum-briefing';
@@ -210,6 +222,13 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
   override ngOnInit (): void {
     super.ngOnInit();
+    this.chatState.register( {
+      hasConversation: () => this.messages.length > 0,
+      newQuestion: () => this.resetConversation(),
+      openSaved: () => this.openSaved(),
+    } );
+    // The universal menu's Awards link (/awards) opens the awards sheet.
+    if ( this.route.snapshot.data['awards'] ) this.openAwards();
     this.pageContextSubscription = this.assistantBus.pageContext$.subscribe( ctx => {
       this.assistantPageContext = this.shouldUseProspectPageContext( ctx ) ? ctx : null;
     } );
@@ -221,6 +240,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
   override ngOnDestroy (): void {
     super.ngOnDestroy();
+    this.chatState.unregister();
     this.getLoggedInContactInfoSubscription?.unsubscribe();
     this.askSubscription?.unsubscribe();
     this.systemOutcomesIdentitySubscription?.unsubscribe();
@@ -232,6 +252,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
   override ngAfterViewInit (): void {
     super.ngAfterViewInit();
+    if ( !this.isBrowser ) return;
     // Ensure we start scrolled to bottom if there are seeded messages
     this.zone.runOutsideAngular( () => {
       requestAnimationFrame( () => this.scrollHistoryToBottom( true ) );
@@ -578,6 +599,31 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   closeAwards (): void {
     this.awardsOpen = false;
     this.pendingAwardUnlock = null;
+    if ( this.router.url.split( /[?#]/ )[0] === '/awards' ) void this.router.navigateByUrl( '/' );
+  }
+
+  /** Follow-up questions for the latest answer, when it answered a known question. */
+  get followUps (): string[] {
+    const lastUser = [...this.messages].reverse().find( ( m ) => m.role === 'user' );
+    const key = this.stripHtmlForPrompt( String( lastUser?.content || '' ) ).toLowerCase().replace( /[?.!]+$/, '' ).trim();
+    return ToddComponent.followUpsFor[key] || [];
+  }
+
+  /** True for the most recent assistant message (actions show under it). */
+  isLatestAnswer ( index: number ): boolean {
+    for ( let i = this.messages.length - 1; i >= 0; i-- ) {
+      if ( this.messages[i].role === 'assistant' ) return i === index;
+    }
+    return false;
+  }
+
+  async copyAnswer ( index: number ): Promise<void> {
+    const text = this.stripHtmlForPrompt( String( this.messages[index]?.content || '' ) );
+    try {
+      await navigator.clipboard.writeText( text );
+      this.copiedIndex = index;
+      setTimeout( () => { if ( this.copiedIndex === index ) this.copiedIndex = -1; }, 2000 );
+    } catch { /* clipboard blocked; nothing to undo */ }
   }
 
   dismissAwardUnlock (): void {
@@ -1123,8 +1169,8 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     }
 
     const introAnswers: Record<string, string> = {
-      'what is todd': '<p>TODD is a <strong>Momentum System</strong>. It turns scattered information across relationships, growth, knowledge, execution, feedback, signals, and visibility into clear next moves.</p><p>A CRM stores history. TODD helps answer one practical question: <strong>Given what I know right now, what should I do next?</strong></p><img class="todd-statement-image" src="assets/todd-solution-statement.png" alt="TODD turns scattered information into the next action">',
-      'how can todd help me': '<p>TODD helps you make progress across the parts of work that are easy to separate and difficult to manage alone.</p><p>It connects contacts, emails, documents, feedback, tasks, and signals so you can see what matters, understand where work is slowing down, and act before an opportunity becomes a loss.</p><img class="todd-statement-image" src="assets/todd-problem-statement.png" alt="The cost of losing the thread">',
+      'what is todd': '<p>TODD is a <strong>Momentum System</strong>. It turns scattered information across relationships, growth, knowledge, execution, feedback, signals, and visibility into clear next moves.</p><p>A CRM stores history. TODD helps answer one practical question: <strong>Given what I know right now, what should I do next?</strong></p><div class="todd-diagram"><div class="todd-diagram__kicker">The solution</div><div class="todd-diagram__title">Turn scattered information into clear next moves.</div><div class="todd-diagram__sub">Make the signal visible, the decision easier, and the work easier to carry forward.</div><ol class="todd-diagram__steps"><li><span class="todd-diagram__num">01</span><strong>Surface the signal</strong><span>Bring important information back into view.</span></li><li><span class="todd-diagram__num">02</span><strong>Understand the context</strong><span>Connect the people, patterns, and history.</span></li><li><span class="todd-diagram__num">03</span><strong>Recommend the next move</strong><span>Make the next action clear and timely.</span></li><li class="todd-diagram__last"><span class="todd-diagram__num">04</span><strong>Keep momentum</strong><span>Carry action through to an outcome.</span></li></ol><div class="todd-diagram__outcome"><span>The outcome</span>More clarity. Faster action. Fewer missed opportunities.</div></div>',
+      'how can todd help me': '<p>TODD helps you make progress across the parts of work that are easy to separate and difficult to manage alone.</p><p>It connects contacts, emails, documents, feedback, tasks, and signals so you can see what matters, understand where work is slowing down, and act before an opportunity becomes a loss.</p><div class="todd-diagram todd-diagram--problem"><div class="todd-diagram__kicker">The problem</div><div class="todd-diagram__title">The cost of losing the thread</div><div class="todd-diagram__sub">When information stops moving, revenue does too.</div><ol class="todd-diagram__steps"><li><span class="todd-diagram__num">01</span><strong>Ignored information</strong><span>Signal gets buried.</span></li><li><span class="todd-diagram__num">02</span><strong>Lost momentum</strong><span>The next move gets delayed.</span></li><li><span class="todd-diagram__num">03</span><strong>Missed opportunities</strong><span>Good moments pass.</span></li><li class="todd-diagram__last"><span class="todd-diagram__num">04</span><strong>Lost revenue</strong><span>Growth leaks out.</span></li></ol><div class="todd-diagram__outcome"><span>TODD</span>Turns scattered information into the next action, before opportunity becomes loss.</div></div>',
       'what is a momentum system': '<p>A Momentum System turns information into movement.</p><p>It watches what is happening across your work, surfaces the signal that matters, and helps you choose the next action before momentum disappears. TODD is built around that idea: <strong>when your work moves forward, you become a more capable version of yourself.</strong></p>'
     };
 

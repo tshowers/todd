@@ -29,6 +29,8 @@ export class SoundService {
    * @param src - The source URL of the sound file.
    */
   private loadSound ( name: string, src: string ) {
+    // No Audio while pages are prerendered at build time.
+    if ( typeof Audio === 'undefined' ) return;
     const audio = new Audio( src );
     audio.preload = 'auto';
     this.sounds[name] = audio;

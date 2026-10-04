@@ -84,7 +84,7 @@ export class ContactService {
     } );
 
     // Initialize not-engaged deletion counter from localStorage
-    const rawCount = localStorage.getItem( this.notEngagedDeletedCountKey );
+    const rawCount = typeof localStorage === 'undefined' ? null : localStorage.getItem( this.notEngagedDeletedCountKey );
     const count = rawCount ? parseInt( rawCount, 10 ) : 0;
     this.notEngagedDeletedCountSource.next( Number.isFinite( count ) ? count : 0 );
 

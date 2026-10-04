@@ -1,14 +1,12 @@
 <div class="todd-page todd-focused-screen">
   <main class="todd-focused-main">
     <section class="todd-focused-conversation" [class.todd-focused-conversation--started]="messages.length > 0">
-      <div class="todd-welcome" *ngIf="messages.length === 0">
-        <img class="todd-logo logo" src="assets/TODD-icon.png" alt="TODD" />
-        <div class="todd-welcome-composer">
-          <textarea #assistantInput rows="4" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask TODD anything..." aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
-          <div class="todd-welcome-actions">
-            <button type="button" class="todd-reset todd-welcome-reset" (click)="resetConversation()" [disabled]="askToddTourInputLocked" aria-label="Reset conversation" title="Reset conversation">↺</button>
-            <button type="button" class="todd-primary-button" (click)="askAssistant()" [disabled]="askToddTourInputLocked">Ask TODD <span aria-hidden="true">↗</span></button>
-          </div>
+      <div class="todd-welcome ask-home" *ngIf="messages.length === 0">
+        <span class="ask-home__logo"><img src="assets/todd-mark-128.png" alt="" /></span>
+        <h1 class="ask-home__title">Ask TODD</h1>
+        <div class="ask-search">
+          <textarea #assistantInput rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask anything about TODD…" aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
+          <button type="button" class="ask-search__go" (click)="askAssistant()" [disabled]="askToddTourInputLocked">Ask <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
           <ul class="todd-route-suggestions" *ngIf="routeSuggestions.length" role="listbox" aria-label="Matching pages">
             <li *ngFor="let suggestion of routeSuggestions" role="option" (click)="selectRouteSuggestion(suggestion)">
               <img [src]="suggestion.icon" alt="" aria-hidden="true" />
@@ -17,11 +15,12 @@
             </li>
           </ul>
         </div>
-        <div class="todd-prompt-chips" aria-label="TODD prompts">
-          <button type="button" (click)="onQuickPill('What is TODD?')">What is TODD? <span>↗</span></button>
-          <button type="button" (click)="onQuickPill('How can TODD help me?')">How can TODD help me? <span>↗</span></button>
-          <button type="button" (click)="onQuickPill('What is a Momentum System?')">What is a Momentum System? <span>↗</span></button>
+        <div class="ask-chips" aria-label="Suggested questions">
+          <button type="button" (click)="onQuickPill('What is TODD?')">What is TODD?</button>
+          <button type="button" (click)="onQuickPill('How can TODD help me?')">How can TODD help me?</button>
+          <button type="button" (click)="onQuickPill('What is a Momentum System?')">What is a Momentum System?</button>
         </div>
+        <p class="tt-made-by tt-made-by--center"><a href="https://find.taliferro.tech" target="_blank" rel="noopener">Also from us <span class="um-logo" data-app="find" aria-hidden="true"></span><strong>Find</strong></a></p>
       </div>
       <div class="todd-focused-history" *ngIf="messages.length > 0">
         <div #history class="todd-chat-history todd-chat-history-active todd-chat-history-full" data-demo="assistant-history">
@@ -44,8 +43,16 @@
               <button type="button" class="quick-guidance-pill" (click)="dismissShowcasePrompt()"> Not now </button>
             </div>
           </div>
-          <div *ngFor="let m of messages" class="bubble" [ngClass]="{ 'user': m.role === 'user', 'assistant': m.role === 'assistant' }">
-            <div class="bubble-inner" [innerHTML]="m.content"></div>
+          <div *ngFor="let m of messages; let i = index" class="bubble" [ngClass]="{ 'user': m.role === 'user', 'assistant': m.role === 'assistant' }">
+            <img *ngIf="m.role === 'assistant'" class="ask-answer__avatar" src="assets/todd-mark-128.png" alt="" />
+            <div class="ask-answer__body">
+              <div class="bubble-inner" [innerHTML]="m.content"></div>
+              <div class="ask-answer__actions" *ngIf="m.role === 'assistant' && isLatestAnswer(i) && !isLoading">
+                <button type="button" (click)="copyAnswer(i)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{{ copiedIndex === i ? 'Copied' : 'Copy' }}</button>
+                <button type="button" (click)="exportTranscript()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Download</button>
+                <button type="button" (click)="openSaved()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>Save</button>
+              </div>
+            </div>
           </div>
           <div *ngIf="productHandoff as handoff" class="todd-find-handoff" [attr.aria-label]="'Continue this question in ' + handoff.name">
             <div class="todd-find-handoff__header">
@@ -177,13 +184,13 @@
           </div>
         </div>
       </div>
-      <div class="todd-compact-composer" *ngIf="messages.length > 0">
-        <textarea rows="2" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask TODD anything..." aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
-        <button type="button" class="todd-export" (click)="exportTranscript()" aria-label="Export transcript" title="Export transcript">
-          <i class="fa-solid fa-download" aria-hidden="true"></i>
-        </button>
-        <button type="button" class="todd-reset" (click)="resetConversation()" [disabled]="askToddTourInputLocked" aria-label="Reset conversation">↺</button>
-        <button type="button" class="todd-send" (click)="askAssistant()" [disabled]="askToddTourInputLocked" aria-label="Ask TODD">↗</button>
+      <div class="ask-dock" *ngIf="messages.length > 0">
+        <div class="ask-followups" *ngIf="followUps.length && !isLoading">
+          <button type="button" *ngFor="let q of followUps" (click)="onQuickPill(q)">{{ q }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10M7 17 17 7"/></svg></button>
+        </div>
+        <div class="todd-compact-composer ask-composer">
+          <textarea rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask a follow-up…" aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
+          <button type="button" class="ask-send" [class.is-ready]="assistantPrompt.trim()" (click)="askAssistant()" [disabled]="askToddTourInputLocked" aria-label="Ask TODD"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
         <ul class="todd-route-suggestions todd-route-suggestions--compact" *ngIf="routeSuggestions.length" role="listbox" aria-label="Matching pages">
           <li *ngFor="let suggestion of routeSuggestions" role="option" (click)="selectRouteSuggestion(suggestion)">
             <img [src]="suggestion.icon" alt="" aria-hidden="true" />
@@ -191,6 +198,7 @@
             <span class="todd-route-suggestion-group" *ngIf="suggestion.group !== suggestion.label">{{ suggestion.group }}</span>
           </li>
         </ul>
+        </div>
       </div>
     </section>
 </main>
@@ -206,19 +214,5 @@
   [pendingAward]="pendingAwardUnlock"
   (dismissUnlock)="dismissAwardUnlock()"
 ></app-ask-awards>
-<nav class="todd-bottom-nav" aria-label="TODD navigation">
-  <a [href]="toddHomeUrl" aria-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Home</span></a>
-    <button type="button" class="todd-bottom-nav-action" (click)="openAwards()" aria-label="Awards"><i class="fa-solid fa-award" aria-hidden="true"></i><span>Awards</span></button>
-    <button type="button" class="todd-bottom-nav-action" (click)="openSaved()" aria-label="Saved conversation"><i class="fa-regular fa-bookmark" aria-hidden="true"></i><span>Saved</span></button>
-    <a *ngIf="isLoggedIn; else signInLink" [href]="toddHomeUrl + '/user-profile'" class="todd-session-action" aria-label="Account">
-      <i class="fa-solid fa-user" aria-hidden="true"></i>
-      <span class="todd-session-label"><span class="todd-session-dot todd-session-dot--in"></span>Account</span>
-    </a>
-    <ng-template #signInLink>
-      <a [href]="toddHomeUrl + '/login'" class="todd-session-action" aria-label="Sign in">
-        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
-        <span class="todd-session-label"><span class="todd-session-dot todd-session-dot--out"></span>Sign In</span>
-      </a>
-    </ng-template>
-  </nav>
+<!-- The bottom tab bar moved: Saved and Sign in are in the header; Home, Awards, Help and About in the menu. -->
 </div>

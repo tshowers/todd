@@ -1,33 +1,32 @@
-<main class="about-page" data-cy="about-shell">
-  <header class="about-hero">
-    <div class="about-hero__eyebrow">About</div>
-    <div class="about-hero__content">
-      <p class="about-hero__context">A Momentum System, not a CRM</p>
-      <h1>TODD turns scattered information into a clear next move.</h1>
-      <p class="about-hero__lead">A CRM stores history. TODD answers one practical question: given what I know right now, what should I do next?</p>
-    </div>
-    <nav class="about-links" aria-label="Ask TODD pages">
-      <a routerLink="/">Ask TODD</a>
-      <a routerLink="/help">Help</a>
-    </nav>
-  </header>
-
-  <section class="about-grid">
-    <article class="about-card">
-      <p class="about-card__label">What it connects</p>
-      <h2>Contacts, emails, documents, feedback, tasks, and signals</h2>
-      <p>TODD watches what's happening across your work, surfaces the signal that matters, and helps you choose the next action before momentum disappears.</p>
-    </article>
-    <article class="about-card">
-      <p class="about-card__label">How to start</p>
-      <h2>Sign in, then just ask</h2>
-      <p>Sign in, update your profile, and add your contacts. From there, ask TODD anything — "What is TODD?", "How can TODD help me?", or "What is a Momentum System?" are good places to start.</p>
-      <a routerLink="/help">See the full walkthrough →</a>
-    </article>
+<!-- The shared About template (taliferro-ui); TODD's story follows it. -->
+<app-product-pages page="about">
+  <section class="pp-section" aria-labelledby="ask-crm-title">
+    <p class="pp-kicker">A Momentum System, not a CRM</p>
+    <h2 id="ask-crm-title">Given what you know right now, what should you do next?</h2>
+    <p>A CRM stores history. TODD watches what is happening across your work, surfaces the signal that matters, and helps you choose the next action before momentum disappears. When your work moves forward, you become a more capable version of yourself.</p>
   </section>
 
-  <footer class="about-footer">
-    <a routerLink="/">← Back to Ask TODD</a>
-    <a routerLink="/help">Help →</a>
-  </footer>
-</main>
+  <section class="pp-section" aria-labelledby="ask-connects-title">
+    <p class="pp-kicker">What it connects</p>
+    <h2 id="ask-connects-title">The parts of work that are easy to separate</h2>
+    <p>Contacts, emails, documents, feedback, tasks and signals usually live in different places. TODD connects them so you can see what matters, notice where work is slowing down, and act before an opportunity becomes a loss.</p>
+    <div class="pp-cards">
+      <article *ngFor="let item of connects"><h3>{{ item.title }}</h3><p>{{ item.copy }}</p></article>
+    </div>
+  </section>
+
+  <section class="pp-section" aria-labelledby="ask-family-title">
+    <p class="pp-kicker">The TODD family</p>
+    <h2 id="ask-family-title">One system, many tools</h2>
+    <p>Each TODD app handles one part of the work. They share one account and one picture of what matters.</p>
+    <dl class="pp-rows">
+      <div *ngFor="let app of family"><dt><a [href]="app.url">{{ app.name }}</a></dt><dd>{{ app.line }}</dd></div>
+    </dl>
+  </section>
+
+  <section class="pp-section" aria-labelledby="ask-who-title">
+    <p class="pp-kicker">Who makes it</p>
+    <h2 id="ask-who-title">Built by Taliferro Tech</h2>
+    <p>TODD is made by Taliferro Tech in Seattle. Ask TODD is the front door: the place to find out what TODD is and whether it fits your work.</p>
+  </section>
+</app-product-pages>
