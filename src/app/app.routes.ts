@@ -43,5 +43,9 @@ export const routes: Routes = [
       ),
     title: 'Ask TODD Awards',
   },
-  { path: '**', redirectTo: '' }
+  {
+    path: '**',
+    loadComponent: () =>
+      import( './features/not-found/not-found.component' ).then( ( m ) => m.NotFoundComponent ),
+  },
 ];
