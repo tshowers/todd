@@ -2,6 +2,7 @@
   "hosting": {
     "target": "ask-todd",
     "public": "dist/ask-todd/browser",
+    "trailingSlash": false,
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
