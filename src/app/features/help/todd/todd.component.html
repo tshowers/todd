@@ -1,4 +1,4 @@
-<div class="todd-page todd-focused-screen">
+<div class="todd-page todd-focused-screen" [class.todd-page--home]="messages.length === 0">
   <main class="todd-focused-main">
     <section class="todd-focused-conversation" [class.todd-focused-conversation--started]="messages.length > 0">
       <div class="todd-welcome ask-home" *ngIf="messages.length === 0">
@@ -216,3 +216,4 @@
 ></app-ask-awards>
 <!-- The bottom tab bar moved: Saved and Sign in are in the header; Home, Awards, Help and About in the menu. -->
 </div>
+<app-site-footer *ngIf="messages.length === 0"><a routerLink="/help">Help</a><a routerLink="/about">About</a></app-site-footer>

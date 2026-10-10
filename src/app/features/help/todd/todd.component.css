@@ -2463,3 +2463,11 @@
   :host ::ng-deep .todd-diagram__steps li > span:last-child { flex-basis: 100%; padding-left: 44px; }
   .ask-dock { bottom: 12px; width: calc(100% - 24px); }
 }
+
+/* Home (no conversation yet): the welcome fills the window under the header and
+   the footer sits at the bottom. app-root is a full-height column while this
+   page shows (app.component.css). */
+:host { display: flex; flex-direction: column; flex: 1 0 auto; min-height: 0; }
+.todd-page--home.todd-focused-screen { display: flex; flex-direction: column; flex: 1 0 auto; min-height: 0; }
+.todd-page--home .todd-focused-main { display: flex; flex-direction: column; flex: 1 0 auto; height: auto; min-height: 0; overflow: visible; }
+.todd-page--home .todd-focused-conversation { flex: 1 0 auto; min-height: 0; }

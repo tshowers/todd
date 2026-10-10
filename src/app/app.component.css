@@ -1,5 +1,7 @@
 /* Ask TODD header (design 10a/10b): logo + name, New question, Saved, Sign in, Menu. */
 :host { display: block; }
+/* Full-height column on the home page, so its footer sits at the bottom. */
+:host:has(> app-todd) { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
 
 .ask-head {
   /* No stacking of its own: overlays such as Awards must cover it (the

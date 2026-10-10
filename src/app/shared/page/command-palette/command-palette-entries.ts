@@ -143,9 +143,9 @@ export const COMMAND_PALETTE_ENTRIES: CommandPaletteEntry[] = [
   { id: 'forgot-password', label: 'Forgot Password', group: 'Account', path: '/forgot-password', keywords: ['forgot password', 'reset password'] },
 
   // --- Legal --------------------------------------------------------------
-  { id: 'terms-and-conditions', label: 'Terms and Conditions', group: 'Legal', path: '/terms-and-conditions', keywords: ['terms', 'terms and conditions', 'tos'] },
-  { id: 'privacy-policy', label: 'Privacy Policy', group: 'Legal', path: '/privacy-policy', keywords: ['privacy policy', 'privacy'] },
-  { id: 'privacy-rights', label: 'Privacy Rights Request', group: 'Legal', path: '/privacy-rights', keywords: ['privacy rights', 'ccpa', 'data request', 'right to know'] },
+  { id: 'terms-and-conditions', label: 'Terms and Conditions', group: 'Legal', path: 'https://taliferro.tech/terms', external: true, keywords: ['terms', 'terms and conditions', 'tos'] },
+  { id: 'privacy-policy', label: 'Privacy Policy', group: 'Legal', path: 'https://taliferro.tech/privacy', external: true, keywords: ['privacy policy', 'privacy'] },
+  { id: 'privacy-rights', label: 'Privacy Rights Request', group: 'Legal', path: 'https://taliferro.tech/privacy-rights', external: true, keywords: ['privacy rights', 'ccpa', 'data request', 'right to know'] },
 
   // --- Investor Relations ---------------------------------------------------
   { id: 'investor-relations', label: 'Investor Relations', group: 'Investor Relations', path: '/investor-relations', keywords: ['investor relations', 'investors'] },
