@@ -142,7 +142,22 @@ export class OpenAIService {
     { "name": "imer Data", "description": "Analyze timer start and end times to understand how long tasks take and identify time management issues." }
   ];
 
+  // Questions asked in this tab, kept across reloads. The backend answers the
+  // first ones with its stronger model and later ones with the cheaper one.
+  private static readonly TURN_KEY = 'todd-chat-turns';
+  private turns = 0;
+
   constructor ( private http: HttpClient, private logger: LoggerService, private dataService: DataService ) { }
+
+  private nextTurn (): number {
+    try {
+      const turn = Number( sessionStorage.getItem( OpenAIService.TURN_KEY ) || 0 ) + 1;
+      sessionStorage.setItem( OpenAIService.TURN_KEY, String( turn ) );
+      return turn;
+    } catch {
+      return ++this.turns;
+    }
+  }
 
 
   getTemplateTokenAssistance ( prompt: string, user: string, contact?: Contact ): Observable<any> {
@@ -193,7 +208,8 @@ export class OpenAIService {
     return this.http.post<any>( `${environment.backendURL}/prospect-query`, {
       prompt: history,
       pageContext,
-      profileContext
+      profileContext,
+      turn: this.nextTurn()
     }, { headers } );
   }
 
