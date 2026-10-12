@@ -20,7 +20,7 @@
           <button type="button" (click)="onQuickPill('How can TODD help me?')">How can TODD help me?</button>
           <button type="button" (click)="onQuickPill('What is a Momentum System?')">What is a Momentum System?</button>
         </div>
-        <p class="tt-made-by tt-made-by--center"><a href="https://find.taliferro.tech" target="_blank" rel="noopener">Also from us <span class="um-logo" data-app="find" aria-hidden="true"></span><strong>Find</strong></a></p>
+        <p class="tt-made-by tt-made-by--center"><a appAlsoFromUs></a></p>
       </div>
       <div class="todd-focused-history" *ngIf="messages.length > 0">
         <div #history class="todd-chat-history todd-chat-history-active todd-chat-history-full" data-demo="assistant-history">

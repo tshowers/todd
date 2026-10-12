@@ -35,6 +35,7 @@ import { AskChatStateService } from '../../../services/ask-chat-state.service';
 import { AskAward, AskAwardsService } from '../../../services/ask-awards.service';
 import { AskAwardsComponent } from '../../../shared/ask-awards/ask-awards.component';
 import { SiteFooterComponent } from '../../../shared/site-footer/site-footer.component';
+import { AlsoFromUsComponent } from '../../../shared/also-from-us/also-from-us.component';
 
 
 type ToddShowcaseModule = string;
@@ -102,7 +103,7 @@ interface ToddProductHandoff {
 @Component( {
   selector: 'app-todd',
   standalone: true,
-  imports: [SiteFooterComponent, CommonModule, FormsModule, RouterModule, AskAwardsComponent],
+  imports: [ AlsoFromUsComponent, SiteFooterComponent, CommonModule, FormsModule, RouterModule, AskAwardsComponent],
   templateUrl: './todd.component.html',
   styleUrl: './todd.component.css'
 } )
