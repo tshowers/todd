@@ -11,7 +11,12 @@ custom domain `ask.taliferro.tech`).
 If you're picking this up in a fresh session: read this whole file first,
 then `README.md` for the day-to-day dev commands.
 
-## Status: Phase 1 and Phase 2 done (uncommitted here); Phase 3 (main-app shim) mostly done (uncommitted in taliferrotech/frontend) — deletion step deferred
+## Status: live at ask.taliferro.tech; Phase 3 (main-app shim) deletion step still deferred
+
+Phases 1 and 2 below are committed and deployed (`ask.taliferro.tech`
+serves `/`, `/help`, `/about`, `sitemap.xml`, `robots.txt`). The
+historical notes below say "uncommitted" / "Needs setup" in places;
+those described the state at the time. `README.md` is the current dev-setup reference.
 
 **Phase 1 (scaffold) — done, commit `4bb900a`:**
 - Forked from `web-products/maya-marketing` rather than built from
@@ -239,11 +244,15 @@ was scoped to the root route only.
 
 ## Don't re-derive these decisions from scratch
 
-- **This app has exactly one real route: `/`.** Confirmed explicitly by
-  the user. `app.routes.ts` should stay a single `''` route (`ToddComponent`)
-  plus a wildcard back to it — never add second-class routes here for
-  things like a dedicated "saved" view or a settings page; those are
-  either embedded components inside the TODD chat itself (the
+- **This app has exactly one real *app* route: `/` (the TODD chat).**
+  Confirmed explicitly by the user. The other routes in `app.routes.ts`
+  are not app screens: static SEO pages (`/help`, `/about`, prerendered
+  from the shared `taliferro-ui` Help/About template), sign-in plumbing
+  (`/login`, `/finish-sign-in`, `/auth/callback` for TODD's hosted login),
+  `/awards` (the same `ToddComponent` with the awards sheet open), and a
+  not-found wildcard. Never add second-class *app* routes here for things
+  like a dedicated "saved" view or a settings page; those are either
+  embedded components inside the TODD chat itself (the
   `embeddedAppPath`/`embeddedAppUrl` iframe mechanism, or genuinely new
   UI state within `ToddComponent`) or they belong in a different app
   entirely. If a future request implies "add a route to ask-todd,"
