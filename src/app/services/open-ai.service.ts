@@ -165,8 +165,7 @@ export class OpenAIService {
     if ( user ) {
       this.dataService.logEvent( 'Calling OpenAI getTemplateTokenAssistance', user );
     }
-    const apiKey = environment.apiKey;
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     const body: any = { prompt };
     if ( contact ) {
       body.contact = contact;
@@ -178,8 +177,7 @@ export class OpenAIService {
     this.logger.log( "Calling", `${environment.backendURL}/openai`, "With this message", prompt );
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI getAIResponse', user ); // Log event
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/openai`, { prompt: prompt }, { headers } );
   }
 
@@ -187,8 +185,7 @@ export class OpenAIService {
     this.logger.log( "Calling", `${environment.backendURL}/parse-query`, "With this message", JSON.stringify( query ) );
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI getAIParsedQuery', user ); // Log event
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/parse-query`, { query: query }, { headers } );
   }
 
@@ -203,8 +200,7 @@ export class OpenAIService {
     this.logger.log( "Calling", `${environment.backendURL}/prospect-query`, "With this message", history );
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI ProspectQuery', user ); // Log event
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/prospect-query`, {
       prompt: history,
       pageContext,
@@ -215,22 +211,13 @@ export class OpenAIService {
 
   getSuggestions (): Observable<string[]> {
     this.logger.log( "Calling", `${environment.backendURL}/suggestions` );
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/suggestions`, { headers } );
-  }
-
-  getEmailCampaignDrafts ( campaignData: any ): Observable<string[]> {
-    this.logger.log( "Calling", `${environment.backendURL}/create-campaign`, "With this data", campaignData );
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
-    return this.http.post<any>( `${environment.backendURL}/create-campaign`, { campaignData: campaignData }, { headers } );
   }
 
   getContactSearchSuggestions ( payload: { prompt: string, context: string; } ): Observable<string[]> {
     this.logger.log( "Calling", `${environment.backendURL}/filtering-suggestions` );
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/filtering-suggestions`, { headers } );
   }
 
@@ -252,8 +239,7 @@ export class OpenAIService {
     this.logger.log( "Calling", `${environment.backendURL}/document-helper`, "With this message", JSON.stringify( document ) );
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI Document Assistant', user ); // Log event
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/document-helper`, { document: document, prompt: prompt, rfp: rfp, proposals: proposals }, { headers } );
   }
 
@@ -261,8 +247,7 @@ export class OpenAIService {
     this.logger.log( "Calling", `${environment.backendURL}/email-assistant`, "With this message", prompt );
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI getAIParsedQuery', user ); // Log event
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     const body: any = { prompt };
     if ( contact ) {
       body.contact = contact;
@@ -272,8 +257,7 @@ export class OpenAIService {
 
   getEmailDraftingMetadata (): Observable<{ success: boolean; data: EmailDraftingMetadata; }> {
     this.logger.log( "Calling", `${environment.backendURL}/email-drafting/metadata` );
-    const apiKey = environment.apiKey;
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.get<{ success: boolean; data: EmailDraftingMetadata; }>(
       `${environment.backendURL}/email-drafting/metadata`,
       { headers }
@@ -295,8 +279,7 @@ export class OpenAIService {
     if ( user ) {
       this.dataService.logEvent( 'Calling OpenAI requestStructuredEmailDraft', user );
     }
-    const apiKey = environment.apiKey;
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<{ success: boolean; data: StructuredEmailDraftResponse; }>(
       `${environment.backendURL}/email-drafting/draft`,
       payload,
@@ -308,8 +291,7 @@ export class OpenAIService {
     this.logger.log( "Calling", `${environment.backendURL}/document-helper`, "With this message", prompt, html );
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI DocumentEditor', user ); // Log event
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     const body: any = { instructions, html };
     return this.http.post<any>( `${environment.backendURL}/document-helper`, body, { headers } );
   }
@@ -386,8 +368,7 @@ export class OpenAIService {
 
   getAssistance ( prompt: string, domain: 'general' | 'task' | 'document' | 'survey' | 'contact' | 'prospect', user?: string, data?: any ): Observable<any> {
     this.logger.log( "Calling", `${environment.backendURL}/app-assistant`, "With this message", prompt );
-    const apiKey = environment.apiKey;
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     const payload = {
       prompt,
       domain,
@@ -440,8 +421,7 @@ export class OpenAIService {
     this.logger.log( "Calling", `${environment.backendURL}/document-assistant`, "With this message", prompt );
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI getDocumentAssistance', user ); // Log event
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/document-assistant`, { prompt: prompt }, { headers } );
   }
 
@@ -455,8 +435,7 @@ export class OpenAIService {
 
     this.logger.log( "Calling", `${environment.backendURL}/note-analyzer`, "With this message", content );
 
-    const apiKey = environment.apiKey;
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/note-analyzer`, { content }, { headers } );
   }
 
@@ -467,8 +446,7 @@ export class OpenAIService {
       this.dataService.logEvent( 'Calling OpenAI getTaskOrAssistantResponse', user );
     }
 
-    const apiKey = environment.apiKey;
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
 
     return this.http.post<any>( `${environment.backendURL}/assistant-query`, { prompt }, { headers } );
   }
@@ -480,8 +458,7 @@ export class OpenAIService {
       this.dataService.logEvent( 'Calling OpenAI email-hook', user );
     }
 
-    const apiKey = environment.apiKey;
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
 
     return this.http.post<any>( `${environment.backendURL}/email-hook`, { context }, { headers } );
   }
@@ -493,8 +470,7 @@ export class OpenAIService {
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI analyzeEmail', user ); // Log event
 
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/analyze-email`, { prompt: prompt }, { headers } );
   }
 
@@ -508,8 +484,7 @@ export class OpenAIService {
   grammarCheck ( prompt: string, user: string ): Observable<any> {
     this.logger.log( "Calling", `${environment.backendURL}/grammar-check`, "With this message", prompt );
 
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/grammar-check`, { prompt: prompt }, { headers } );
   }
 
@@ -523,8 +498,7 @@ export class OpenAIService {
   analyzeMatches ( body: any ): Observable<any> {
     this.logger.log( "Calling", `${environment.backendURL}/matchmaker-analyzer`, "With this message", JSON.stringify( body ) );
 
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/matchmaker-analyzer`, body, { headers } );
   }
 
@@ -541,8 +515,7 @@ export class OpenAIService {
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI getDocumentAssistance', user ); // Log event
 
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
 
     return this.http.post<any>( `${environment.backendURL}/parse-for-contact`, { profile: profile }, { headers } );
   }
@@ -571,8 +544,7 @@ export class OpenAIService {
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI fillInCompanyInfo', user ); // Log event
 
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
 
     const body: any = {
       profile: "Please fill in missing company information for the following contact: " +
@@ -613,8 +585,7 @@ export class OpenAIService {
     this.logger.log( "Calling", `${environment.backendURL}/reconfigure-contact`, "With this message", JSON.stringify( cleanContact ) );
     if ( user )
       this.dataService.logEvent( 'Calling OpenAI fillInCompanyInfo', user ); // Log event
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/reconfigure-contact`, { profile: JSON.stringify( cleanContact ) }, { headers } );
   }
 
@@ -625,8 +596,7 @@ export class OpenAIService {
    */
   bestInsight ( contacts: Contact[] ): Observable<any> {
     this.logger.log( "Calling", `${environment.backendURL}/best-customer-analysis`, JSON.stringify( contacts ) );
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/best-customer-analysis`, { contacts: contacts }, { headers } );
   }
 
@@ -640,8 +610,7 @@ export class OpenAIService {
    */
   contactInsight ( contact: Contact ): Observable<any> {
     this.logger.log( "Calling", `${environment.backendURL}/contact-insight`, JSON.stringify( contact ) );
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/contact-insight`, { profile: contact }, { headers } );
   }
 
@@ -655,8 +624,7 @@ export class OpenAIService {
   suggestedContactsStatus ( tenantId: string, user: string ): Observable<any> {
     // /suggested-contacts
     this.logger.log( "Calling", `${environment.backendURL}/suggested-contacts/status`, "TenantId", tenantId );
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/suggested-contacts/status`, { tenantId }, { headers } );
   }
 
@@ -669,8 +637,7 @@ export class OpenAIService {
   suggestedContacts ( tenantId: string, user: string ): Observable<any> {
     // /suggested-contacts
     this.logger.log( "Calling", `${environment.backendURL}/suggested-contacts`, "TenantId", tenantId );
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/suggested-contacts`, { tenantId }, { headers } );
   }
 
@@ -682,8 +649,7 @@ export class OpenAIService {
    * @returns {Observable<any>} - An Observable that emits the result of the HTTP request.
    */
   startSuggestedContacts ( tenantId: string, user: string ): Observable<any> {
-    const apiKey = environment.apiKey;
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     this.logger.log( "🚀 Starting OpenAI contact analysis for", tenantId );
     return this.http.post<any>( `${environment.backendURL}/suggested-contacts/start`, { tenantId }, { headers } );
   }
@@ -703,8 +669,7 @@ export class OpenAIService {
     if ( userId )
       this.dataService.logEvent( 'Process Contacts', userId ); // Log event
 
-    const apiKey = environment.apiKey; // Use the actual API key here
-    const headers = new HttpHeaders().set( 'Authorization', `Bearer ${apiKey}` );
+    const headers = new HttpHeaders();
     return this.http.post<any>( `${environment.backendURL}/start-contact-processing`, { tenantId, userId }, { headers } );
 
   }
