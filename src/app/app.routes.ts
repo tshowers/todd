@@ -44,6 +44,17 @@ export const routes: Routes = [
     title: 'Ask TODD Awards',
   },
   {
+    // Missions (design_handoff_todd_missions): ask, get a plan, start it.
+    path: 'missions',
+    title: 'Missions | Ask TODD',
+    loadComponent: () => import( './features/missions/missions-pages.component' ).then( ( m ) => m.AskMissionsPageComponent ),
+  },
+  {
+    path: 'playbooks',
+    title: 'Playbooks | Ask TODD',
+    loadComponent: () => import( './features/missions/missions-pages.component' ).then( ( m ) => m.PlaybooksPageComponent ),
+  },
+  {
     path: '**',
     loadComponent: () =>
       import( './features/not-found/not-found.component' ).then( ( m ) => m.NotFoundComponent ),
