@@ -16,6 +16,9 @@ npm run build
 echo "Running Ask Todd tests..."
 npm run test
 
+echo "Running end-to-end tests (Cypress)..."
+npm run e2e
+
 if [ -n "$(git status --porcelain)" ]; then
   echo "Build and tests passed - committing changes before deploy..."
   VERSION="$(node -p "require('./package.json').version")"
