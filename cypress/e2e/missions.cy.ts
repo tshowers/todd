@@ -135,6 +135,44 @@ describe( 'Playbooks (14a)', () => {
   } );
 } );
 
+describe( 'Email an industry segment (one personalized email to a whole audience)', () => {
+  const VC = 'Send a personalized email to all the venture capital and finance people in my contacts and Lead Vault asking if they’re interested in investing.';
+
+  beforeEach( () => {
+    stubApi();
+    cy.fixture( 'missions/playbooks.json' ).then( ( body ) => cy.intercept( 'GET', `${MISSIONS}/playbooks`, body ) );
+  } );
+
+  it( 'asking for it gets the plan: Network and Lead Vault, research, your shortlist, Maya’s email, one approval, the batch send', () => {
+    planned( 'segment-proposed', 'pitch-segment' );
+    cy.intercept( 'POST', `${MISSIONS}/pitch-segment/start`, { statusCode: 202, body: { success: true, mission: { id: 'pitch-segment', status: 'queued', steps: [] } } } ).as( 'start' );
+    cy.visitWithCypressAuth( '/missions', ME );
+    cy.get( '[data-cy="ask-input"]' ).type( VC );
+    cy.get( '[data-cy="ask-send"]' ).click();
+    cy.wait( '@ask' ).its( 'request.body' ).should( 'include', { request: VC, origin: 'ask' } );
+    cy.get( '[data-cy="plan-title"]' ).should( 'contain.text', 'Email an industry segment' );
+    cy.get( '[data-cy="fact-approvals"]' ).should( 'have.text', '1 approval from you' );
+    cy.get( '[data-cy="fact-time"]' ).should( 'have.text', 'About 25 min of your time' );
+    cy.get( '[data-cy="plan-split"]' ).should( 'contain.text', 'by TODD' ).and( 'contain.text', 'by Maya' ).and( 'contain.text', 'by you' );
+    cy.get( '[data-cy="plan-card"]' )
+      .should( 'contain.text', 'Find venture capital and finance people in your Network' )
+      .and( 'contain.text', 'Keep or drop each one' )
+      .and( 'contain.text', 'Approve the batch' );
+    cy.get( '[data-cy="plan-start"]' ).click();
+    cy.wait( '@start' );
+  } );
+
+  it( 'it’s a playbook you can find and use for any industry', () => {
+    planned( 'segment-proposed', 'pitch-segment' );
+    cy.visitWithCypressAuth( '/playbooks', ME );
+    cy.get( '[data-cy="playbooks-search"]' ).type( 'industry segment' );
+    cy.get( '[data-cy="playbook-card"]' ).should( 'have.length', 1 ).and( 'contain.text', 'Email an industry segment' );
+    cy.get( '[data-cy="playbook-card"][data-id="pitch-segment"] [data-cy="playbook-use"]' ).click();
+    cy.wait( '@ask' ).its( 'request.body' ).should( 'include', { origin: 'playbook', playbookId: 'pitch-segment', force: 'mission' } );
+    cy.get( '[data-cy="plan-title"]' ).should( 'contain.text', 'Email an industry segment' );
+  } );
+} );
+
 describe( 'Ty’s requests, each from a playbook to its plan (the real engine’s plans)', () => {
   beforeEach( () => {
     stubApi();
