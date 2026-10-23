@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { AutoGrowDirective } from '../../../shared/directives/auto-grow.directive';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -103,7 +104,7 @@ interface ToddProductHandoff {
 @Component( {
   selector: 'app-todd',
   standalone: true,
-  imports: [ AlsoFromUsComponent, SiteFooterComponent, CommonModule, FormsModule, RouterModule, AskAwardsComponent],
+  imports: [ AlsoFromUsComponent, AutoGrowDirective, SiteFooterComponent, CommonModule, FormsModule, RouterModule, AskAwardsComponent],
   templateUrl: './todd.component.html',
   styleUrl: './todd.component.css'
 } )

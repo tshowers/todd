@@ -2,10 +2,10 @@
   <main class="todd-focused-main">
     <section class="todd-focused-conversation" [class.todd-focused-conversation--started]="messages.length > 0">
       <div class="todd-welcome ask-home" *ngIf="messages.length === 0">
-        <span class="ask-home__logo"><img src="assets/todd-mark-128.png" alt="" /></span>
+        <span class="ask-home__logo"><img src="assets/ask-todd-logo.png" alt="" /></span>
         <h1 class="ask-home__title">Ask TODD</h1>
         <div class="ask-search">
-          <textarea #assistantInput rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask anything about TODD…" aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
+          <textarea #assistantInput appAutoGrow rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask anything about TODD…" aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
           <button type="button" class="ask-search__go" (click)="askAssistant()" [disabled]="askToddTourInputLocked">Ask <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
           <ul class="todd-route-suggestions" *ngIf="routeSuggestions.length" role="listbox" aria-label="Matching pages">
             <li *ngFor="let suggestion of routeSuggestions" role="option" (click)="selectRouteSuggestion(suggestion)">
@@ -189,7 +189,7 @@
           <button type="button" *ngFor="let q of followUps" (click)="onQuickPill(q)">{{ q }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10M7 17 17 7"/></svg></button>
         </div>
         <div class="todd-compact-composer ask-composer">
-          <textarea rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask a follow-up…" aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
+          <textarea appAutoGrow rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask a follow-up…" aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
           <button type="button" class="ask-send" [class.is-ready]="assistantPrompt.trim()" (click)="askAssistant()" [disabled]="askToddTourInputLocked" aria-label="Ask TODD"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
         <ul class="todd-route-suggestions todd-route-suggestions--compact" *ngIf="routeSuggestions.length" role="listbox" aria-label="Matching pages">
           <li *ngFor="let suggestion of routeSuggestions" role="option" (click)="selectRouteSuggestion(suggestion)">
