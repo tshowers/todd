@@ -16,7 +16,7 @@ export class ConversationService {
 
   getTranscript(): string {
     return this.history
-      .map(m => `${m.role === 'user' ? 'Visitor' : 'TODD'}: ${m.content}`)
+      .map(m => `${m.role === 'user' ? 'Visitor' : 'General Assistant'}: ${m.content}`)
       .join('\n');
   }
 

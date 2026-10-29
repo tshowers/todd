@@ -2399,7 +2399,7 @@
 .todd-chat-history .bubble.user { justify-content: flex-end; }
 .todd-chat-history .bubble.user .ask-answer__body { max-width: 88%; flex: none; }
 .todd-chat-history .bubble.user .bubble-inner { padding: 12px 16px; border-radius: 20px 20px 6px 20px; background: var(--text) !important; color: var(--bg); font-size: 16px; line-height: 1.45; }
-.ask-answer__avatar { flex: none; width: 30px; height: 30px; margin-top: -2px; padding: 3px; box-sizing: border-box; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px var(--surface2); object-fit: contain; }
+.ask-answer__avatar { flex: none; width: 30px; height: 30px; margin-top: -2px; object-fit: contain; }
 .ask-answer__body { min-width: 0; flex: 1; }
 .todd-chat-history .bubble .bubble-inner p { margin: 0 0 12px; }
 .todd-chat-history .bubble .bubble-inner p:last-child { margin-bottom: 0; }

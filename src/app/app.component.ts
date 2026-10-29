@@ -16,7 +16,7 @@ import { AskChatStateService } from './services/ask-chat-state.service';
     <!-- Ask TODD header (design 10a/10b). Help and About draw their own. -->
     <header class="ask-head" *ngIf="!isEmbedded && showHeader">
       <a class="ask-head__brand" routerLink="/">
-        <span class="ask-head__logo"><img src="assets/todd-mark-128.png" alt="" /></span>
+        <span class="ask-head__logo"><img class="brand-mark--light" src="assets/brand/products/svg/light/02-general-assistant.svg" alt="" /><img class="brand-mark--dark" src="assets/brand/products/svg/dark/02-general-assistant.svg" alt="" /></span>
         <span class="ask-head__title">General Assistant</span>
       </a>
       <nav class="ask-head__actions" aria-label="General Assistant">

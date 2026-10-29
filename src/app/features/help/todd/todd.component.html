@@ -2,7 +2,7 @@
   <main class="todd-focused-main">
     <section class="todd-focused-conversation" [class.todd-focused-conversation--started]="messages.length > 0">
       <div class="todd-welcome ask-home" *ngIf="messages.length === 0">
-        <span class="ask-home__logo"><img src="assets/ask-todd-logo.png" alt="" /></span>
+        <span class="ask-home__logo"><img class="brand-mark--light" src="assets/brand/products/svg/light/02-general-assistant.svg" alt="" /><img class="brand-mark--dark" src="assets/brand/products/svg/dark/02-general-assistant.svg" alt="" /></span>
         <h1 class="ask-home__title">General Assistant</h1>
         <div class="ask-search">
           <textarea #assistantInput appAutoGrow rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask anything about 16Ahead…" aria-label="General Assistant" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
@@ -44,7 +44,7 @@
             </div>
           </div>
           <div *ngFor="let m of messages; let i = index" class="bubble" [ngClass]="{ 'user': m.role === 'user', 'assistant': m.role === 'assistant' }">
-            <img *ngIf="m.role === 'assistant'" class="ask-answer__avatar" src="assets/todd-mark-128.png" alt="" />
+            <ng-container *ngIf="m.role === 'assistant'"><img class="ask-answer__avatar brand-mark--light" src="assets/brand/products/svg/light/02-general-assistant.svg" alt="" /><img class="ask-answer__avatar brand-mark--dark" src="assets/brand/products/svg/dark/02-general-assistant.svg" alt="" /></ng-container>
             <div class="ask-answer__body">
               <div class="bubble-inner" [innerHTML]="m.content"></div>
               <div class="ask-answer__actions" *ngIf="m.role === 'assistant' && isLatestAnswer(i) && !isLoading">

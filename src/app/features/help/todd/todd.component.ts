@@ -664,7 +664,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
     const stamp = new Date();
     const lines = this.messages.map( message => {
-      const speaker = message.role === 'user' ? 'You' : 'TODD';
+      const speaker = message.role === 'user' ? 'You' : 'General Assistant';
       const content = this.stripHtmlForPrompt( String( message.content || '' ) );
       return `${speaker}:\n${content}`;
     } );

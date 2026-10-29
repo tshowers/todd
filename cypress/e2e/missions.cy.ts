@@ -34,11 +34,11 @@ describe( 'Plan reply (1a-1d, 10a)', () => {
     cy.get( '[data-cy="plan-title"]' ).should( 'contain.text', 'Reach a named person' );
     cy.get( '[data-cy="fact-approvals"]' ).should( 'have.text', '1 approval from you' );
     cy.get( '[data-cy="fact-time"]' ).should( 'have.text', 'About 3 min of your time' );
-    cy.get( '[data-cy="plan-split"]' ).should( 'contain.text', 'by TODD' ).and( 'contain.text', 'by Maya' ).and( 'contain.text', 'by you' );
+    cy.get( '[data-cy="plan-split"]' ).should( 'contain.text', 'by 16Ahead' ).and( 'contain.text', 'by the Marketing Assistant' ).and( 'contain.text', 'by you' );
     cy.get( '[data-cy="plan-strip-full"]' ).should( 'exist' );
     cy.get( '[data-cy="plan-start"]' ).click();
     cy.wait( '@start' );
-    cy.get( '[data-cy="started"]' ).should( 'contain.text', 'Started' ).find( 'a' ).should( 'have.attr', 'href', 'https://moves.taliferro.tech/missions/reach-named-person' );
+    cy.get( '[data-cy="started"]' ).should( 'contain.text', 'Started' ).find( 'a' ).should( 'have.attr', 'href', 'https://moves.16ahead.com/missions/reach-named-person' );
   } );
 
   it( 'shows “Planning…” with what TODD is doing while it plans', () => {
@@ -153,7 +153,7 @@ describe( 'Email an industry segment (one personalized email to a whole audience
     cy.get( '[data-cy="plan-title"]' ).should( 'contain.text', 'Email an industry segment' );
     cy.get( '[data-cy="fact-approvals"]' ).should( 'have.text', '1 approval from you' );
     cy.get( '[data-cy="fact-time"]' ).should( 'have.text', 'About 25 min of your time' );
-    cy.get( '[data-cy="plan-split"]' ).should( 'contain.text', 'by TODD' ).and( 'contain.text', 'by Maya' ).and( 'contain.text', 'by you' );
+    cy.get( '[data-cy="plan-split"]' ).should( 'contain.text', 'by 16Ahead' ).and( 'contain.text', 'by the Marketing Assistant' ).and( 'contain.text', 'by you' );
     cy.get( '[data-cy="plan-card"]' )
       .should( 'contain.text', 'Find venture capital and finance people in your Network' )
       .and( 'contain.text', 'Keep or drop each one' )
@@ -188,7 +188,7 @@ describe( 'Ty’s requests, each from a playbook to its plan (the real engine’
           cy.visitWithCypressAuth( `/playbooks`, ME );
           cy.get( `[data-cy="playbook-card"][data-id="${id}"] [data-cy="playbook-use"]` ).click();
           cy.get( '[data-cy="plan-title"]' ).should( 'contain.text', proposed[id].title );
-          cy.get( '[data-cy="plan-split"]' ).should( 'contain.text', 'by TODD' );
+          cy.get( '[data-cy="plan-split"]' ).should( 'contain.text', 'by 16Ahead' );
           cy.get( '[data-cy="plan-start"]' ).should( 'be.visible' );
         } );
       } );
