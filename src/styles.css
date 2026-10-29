@@ -75,3 +75,7 @@ body { margin: 0; font-family: var(--font); background: var(--bg); background-im
     filter: brightness(4);
   }
 }
+
+/* The 16Ahead lockup (the dial, "16Ahead", then the product in muted text),
+ * the same as the shared header's .ah-name small. */
+.brand-product { font-weight: 500; color: var(--muted, #9aa2b2); }
