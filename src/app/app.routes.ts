@@ -31,7 +31,7 @@ export const routes: Routes = [
       import( './features/help/todd/todd.component' ).then(
         ( m ) => m.ToddComponent
       ),
-    title: 'General Assistant',
+    title: 'General Assistant | 16Ahead',
   },
   {
     // The universal menu's Awards link: the home page with the awards sheet open.
