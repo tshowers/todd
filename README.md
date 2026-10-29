@@ -1,10 +1,10 @@
-# Ask TODD
+# General Assistant
 
-TODD's chat and home experience as a standalone Angular 19 app, served at
-**https://ask.taliferro.tech**. It was extracted from the main Taliferro Tech
+16Ahead's chat and home experience as a standalone Angular 19 app, served at
+**https://assistant.16ahead.com**. It was extracted from the main Taliferro Tech
 frontend (`todd.taliferro.tech/ask-todd`, which now redirects here).
 
-Ask TODD has no backend of its own. It shares the Firebase project
+General Assistant has no backend of its own. It shares the Firebase project
 (`taliferrotech`: Auth, Firestore, Storage) and the backend API
 (`https://api.taliferro.tech/api`) with every other Taliferro Tech app.
 
@@ -67,7 +67,7 @@ gitignored because it holds live keys. You need both files:
 | `taliferroTenantId` | UID of the Taliferro tenant account (shared data, admin check) | Existing developer |
 | `accessCode` | Access code for gated sign-up flows | Existing developer |
 | `backendURL` | Backend API base | `'/api'` locally; `'https://api.taliferro.tech/api'` in prod |
-| `PLATFORM_URL` | This app's own origin | `http://localhost:4200` / `https://ask.taliferro.tech` |
+| `PLATFORM_URL` | This app's own origin | `http://localhost:4200` / `https://assistant.16ahead.com` |
 | `production` | Build flag | `false` / `true` |
 
 The remaining keys are feature flags. The defaults in the example file are
@@ -82,7 +82,7 @@ signed in reads and writes real production data.
 
 ### Signing in locally
 
-`/login` sends you to TODD's hosted login on `todd.taliferro.tech` with
+`/login` sends you to 16Ahead's hosted login on `todd.taliferro.tech` with
 `client=ask-todd-web-local`. After you sign in, it returns to
 `http://localhost:4200/auth/callback` with a one-time token
 ([`hosted-sign-in.guard.ts`](src/app/features/auth-callback/hosted-sign-in.guard.ts),
@@ -98,13 +98,13 @@ v1 tradeoff, not a bug.
 
 | Path | What |
 | --- | --- |
-| `/` | The TODD chat (`features/help/todd/todd.component.ts`) |
+| `/` | The 16Ahead chat (`features/help/todd/todd.component.ts`) |
 | `/awards` | Same chat, with the awards sheet open |
 | `/help`, `/about` | Static Help/About pages, prerendered for SEO |
 | `/login`, `/finish-sign-in`, `/auth/callback` | Sign-in handoff |
 | `**` | Not found |
 
-Links to other TODD products (Network, Pulse, contacts, compose email, …)
+Links to other 16Ahead products (Network, Pulse, contacts, compose email, …)
 are external URLs to those apps, not routes here. They resolve through
 `resolveExternalAppUrl` in
 [`public-app-url.util.ts`](src/app/shared/utils/public-app-url.util.ts).
