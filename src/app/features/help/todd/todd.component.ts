@@ -175,9 +175,9 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
   /** Suggested next questions under an answer (design 10b). */
   private static readonly followUpsFor: Record<string, string[]> = {
-    'what is todd': ['How is TODD different from a CRM?', 'How can TODD help me?'],
+    'what is todd': ['How is 16Ahead different from a CRM?', 'How can 16Ahead help me?'],
     'how can todd help me': ['What is a Momentum System?', 'How do I get started?'],
-    'what is a momentum system': ['How can TODD help me?', 'How do I get started?'],
+    'what is a momentum system': ['How can 16Ahead help me?', 'How do I get started?'],
   };
   private proactiveMomentumStateSubscription?: Subscription;
   private proactiveMomentumInFlight: boolean = false;
@@ -289,9 +289,9 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
   getMomentumActionStatusLabel ( state: string | null | undefined ): string {
     if ( state === 'confirm' ) return 'Waiting for confirmation';
-    if ( state === 'queued' ) return 'Queued by TODD';
+    if ( state === 'queued' ) return 'Queued by 16Ahead';
     if ( state === 'drafted' ) return 'Draft ready to apply';
-    if ( state === 'selected' ) return 'Selected by TODD';
+    if ( state === 'selected' ) return 'Selected by 16Ahead';
     return 'Status available';
   }
 
@@ -367,39 +367,39 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     switch ( module.key ) {
       case 'network':
         return module.state === 'ready'
-          ? 'Relationships are ready for TODD right now'
+          ? 'Relationships are ready for 16Ahead right now'
           : 'Relationships still need stronger contact coverage';
       case 'outreach':
         return module.state === 'ready'
-          ? 'Growth is ready for TODD right now'
+          ? 'Growth is ready for 16Ahead right now'
           : module.state === 'attention'
             ? 'Growth is live, but outbound work still needs review'
             : 'Growth is blocked until sender setup is complete';
       case 'social':
         return module.state === 'ready'
-          ? 'Visibility is ready for TODD right now'
+          ? 'Visibility is ready for 16Ahead right now'
           : module.state === 'attention'
             ? 'Visibility is live, but social review is still needed'
             : 'Visibility is blocked until a social account is connected';
       case 'moves':
         return module.state === 'ready'
-          ? 'Execution is ready for TODD right now'
+          ? 'Execution is ready for 16Ahead right now'
           : 'Execution still has overdue work to clean up';
       case 'docs':
         return module.state === 'ready'
-          ? 'Knowledge is ready for TODD right now'
+          ? 'Knowledge is ready for 16Ahead right now'
           : module.state === 'attention'
             ? 'Knowledge is live, but document context still needs review'
             : 'Knowledge is blocked until core business context is complete';
       case 'pulse':
         return module.state === 'ready'
-          ? 'Feedback is ready for TODD right now'
+          ? 'Feedback is ready for 16Ahead right now'
           : module.state === 'attention'
             ? 'Feedback is live, but signal review is still needed'
             : 'Feedback is blocked until revenue setup is complete';
       default:
         return module.state === 'ready'
-          ? `${module.label} is ready for TODD right now`
+          ? `${module.label} is ready for 16Ahead right now`
           : module.state === 'attention'
             ? `${module.label} still needs attention`
             : `${module.label} is blocked until setup is completed`;
@@ -449,7 +449,12 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   private handleQueryPrompt (): void {
     if ( !this.isBrowser || this.queryPromptHandled ) return;
 
-    const prompt = String( this.route.snapshot.queryParamMap.get( 'q' ) || '' ).trim();
+    // 16ahead.com's "What's your mission?" box sends ?mission=: ask it as the
+    // visitor's mission, so the answer plans next moves and names the app to start in.
+    const mission = String( this.route.snapshot.queryParamMap.get( 'mission' ) || '' ).trim();
+    const prompt = mission
+      ? `My mission: ${ mission.replace( /[.!?\s]+$/, '' ) }. What should I do next, and where in 16Ahead should I start?`
+      : String( this.route.snapshot.queryParamMap.get( 'q' ) || '' ).trim();
     if ( !prompt ) return;
 
     this.queryPromptHandled = true;
@@ -462,7 +467,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
           void this.router.navigate( [], {
             relativeTo: this.route,
-            queryParams: { q: null },
+            queryParams: { q: null, mission: null },
             queryParamsHandling: 'merge',
             replaceUrl: true
           } );
@@ -529,9 +534,12 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
           this.logger.info( 'TODD normalized assistant html', assistantText );
           this.onMessage( {
             role: 'assistant',
-            content: productHandoff
-              ? `<p>This is a question more for <strong>${this.escapeHtml( productHandoff.name )}</strong>.</p>`
-              : assistantText || 'I did not get a usable answer back. Please try again.'
+            // A handoff can come with a real answer (a mission, "how can 16Ahead
+            // help?"); keep it, and fall back to the one-liner only when there's none.
+            content: assistantText
+              || ( productHandoff
+                ? `<p>This is a question more for <strong>${this.escapeHtml( productHandoff.name )}</strong>.</p>`
+                : 'I did not get a usable answer back. Please try again.' )
           } );
 
           const newlyUnlocked = this.askAwardsService.recordQuestion();
@@ -581,7 +589,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
           this.logger.error( 'TODD askAssistant failed', err );
           this.suggestedProductAction = {
             label: 'Open Help',
-            description: 'Open Help for guidance on TODD, its products, and the next step for your situation.',
+            description: 'Open Help for guidance on 16Ahead, its products, and the next step for your situation.',
             route: `${this.toddHomeUrl}/help`,
             image: 'assets/TODD-icon.png'
           };
@@ -660,7 +668,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       const content = this.stripHtmlForPrompt( String( message.content || '' ) );
       return `${speaker}:\n${content}`;
     } );
-    const transcript = `TODD conversation transcript — ${stamp.toLocaleString()}\n\n${lines.join( '\n\n' )}\n`;
+    const transcript = `16Ahead conversation transcript — ${stamp.toLocaleString()}\n\n${lines.join( '\n\n' )}\n`;
 
     const blob = new Blob( [transcript], { type: 'text/plain;charset=utf-8' } );
     const url = URL.createObjectURL( blob );
@@ -728,7 +736,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       this.embeddedAppLabel = 'Contact list';
       this.onMessage( {
         role: 'assistant',
-        content: 'Here is the matching contact list. The embedded view keeps the useful records available without leaving TODD.'
+        content: 'Here is the matching contact list. The embedded view keeps the useful records available without leaving 16Ahead.'
       } );
       return true;
     }
@@ -746,7 +754,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       this.embeddedAppPath = listApp.path;
       this.embeddedAppUrl = this.sanitizer.bypassSecurityTrustResourceUrl( listApp.path );
       this.embeddedAppLabel = listApp.label;
-      this.onMessage( { role: 'assistant', content: `Here is the ${listApp.label}. The embedded view keeps the records available without leaving TODD.` } );
+      this.onMessage( { role: 'assistant', content: `Here is the ${listApp.label}. The embedded view keeps the records available without leaving 16Ahead.` } );
       return true;
     }
     const asksForStatus = /\b(status|health|dashboard|overview|summary|signals?|attention|needs attention)\b/.test( normalized );
@@ -765,7 +773,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     this.embeddedAppLabel = app.label;
     this.onMessage( {
       role: 'assistant',
-      content: `Here is the current ${app.label}. The embedded view keeps the useful status content available without leaving TODD.`
+      content: `Here is the current ${app.label}. The embedded view keeps the useful status content available without leaving 16Ahead.`
     } );
     return true;
   }
@@ -832,9 +840,9 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     const landingRoutes: Record<string, string> = {
       '/network/app': getNetworkHomeUrl(),
       '/pulse/app': getPulseHomeUrl(),
-      '/outreach/app': 'https://outreach.taliferro.tech',
-      '/moves/app': 'https://moves.taliferro.tech',
-      '/docs/app': 'https://docs.taliferro.tech'
+      '/outreach/app': 'https://outreach.16ahead.com',
+      '/moves/app': 'https://moves.16ahead.com',
+      '/docs/app': 'https://docs.16ahead.com'
     };
 
     return landingRoutes[normalized] || normalized;
@@ -959,7 +967,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   private formatAssistantError ( err: any ): string {
     return [
       '<p>I could not finish that answer right now.</p>',
-      '<p>But you are not stuck. Open <strong>Help</strong> for guidance on TODD, its products, and the next step for your situation.</p>'
+      '<p>But you are not stuck. Open <strong>Help</strong> for guidance on 16Ahead, its products, and the next step for your situation.</p>'
     ].join( '' );
   }
 
@@ -1015,13 +1023,14 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     };
   }
 
-  /** Only link out to TODD's own products, whatever the model returned. */
+  /** Only link out to 16Ahead's own products, whatever the model returned. */
   private toTrustedProductUrl ( rawUrl: unknown ): string | null {
     try {
       const parsed = new URL( String( rawUrl || '' ) );
       const host = parsed.hostname.toLowerCase();
       const trusted = parsed.protocol === 'https:'
-        && ( host === 'taliferro.tech' || host.endsWith( '.taliferro.tech' ) );
+        && ['16ahead.com', '16ahead.store', 'taliferro.tech']
+          .some( ( domain ) => host === domain || host.endsWith( `.${ domain }` ) );
       return trusted ? parsed.toString() : null;
     } catch {
       return null;
@@ -1134,7 +1143,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
     return {
       label: match.label,
-      description: this.stripHtmlForPrompt( assistantText ) || `TODD found the right place for this request: ${normalized}.`,
+      description: this.stripHtmlForPrompt( assistantText ) || `16Ahead found the right place for this request: ${normalized}.`,
       route: normalized,
       image: match.image
     };
@@ -1172,9 +1181,9 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     }
 
     const introAnswers: Record<string, string> = {
-      'what is todd': '<p>TODD is a <strong>Momentum System</strong>. It turns scattered information across relationships, growth, knowledge, execution, feedback, signals, and visibility into clear next moves.</p><p>A CRM stores history. TODD helps answer one practical question: <strong>Given what I know right now, what should I do next?</strong></p><div class="todd-diagram"><div class="todd-diagram__kicker">The solution</div><div class="todd-diagram__title">Turn scattered information into clear next moves.</div><div class="todd-diagram__sub">Make the signal visible, the decision easier, and the work easier to carry forward.</div><ol class="todd-diagram__steps"><li><span class="todd-diagram__num">01</span><strong>Surface the signal</strong><span>Bring important information back into view.</span></li><li><span class="todd-diagram__num">02</span><strong>Understand the context</strong><span>Connect the people, patterns, and history.</span></li><li><span class="todd-diagram__num">03</span><strong>Recommend the next move</strong><span>Make the next action clear and timely.</span></li><li class="todd-diagram__last"><span class="todd-diagram__num">04</span><strong>Keep momentum</strong><span>Carry action through to an outcome.</span></li></ol><div class="todd-diagram__outcome"><span>The outcome</span>More clarity. Faster action. Fewer missed opportunities.</div></div>',
-      'how can todd help me': '<p>TODD helps you make progress across the parts of work that are easy to separate and difficult to manage alone.</p><p>It connects contacts, emails, documents, feedback, tasks, and signals so you can see what matters, understand where work is slowing down, and act before an opportunity becomes a loss.</p><div class="todd-diagram todd-diagram--problem"><div class="todd-diagram__kicker">The problem</div><div class="todd-diagram__title">The cost of losing the thread</div><div class="todd-diagram__sub">When information stops moving, revenue does too.</div><ol class="todd-diagram__steps"><li><span class="todd-diagram__num">01</span><strong>Ignored information</strong><span>Signal gets buried.</span></li><li><span class="todd-diagram__num">02</span><strong>Lost momentum</strong><span>The next move gets delayed.</span></li><li><span class="todd-diagram__num">03</span><strong>Missed opportunities</strong><span>Good moments pass.</span></li><li class="todd-diagram__last"><span class="todd-diagram__num">04</span><strong>Lost revenue</strong><span>Growth leaks out.</span></li></ol><div class="todd-diagram__outcome"><span>TODD</span>Turns scattered information into the next action, before opportunity becomes loss.</div></div>',
-      'what is a momentum system': '<p>A Momentum System turns information into movement.</p><p>It watches what is happening across your work, surfaces the signal that matters, and helps you choose the next action before momentum disappears. TODD is built around that idea: <strong>when your work moves forward, you become a more capable version of yourself.</strong></p>'
+      'what is todd': '<p>16Ahead is a <strong>Momentum System</strong>. It turns scattered information across relationships, growth, knowledge, execution, feedback, signals, and visibility into clear next moves.</p><p>A CRM stores history. 16Ahead helps answer one practical question: <strong>Given what I know right now, what should I do next?</strong></p><div class="todd-diagram"><div class="todd-diagram__kicker">The solution</div><div class="todd-diagram__title">Turn scattered information into clear next moves.</div><div class="todd-diagram__sub">Make the signal visible, the decision easier, and the work easier to carry forward.</div><ol class="todd-diagram__steps"><li><span class="todd-diagram__num">01</span><strong>Surface the signal</strong><span>Bring important information back into view.</span></li><li><span class="todd-diagram__num">02</span><strong>Understand the context</strong><span>Connect the people, patterns, and history.</span></li><li><span class="todd-diagram__num">03</span><strong>Recommend the next move</strong><span>Make the next action clear and timely.</span></li><li class="todd-diagram__last"><span class="todd-diagram__num">04</span><strong>Keep momentum</strong><span>Carry action through to an outcome.</span></li></ol><div class="todd-diagram__outcome"><span>The outcome</span>More clarity. Faster action. Fewer missed opportunities.</div></div>',
+      'how can todd help me': '<p>16Ahead helps you make progress across the parts of work that are easy to separate and difficult to manage alone.</p><p>It connects contacts, emails, documents, feedback, tasks, and signals so you can see what matters, understand where work is slowing down, and act before an opportunity becomes a loss.</p><div class="todd-diagram todd-diagram--problem"><div class="todd-diagram__kicker">The problem</div><div class="todd-diagram__title">The cost of losing the thread</div><div class="todd-diagram__sub">When information stops moving, revenue does too.</div><ol class="todd-diagram__steps"><li><span class="todd-diagram__num">01</span><strong>Ignored information</strong><span>Signal gets buried.</span></li><li><span class="todd-diagram__num">02</span><strong>Lost momentum</strong><span>The next move gets delayed.</span></li><li><span class="todd-diagram__num">03</span><strong>Missed opportunities</strong><span>Good moments pass.</span></li><li class="todd-diagram__last"><span class="todd-diagram__num">04</span><strong>Lost revenue</strong><span>Growth leaks out.</span></li></ol><div class="todd-diagram__outcome"><span>16Ahead</span>Turns scattered information into the next action, before opportunity becomes loss.</div></div>',
+      'what is a momentum system': '<p>A Momentum System turns information into movement.</p><p>It watches what is happening across your work, surfaces the signal that matters, and helps you choose the next action before momentum disappears. 16Ahead is built around that idea: <strong>when your work moves forward, you become a more capable version of yourself.</strong></p>'
     };
 
     if ( introAnswers[normalizedPrompt] ) {
@@ -1286,7 +1295,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
         stage: 'visitor',
         recommendedRoute: { path: '/login', queryParams: {} },
         title: 'Sign in to continue setup',
-        message: 'Sign in first so TODD can identify you and load the right setup steps.',
+        message: 'Sign in first so 16Ahead can identify you and load the right setup steps.',
         facts: {} as ToddActivationResolution['facts']
       };
     }
@@ -1310,7 +1319,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     this.onMessage( {
       role: 'assistant',
       content: this.assistantBoxUtilityService.normalizeModelOutputToHtml(
-        `<p><strong>Getting started with TODD:</strong></p><p>${this.getGettingStartedMessage( resolution )}</p>`
+        `<p><strong>Getting started with 16Ahead:</strong></p><p>${this.getGettingStartedMessage( resolution )}</p>`
       )
     } );
   }
@@ -1318,14 +1327,14 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   private getGettingStartedMessage ( resolution: ToddActivationResolution ): string {
     switch ( resolution.stage ) {
       case 'visitor':
-        return 'Sign in first. TODD needs to know who you are and which workspace to use.';
+        return 'Sign in first. 16Ahead needs to know who you are and which workspace to use.';
       case 'profile_ready':
-        return 'You are signed in. Update your profile so TODD knows who you are, what you do, and how to guide your work.';
+        return 'You are signed in. Update your profile so 16Ahead knows who you are, what you do, and how to guide your work.';
       case 'sender_provisioning_required':
       case 'sender_pending_admin':
-        return 'Your profile is ready. Because you are using Outreach, provision your email address before TODD can send anything.';
+        return 'Your profile is ready. Because you are using Outreach, provision your email address before 16Ahead can send anything.';
       case 'contacts_missing':
-        return 'Your profile is ready. Because you are using Network, add contacts or import them so TODD has people and relationships to work with.';
+        return 'Your profile is ready. Because you are using Network, add contacts or import them so 16Ahead has people and relationships to work with.';
       default:
         return resolution.message;
     }
@@ -1360,7 +1369,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     const lines: string[] = this.isLoggedIn
       ? []
       : [
-        'TODD GUEST SALES MODE: The visitor is not signed in. Answer as a product guide and sales advisor, not as an internal workspace assistant.',
+        '16Ahead GUEST SALES MODE: The visitor is not signed in. Answer as a product guide and sales advisor, not as an internal workspace assistant.',
         'Do not claim to see, load, diagnose, or summarize the visitor\'s private business data. Explain the problem, the business value, and which Taliferro product is the best fit.',
         'Use plain language and a helpful, consultative tone. When a product is relevant, explain why it helps and invite the visitor to explore its public landing page or sign in to continue.'
       ];
@@ -1479,14 +1488,14 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       page: 'todd-home-momentum',
       route: '/todd',
       mode: 'dashboard',
-      title: 'TODD Home Momentum',
-      description: 'Cross-system momentum summary for TODD home chat.',
+      title: '16Ahead Home Momentum',
+      description: 'Cross-system momentum summary for 16Ahead home chat.',
       allowedActions: lowData
         ? setupActions.map( action => `${action.label} (${action.route})` )
         : checklistItems.map( item => `${item.actionLabel}: ${item.route}` ),
       summary: {
-        goalHeadline: plan?.goalHeadline || 'TODD is checking momentum across the system.',
-        todaySummary: plan?.todaySummary || 'TODD is checking what needs attention right now.',
+        goalHeadline: plan?.goalHeadline || '16Ahead is checking momentum across the system.',
+        todaySummary: plan?.todaySummary || '16Ahead is checking what needs attention right now.',
         checklistCount: checklistItems.length,
         blockerCount: blockers.length,
         triedCount: toddTried.length,
@@ -1533,12 +1542,12 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
   private buildToddHomeLowDataContext (): AssistantPageContext {
     return this.toToddHomeMomentumContext( {
       mode: 'operational',
-      goalHeadline: 'TODD does not have enough momentum data yet.',
+      goalHeadline: '16Ahead does not have enough momentum data yet.',
       todaySummary: 'I do not have enough activity yet to make a confident recommendation.',
       commandDeck: {
-        eyebrow: 'TODD Command Deck',
+        eyebrow: '16Ahead Command Deck',
         title: 'Today cockpit',
-        subtitle: 'TODD needs more live operating data before it can make a useful command recommendation.',
+        subtitle: '16Ahead needs more live operating data before it can make a useful command recommendation.',
         modeLabel: 'Mode',
         scoreLabel: 'Autonomy',
         scoreValue: '0%'
@@ -1905,12 +1914,12 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     if ( contactCount <= 0 ) {
       return {
         module: 'network',
-        headline: 'Start with one contact and let TODD show the workflow.',
-        body: 'Add one email address or upload a contact. TODD will help validate it and show how Network turns raw people data into usable signal.',
+        headline: 'Start with one contact and let 16Ahead show the workflow.',
+        body: 'Add one email address or upload a contact. 16Ahead will help validate it and show how Network turns raw people data into usable signal.',
         ctaLabel: 'Try Network',
         route: '/network/app',
         launchMode: 'validate-email',
-        rewardText: 'Once your first contact is in, TODD can start showing what momentum looks like.'
+        rewardText: 'Once your first contact is in, 16Ahead can start showing what momentum looks like.'
       };
     }
 
@@ -1918,11 +1927,11 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         module: 'outreach',
         headline: 'You have people. Now create motion.',
-        body: 'Give TODD an outreach goal and Maya will shape the angle, draft the emails, and keep the follow-up connected to the conversation.',
+        body: 'Give 16Ahead an outreach goal and the Marketing Assistant will shape the angle, draft the emails, and keep the follow-up connected to the conversation.',
         ctaLabel: 'Try Outreach',
         route: '/outreach/app',
         launchMode: 'campaign-idea',
-        rewardText: 'Put one idea in play and let TODD show how it thinks.'
+        rewardText: 'Put one idea in play and let 16Ahead show how it thinks.'
       };
     }
 
@@ -1930,31 +1939,31 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         module: 'moves',
         headline: 'Turn a goal into a tracked mission.',
-        body: 'Open Mission Workspace, tell TODD the outcome you want, and let it help turn that into moves.',
+        body: 'Open Mission Workspace, tell 16Ahead the outcome you want, and let it help turn that into moves.',
         ctaLabel: 'Try Mission Workspace',
         route: '/mission',
         launchMode: 'mission-intake',
-        rewardText: 'One mission is enough to show how TODD helps work move forward.'
+        rewardText: 'One mission is enough to show how 16Ahead helps work move forward.'
       };
     }
 
     if ( surveyCount <= 0 ) {
       return {
         module: 'pulse',
-        headline: 'Let TODD draft a survey for you.',
-        body: 'Give TODD your organization name and let it generate a survey you can refine inside Pulse.',
+        headline: 'Let 16Ahead draft a survey for you.',
+        body: 'Give 16Ahead your organization name and let it generate a survey you can refine inside Pulse.',
         ctaLabel: 'Try Pulse',
         route: '/pulse/app',
         launchMode: 'survey-generator',
-        rewardText: 'A fast survey draft is a quick way to see TODD create something useful.'
+        rewardText: 'A fast survey draft is a quick way to see 16Ahead create something useful.'
       };
     }
 
     if ( docsCount <= 0 ) {
       return {
         module: 'docs',
-        headline: 'Show TODD a document and let it work.',
-        body: 'Upload a document in Docs and let TODD help edit, tighten, or improve it so the value is obvious.',
+        headline: 'Show 16Ahead a document and let it work.',
+        body: 'Upload a document in Docs and let 16Ahead help edit, tighten, or improve it so the value is obvious.',
         ctaLabel: 'Try Docs',
         route: '/docs/app',
         launchMode: 'doc-editor',
@@ -1964,12 +1973,12 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
     return {
       module: 'network',
-      headline: 'You have started. Now let TODD do more.',
-      body: 'Pick one module and give TODD something real to work so it can prove more value inside your daily flow.',
+      headline: 'You have started. Now let 16Ahead do more.',
+      body: 'Pick one module and give 16Ahead something real to work so it can prove more value inside your daily flow.',
       ctaLabel: 'Open Network',
       route: '/network/app',
       launchMode: 'validate-email',
-      rewardText: 'The more real context you give TODD, the more useful it gets.'
+      rewardText: 'The more real context you give 16Ahead, the more useful it gets.'
     };
   }
 
@@ -2326,8 +2335,8 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     if ( /outreach|campaign|email|follow up|follow-up|pipeline|sales/.test( promptText ) ) {
       return {
         label: 'Open Outreach',
-        description: 'Let Maya prepare relevant individual email and follow-up from the conversation context.',
-        route: 'https://outreach.taliferro.tech',
+        description: 'Let the Marketing Assistant prepare relevant individual email and follow-up from the conversation context.',
+        route: 'https://outreach.16ahead.com',
         image: 'assets/outreach/outreach.png'
       };
     }
@@ -2336,7 +2345,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Moves',
         description: 'Track next actions and keep work moving.',
-        route: 'https://moves.taliferro.tech',
+        route: 'https://moves.16ahead.com',
         image: 'assets/moves/moves.png'
       };
     }
@@ -2345,7 +2354,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Docs',
         description: 'Store, refine, and generate business documents.',
-        route: 'https://docs.taliferro.tech',
+        route: 'https://docs.16ahead.com',
         image: 'assets/docs/docs.png'
       };
     }
@@ -2390,8 +2399,8 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     if ( /outreach|campaign|email|follow up|follow-up|pipeline|sales/.test( text ) ) {
       return {
         label: 'Open Outreach',
-        description: 'Let Maya prepare relevant individual email and follow-up from the conversation context.',
-        route: 'https://outreach.taliferro.tech',
+        description: 'Let the Marketing Assistant prepare relevant individual email and follow-up from the conversation context.',
+        route: 'https://outreach.16ahead.com',
         image: 'assets/outreach/outreach.png'
       };
     }
@@ -2400,7 +2409,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Moves',
         description: 'Track next actions and keep work moving.',
-        route: 'https://moves.taliferro.tech',
+        route: 'https://moves.16ahead.com',
         image: 'assets/moves/moves.png'
       };
     }
@@ -2409,7 +2418,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       return {
         label: 'Open Docs',
         description: 'Store, refine, and generate business documents.',
-        route: 'https://docs.taliferro.tech',
+        route: 'https://docs.16ahead.com',
         image: 'assets/docs/docs.png'
       };
     }

@@ -41,7 +41,7 @@ const STYLES = `
   @media (max-width: 640px) { .page { padding: 20px 16px 48px; } }
 `;
 
-const SIGN_IN = `<div class="signin" data-cy="missions-signin"><b>Sign in to hand TODD work.</b><a class="btn" routerLink="/login">Sign in</a></div>`;
+const SIGN_IN = `<div class="signin" data-cy="missions-signin"><b>Sign in to hand 16Ahead work.</b><a class="btn" routerLink="/login">Sign in</a></div>`;
 
 @Component( {
   selector: 'app-ask-missions-page',
@@ -49,11 +49,11 @@ const SIGN_IN = `<div class="signin" data-cy="missions-signin"><b>Sign in to han
   imports: [PlanReplyComponent, RouterLink],
   template: `
     <div class="page">
-      <nav class="top"><a routerLink="/">Ask TODD</a><span class="spacer"></span><a routerLink="/playbooks" data-cy="to-playbooks">Playbooks</a></nav>
+      <nav class="top"><a routerLink="/">General Assistant</a><span class="spacer"></span><a routerLink="/playbooks" data-cy="to-playbooks">Playbooks</a></nav>
       <h1>What do you need done?</h1>
       @if (signedIn() === false) { ${SIGN_IN} }
       @if (signedIn()) {
-        <tm-plan-reply [request]="q()" [origin]="playbook() ? 'playbook' : 'ask'" [playbookId]="playbook()" [viewerId]="viewerId()" detailBase="https://moves.taliferro.tech/missions/" />
+        <tm-plan-reply [request]="q()" [origin]="playbook() ? 'playbook' : 'ask'" [playbookId]="playbook()" [viewerId]="viewerId()" detailBase="https://moves.16ahead.com/missions/" />
       }
     </div>
   `,
@@ -71,7 +71,7 @@ export class AskMissionsPageComponent extends SignedInPage {
   imports: [PlaybooksComponent, RouterLink],
   template: `
     <div class="page wide">
-      <nav class="top"><a routerLink="/">Ask TODD</a><span class="spacer"></span><a routerLink="/missions">Ask for something else</a></nav>
+      <nav class="top"><a routerLink="/">General Assistant</a><span class="spacer"></span><a routerLink="/missions">Ask for something else</a></nav>
       @if (signedIn() === false) { ${SIGN_IN} }
       @if (signedIn()) { <tm-playbooks [viewerId]="viewerId()" (use)="use($event)" /> }
     </div>

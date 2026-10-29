@@ -13,9 +13,9 @@ import { AuthService } from '../../../services/auth.service';
   template: `
     <main class="login-shell">
       <section class="login-card">
-        <img src="assets/TODD-icon.png" alt="TODD" class="login-logo" />
-        <h1>Sign in to TODD</h1>
-        <p>Use your shared TODD account to continue.</p>
+        <img src="assets/TODD-icon.png" alt="16Ahead" class="login-logo" />
+        <h1>Sign in to 16Ahead</h1>
+        <p>Use your shared 16Ahead account to continue.</p>
         <button type="button" (click)="signInWithGoogle()" [disabled]="busy">{{ busy ? 'Signing in…' : 'Continue with Google' }}</button>
         <div class="login-divider">or use email</div>
         <form (ngSubmit)="sendEmailLink()">

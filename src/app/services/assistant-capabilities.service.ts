@@ -187,9 +187,9 @@ export class AssistantCapabilitiesService {
         /\bcreate (an |a )?campaign\b/i,
       ],
       message: [
-        '<p><strong>There is no campaign to create anymore.</strong> In Outreach, Maya handles the email and follow-up workflow for you.</p>',
-        '<p>Maya drafts thoughtful, individual messages and keeps each follow-up connected to the previous conversation, so the thread stays relevant instead of feeling like a generic sequence.</p>',
-        '<p>Open <strong>/outreach/app</strong> to review the outreach workflow, or use <strong>/signal-engine</strong> to review what Maya has prepared. If you need help with the angle, offer, or messaging, use Maya at <strong>/marketing-director/session</strong>.</p>'
+        '<p><strong>There is no campaign to create anymore.</strong> In Outreach, the Marketing Assistant handles the email and follow-up workflow for you.</p>',
+        '<p>The Marketing Assistant drafts thoughtful, individual messages and keeps each follow-up connected to the previous conversation, so the thread stays relevant instead of feeling like a generic sequence.</p>',
+        '<p>Open <strong>/outreach/app</strong> to review the outreach workflow, or use <strong>/signal-engine</strong> to review what the Marketing Assistant has prepared. If you need help with the angle, offer, or messaging, use the Marketing Assistant at <strong>/marketing-director/session</strong>.</p>'
       ].join( '' )
     },
     {
@@ -216,7 +216,7 @@ export class AssistantCapabilitiesService {
       message: [
         '<p><strong>To create a Move, you have two good options.</strong></p>',
         '<p><strong>A.</strong> Open <strong>/task-edit</strong> for a direct new Move.</p>',
-        '<p><strong>B.</strong> Open the Execution cockpit at <strong>/moves/app</strong> if you want TODD to help you place that work in context.</p>',
+        '<p><strong>B.</strong> Open the Execution cockpit at <strong>/moves/app</strong> if you want 16Ahead to help you place that work in context.</p>',
         '<p>If the work belongs to a larger outcome, use Mission Workspace at <strong>/mission</strong>.</p>'
       ].join( '' )
     },
@@ -231,7 +231,7 @@ export class AssistantCapabilitiesService {
         '<p><strong>Docs has a few different entry points.</strong></p>',
         '<p><strong>A.</strong> Start in the Knowledge cockpit at <strong>/docs/app</strong> if you want the full command deck.</p>',
         '<p><strong>B.</strong> Use <strong>/document-editor</strong> to draft or edit a document directly.</p>',
-        '<p><strong>C.</strong> Use <strong>/document</strong> to upload a file for TODD to work from.</p>',
+        '<p><strong>C.</strong> Use <strong>/document</strong> to upload a file for 16Ahead to work from.</p>',
         '<p><strong>D.</strong> Use <strong>/rfp-upload</strong> if the goal is to turn an RFP into a proposal.</p>'
       ].join( '' )
     },
@@ -258,7 +258,7 @@ export class AssistantCapabilitiesService {
       message: [
         '<p><strong>For social work, start with Visibility.</strong></p>',
         '<p><strong>A.</strong> Open <strong>/outreach/social/command</strong> for the command center.</p>',
-        '<p><strong>B.</strong> Use the Social Calendar to review and approve Maya\'s prepared content.</p>',
+        '<p><strong>B.</strong> Use the Social Calendar to review and approve the Marketing Assistant\'s prepared content.</p>',
         '<p><strong>C.</strong> Use <strong>/outreach/social/accounts</strong> to connect and manage channels.</p>'
       ].join( '' )
     }
@@ -422,7 +422,7 @@ export class AssistantCapabilitiesService {
       ],
       message: [
         '<p><strong>Inbox setup lives in Inbox Access.</strong></p>',
-        '<p>Open <strong>/inbox-access</strong> to connect your inbox so TODD can read, draft, and track email work from one place.</p>'
+        '<p>Open <strong>/inbox-access</strong> to connect your inbox so 16Ahead can read, draft, and track email work from one place.</p>'
       ].join( '' )
     },
     {
@@ -525,7 +525,7 @@ export class AssistantCapabilitiesService {
       message: [
         '<p><strong>This sounds like contact-list work.</strong></p>',
         '<p>Open <strong>/contact-list</strong> to browse, filter, sort, select, export, queue outreach, or inspect individual records.</p>',
-        '<p>Once you are there, the TODD popup has page context and can help with the list you are looking at.</p>'
+        '<p>Once you are there, the 16Ahead popup has page context and can help with the list you are looking at.</p>'
       ].join( '' )
     },
     {
@@ -621,7 +621,7 @@ export class AssistantCapabilitiesService {
       message: [
         '<p><strong>This sounds like contact-import work.</strong></p>',
         '<p>Open <strong>/contact-import</strong> to upload a CSV, map fields, preview records, run the import, review results, or resolve contact-capacity issues.</p>',
-        '<p>Once you are there, the TODD popup has import-page context and can help with the current step.</p>'
+        '<p>Once you are there, the 16Ahead popup has import-page context and can help with the current step.</p>'
       ].join( '' )
     },
     {
@@ -715,8 +715,8 @@ export class AssistantCapabilitiesService {
       ],
       message: [
         '<p><strong>This sounds like Docs cockpit work.</strong></p>',
-        '<p>Open <strong>/docs/app</strong> for knowledge health, freshness, findability, proposal reuse, draft pressure, and TODD knowledge-treatment activity.</p>',
-        '<p>Once you are there, the TODD popup has the live Docs page context and can help from that cockpit.</p>'
+        '<p>Open <strong>/docs/app</strong> for knowledge health, freshness, findability, proposal reuse, draft pressure, and 16Ahead knowledge-treatment activity.</p>',
+        '<p>Once you are there, the 16Ahead popup has the live Docs page context and can help from that cockpit.</p>'
       ].join( '' )
     },
     {
@@ -854,7 +854,7 @@ export class AssistantCapabilitiesService {
       message: [
         '<p><strong>This sounds like Documents workspace work.</strong></p>',
         '<p>Open <strong>/documents</strong> to browse, search, preview, organize, upload, edit, or remove stored files, and to jump into related document actions like <strong>/response-flow</strong>, <strong>/document-editor</strong>, <strong>/proposal-history</strong>, <strong>/rfp-upload</strong>, or <strong>/rfp-list</strong>.</p>',
-        '<p>Once you are there, the TODD popup has the live Documents page context and can help with the current file or view.</p>'
+        '<p>Once you are there, the 16Ahead popup has the live Documents page context and can help with the current file or view.</p>'
       ].join( '' )
     },
     {
@@ -925,9 +925,9 @@ export class AssistantCapabilitiesService {
         'give me the marketing diagnosis'
       ],
       message: [
-        '<p><strong>This sounds like Maya work.</strong></p>',
-        '<p>Open <strong>/marketing-director/session</strong> when you want Maya to diagnose a marketing problem, review an offer, clarify positioning, define the audience, improve messaging, or turn strategy into execution-ready direction.</p>',
-        '<p>Once you are there, Maya can carry the strategy conversation directly in her own session.</p>'
+        '<p><strong>This sounds like the Marketing Assistant work.</strong></p>',
+        '<p>Open <strong>/marketing-director/session</strong> when you want the Marketing Assistant to diagnose a marketing problem, review an offer, clarify positioning, define the audience, improve messaging, or turn strategy into execution-ready direction.</p>',
+        '<p>Once you are there, the Marketing Assistant can carry the strategy conversation directly in its own session.</p>'
       ].join( '' )
     },
     {
@@ -1014,7 +1014,7 @@ export class AssistantCapabilitiesService {
       message: [
         '<p><strong>This sounds like Response Flow work.</strong></p>',
         '<p>Open <strong>/response-flow</strong> to create or update reusable knowledge with questions, answers, sources, recommendations, resources, categories, and keywords.</p>',
-        '<p>Once you are there, the TODD popup has the live Response Flow context and can help with the current step.</p>'
+        '<p>Once you are there, the 16Ahead popup has the live Response Flow context and can help with the current step.</p>'
       ].join( '' )
     },
     {
@@ -1191,8 +1191,8 @@ export class AssistantCapabilitiesService {
       ],
       message: [
         '<p><strong>This sounds like Knowledge Base work.</strong></p>',
-        '<p>Open <strong>/knowledge-base</strong> to browse, search, inspect, organize, edit, remove, cite, or reuse knowledge already stored in TODD.</p>',
-        '<p>If you need to create a brand new reusable answer, use <strong>/response-flow</strong>. Once you are in the Knowledge Base, the TODD popup has the live repository context.</p>'
+        '<p>Open <strong>/knowledge-base</strong> to browse, search, inspect, organize, edit, remove, cite, or reuse knowledge already stored in 16Ahead.</p>',
+        '<p>If you need to create a brand new reusable answer, use <strong>/response-flow</strong>. Once you are in the Knowledge Base, the 16Ahead popup has the live repository context.</p>'
       ].join( '' )
     }
   ];

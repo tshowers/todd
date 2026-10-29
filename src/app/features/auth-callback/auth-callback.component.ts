@@ -16,7 +16,7 @@ import { AuthService } from '../../services/auth.service';
     <div class="callback">
       @if (errorMessage()) {
         <p>{{ errorMessage() }}</p>
-        <a routerLink="/">Back to Ask TODD</a>
+        <a routerLink="/">Back to General Assistant</a>
       } @else {
         <p>Signing you in…</p>
       }

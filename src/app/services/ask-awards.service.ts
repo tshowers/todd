@@ -42,7 +42,7 @@ const AWARD_LADDER: AskAward[] = [
   { id: 'clarifier', title: 'The Clarifier', threshold: 15, icon: 'clarifier', copy: 'You know how to turn a vague problem into something you can work with.' },
   { id: 'pattern-finder', title: 'The Pattern Finder', threshold: 20, icon: 'pattern-finder', copy: 'You are connecting questions that used to feel separate.' },
   { id: 'deep-diver', title: 'The Deep Diver', threshold: 30, icon: 'deep-diver', copy: 'You keep going until the useful part is no longer buried.' },
-  { id: 'thought-partner', title: 'The Thought Partner', threshold: 40, icon: 'thought-partner', copy: 'You are using TODD to think with you, not just answer you.' },
+  { id: 'thought-partner', title: 'The Thought Partner', threshold: 40, icon: 'thought-partner', copy: 'You are using 16Ahead to think with you, not just answer you.' },
   { id: 'momentum-seeker', title: 'The Momentum Seeker', threshold: 60, icon: 'momentum-seeker', copy: 'Your questions consistently point toward movement.' },
   { id: 'ask-legend', title: 'The Ask Legend', threshold: 100, icon: 'ask-legend', hidden: true, copy: 'One hundred questions. You stopped waiting for clarity to find you.' },
 ];

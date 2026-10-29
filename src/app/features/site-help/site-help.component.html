@@ -1,9 +1,9 @@
 <!-- The shared Help template (taliferro-ui); TODD's setup guide follows it. -->
 <app-product-pages page="help">
   <section class="pp-section" aria-labelledby="ask-setup-title">
-    <p class="pp-kicker">Set up TODD once</p>
-    <h2 id="ask-setup-title">Getting started with TODD</h2>
-    <p>Ask TODD answers questions about TODD for anyone. To have TODD help with your own work, set it up once.</p>
+    <p class="pp-kicker">Set up 16Ahead once</p>
+    <h2 id="ask-setup-title">Getting started with 16Ahead</h2>
+    <p>General Assistant answers questions about 16Ahead for anyone. To have 16Ahead help with your own work, set it up once.</p>
     <div class="pp-cards">
       <article *ngFor="let item of setup"><h3><span class="pp-num">{{ item.step }}</span>{{ item.title }}</h3><p>{{ item.copy }}</p></article>
     </div>
@@ -19,7 +19,7 @@
 
   <section class="pp-section" aria-labelledby="ask-faq-title">
     <p class="pp-kicker">More questions</p>
-    <h2 id="ask-faq-title">What people ask about Ask TODD</h2>
+    <h2 id="ask-faq-title">What people ask about General Assistant</h2>
     <div class="pp-cards">
       <article *ngFor="let item of questions"><h3>{{ item.q }}</h3><p>{{ item.a }}</p></article>
     </div>

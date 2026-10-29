@@ -24,14 +24,14 @@ export class AboutComponent {
   ];
 
   readonly family = [
-    { name: 'Network', url: 'https://network.taliferro.tech', line: 'Know who matters before the moment passes.' },
-    { name: 'Outreach', url: 'https://outreach.taliferro.tech', line: 'Keep the work moving.' },
-    { name: 'Moves', url: 'https://moves.taliferro.tech', line: 'Make progress visible and actionable.' },
-    { name: 'Pulse', url: 'https://pulse.taliferro.tech', line: 'Hear what people are really saying.' },
-    { name: 'Social', url: 'https://social.taliferro.tech', line: 'Stay visible without living online.' },
-    { name: 'Docs', url: 'https://docs.taliferro.tech', line: 'Documents, proposals and knowledge in one place.' },
-    { name: 'Lead Vault', url: 'https://lead-vault.taliferro.tech', line: 'Find the people behind the opportunity.' },
-    { name: 'Maya', url: 'https://maya.taliferro.tech', line: 'Think like your marketing director.' },
-    { name: 'Find', url: 'https://find.taliferro.tech', line: 'Get to the answer faster.' },
+    { name: 'Network', url: 'https://network.16ahead.com', line: 'Know who matters before the moment passes.' },
+    { name: 'Outreach', url: 'https://outreach.16ahead.com', line: 'Keep the work moving.' },
+    { name: 'Moves', url: 'https://moves.16ahead.com', line: 'Make progress visible and actionable.' },
+    { name: 'Pulse', url: 'https://pulse.16ahead.com', line: 'Hear what people are really saying.' },
+    { name: 'Social', url: 'https://social.16ahead.com', line: 'Stay visible without living online.' },
+    { name: 'Docs', url: 'https://docs.16ahead.com', line: 'Documents, proposals and knowledge in one place.' },
+    { name: 'Lead Vault', url: 'https://lead-vault.16ahead.com', line: 'Find the people behind the opportunity.' },
+    { name: 'Marketing Assistant', url: 'https://marketing.16ahead.com', line: 'Think like your marketing director.' },
+    { name: 'Find', url: 'https://find.16ahead.com', line: 'Get to the answer faster.' },
   ];
 }

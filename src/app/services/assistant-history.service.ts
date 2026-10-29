@@ -67,7 +67,7 @@ export class AssistantHistoryService {
       userId,
       createdAt: now,
       updatedAt: now,
-      title: 'TODD Assistant'
+      title: '16Ahead Assistant'
     };
 
     const id = environment.taliferroTenantId

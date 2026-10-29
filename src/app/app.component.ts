@@ -17,9 +17,9 @@ import { AskChatStateService } from './services/ask-chat-state.service';
     <header class="ask-head" *ngIf="!isEmbedded && showHeader">
       <a class="ask-head__brand" routerLink="/">
         <span class="ask-head__logo"><img src="assets/todd-mark-128.png" alt="" /></span>
-        <span class="ask-head__title">Ask TODD</span>
+        <span class="ask-head__title">General Assistant</span>
       </a>
-      <nav class="ask-head__actions" aria-label="Ask TODD">
+      <nav class="ask-head__actions" aria-label="General Assistant">
         <button type="button" class="ask-pill" *ngIf="chat.hasConversation" (click)="chat.newQuestion()" title="New question">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg><span>New question</span>
         </button>

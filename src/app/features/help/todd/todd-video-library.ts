@@ -38,24 +38,24 @@ function deriveWhy ( item: { best_for: string[]; description: string; type: stri
 
     switch ( bucket ) {
         case 'outreach':
-            return 'This video shows how TODD helps create momentum with outreach and follow-through.';
+            return 'This video shows how 16Ahead helps create momentum with outreach and follow-through.';
         case 'moves':
-            return 'This video shows how TODD keeps work from stalling and helps you follow through.';
+            return 'This video shows how 16Ahead keeps work from stalling and helps you follow through.';
         case 'pulse':
-            return 'This video shows how TODD helps turn customer feedback into something useful.';
+            return 'This video shows how 16Ahead helps turn customer feedback into something useful.';
         case 'lead_vault':
-            return 'This video shows how TODD helps surface buyers and lead opportunities faster.';
+            return 'This video shows how 16Ahead helps surface buyers and lead opportunities faster.';
         case 'knowledge':
-            return 'This video shows how TODD helps you reuse what you already know instead of starting over.';
+            return 'This video shows how 16Ahead helps you reuse what you already know instead of starting over.';
         case 'docs':
-            return 'This video shows how TODD helps keep document-heavy work moving.';
+            return 'This video shows how 16Ahead helps keep document-heavy work moving.';
         case 'ai':
-            return 'This video shows how TODD uses AI to move work forward, not just generate text.';
+            return 'This video shows how 16Ahead uses AI to move work forward, not just generate text.';
         default:
             if ( item.type === 'testimonial' ) {
-                return 'This testimonial shows what it feels like when TODD removes friction from the work.';
+                return 'This testimonial shows what it feels like when 16Ahead removes friction from the work.';
             }
-            return 'This video helps explain how TODD removes friction and keeps work moving.';
+            return 'This video helps explain how 16Ahead removes friction and keeps work moving.';
     }
 }
 
@@ -74,7 +74,7 @@ export const RAW_VIDEOS = [
         type: 'video',
         best_for: ['outreach'],
         url: 'https://youtube.com/shorts/VY3kOg1zmfw',
-        description: 'How can TODD help me hit my number?'
+        description: 'How can 16Ahead help me hit my number?'
     },
     {
         module_id: 'video_todd_more_free_time_feel',
@@ -167,7 +167,7 @@ export const RAW_VIDEOS = [
         type: 'video',
         best_for: ['lead_vault'],
         url: 'https://youtube.com/shorts/YZEF7I3D6XY',
-        description: 'TODD’s approach to automatic lead generation.'
+        description: '16Ahead’s approach to automatic lead generation.'
     },
     {
         module_id: 'video_todd_travel_industry_meetings_problem',
@@ -195,7 +195,7 @@ export const RAW_VIDEOS = [
         type: 'video',
         best_for: ['lead_vault'],
         url: 'https://youtube.com/shorts/E8EcSF3IYh4',
-        description: 'Automatic lead generation powered by TODD.'
+        description: 'Automatic lead generation powered by 16Ahead.'
     },
     {
         module_id: 'video_todd_construction_project_delays',
@@ -258,7 +258,7 @@ export const RAW_VIDEOS = [
         type: 'explainer',
         best_for: ['ai'],
         url: 'https://youtube.com/shorts/ww3Mtp5jBwo',
-        description: 'The difference between TODD and copilot tools.'
+        description: 'The difference between 16Ahead and copilot tools.'
     },
     {
         module_id: 'video_todd_explainer_how_ai_actually_works',
@@ -343,7 +343,7 @@ export const RAW_VIDEOS = [
         type: 'explainer',
         best_for: ['outreach'],
         url: 'https://youtube.com/shorts/Ek7Te_jVKYk',
-        description: 'Getting started with TODD, part 1.'
+        description: 'Getting started with 16Ahead, part 1.'
     },
     {
         module_id: 'video_todd_why_companies_abandon_crm',
@@ -365,7 +365,7 @@ export const RAW_VIDEOS = [
         best_for: ['knowledge'],
         url: 'https://youtube.com/shorts/QqSsI6AdBzg',
         description:
-            'Have TODD help with automatic lead generation and knowledge management.'
+            'Have 16Ahead help with automatic lead generation and knowledge management.'
     },
     {
         module_id: 'video_todd_how_much_work_happens_everyday',
@@ -402,49 +402,49 @@ export const RAW_VIDEOS = [
         type: 'explainer',
         best_for: ['outreach'],
         url: 'https://youtu.be/Yeo6kTcUryU',
-        description: 'How TODD quietly handles outreach, follow-ups, and momentum.'
+        description: 'How 16Ahead quietly handles outreach, follow-ups, and momentum.'
     },
     {
         module_id: 'video_todd_moves',
         type: 'video',
         best_for: ['moves'],
         url: 'https://youtu.be/YE_Dy3lqlQU',
-        description: 'How TODD helps you become more remarkable.'
+        description: 'How 16Ahead helps you become more remarkable.'
     },
     {
         module_id: 'video_todd_ai',
         type: 'video',
         best_for: ['ai'],
         url: 'https://youtu.be/QrpW9jowSKY',
-        description: 'TODD and AI'
+        description: '16Ahead and AI'
     },
     {
         module_id: 'video_todd_affiliate',
         type: 'video',
         best_for: ['all'],
         url: 'https://youtu.be/mHJsljdd-q8',
-        description: 'About the TODD affiliate program'
+        description: 'About the 16Ahead affiliate program'
     },
     {
         module_id: 'video_todd_partner',
         type: 'video',
         best_for: ['all'],
         url: 'https://youtu.be/vrv_ZQ-uhH4',
-        description: 'About the TODD partner program'
+        description: 'About the 16Ahead partner program'
     },
     {
         module_id: 'video_todd_different_than_crm',
         type: 'video',
         best_for: ['outreach'],
         url: 'https://youtube.com/shorts/ag6LK41dqVE',
-        description: 'How is TODD different from a CRM?'
+        description: 'How is 16Ahead different from a CRM?'
     },
     {
         module_id: 'video_todd_working',
         type: 'video',
         best_for: ['ai'],
         url: 'https://youtube.com/shorts/tNVQEjgWxoo',
-        description: 'You say TODD does the work — how?'
+        description: 'You say 16Ahead does the work — how?'
     },
     {
         module_id: 'video_todd_sales',
@@ -458,7 +458,7 @@ export const RAW_VIDEOS = [
         type: 'video',
         best_for: ['ai'],
         url: 'https://youtube.com/shorts/tzY2B06eK4I',
-        description: 'Does TODD replace my team?'
+        description: 'Does 16Ahead replace my team?'
     },
     {
         module_id: 'video_todd_and_bms',
@@ -559,14 +559,14 @@ export const RAW_VIDEOS = [
         type: 'explainer',
         best_for: ['all'],
         url: 'https://youtu.be/ZPYJ7u5zvFQ',
-        description: 'TODD Affiliate Program: Earn up to $5,000 per referral'
+        description: '16Ahead Affiliate Program: Earn up to $5,000 per referral'
     },
     {
         module_id: 'video_about_todd_reseller_program',
         type: 'explainer',
         best_for: ['all'],
         url: 'https://youtu.be/xQgu_E7chig',
-        description: 'TODD reseller program: add recurring revenue'
+        description: '16Ahead reseller program: add recurring revenue'
     }
 ];
 
@@ -591,14 +591,14 @@ export const RAW_TESTIMONIALS = [
         type: 'testimonial',
         best_for: ['ai'],
         url: 'https://youtube.com/shorts/zVSfy92UqVk',
-        description: "TODD's powerful automation"
+        description: "16Ahead's powerful automation"
     },
     {
         module_id: 'testimonial_todd_caring',
         type: 'testimonial',
         best_for: ['ai'],
         url: 'https://youtu.be/1D4g81GTfqQ',
-        description: "With TODD, I feel like I'm being quietly looked after."
+        description: "With 16Ahead, I feel like I'm being quietly looked after."
     }
 ];
 

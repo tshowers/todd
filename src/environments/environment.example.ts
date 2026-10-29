@@ -8,10 +8,10 @@ export const environment = {
     useEmulators: false,
     multiTenant: true,
     multiple_choice_login: false,
-    COMPANY_NAME: 'TODD',
+    COMPANY_NAME: '16Ahead',
     LOGO: 'assets/TODD-icon.png',
     paid: false,
-    // Where this app is served: http://localhost:4200 locally, https://ask.taliferro.tech in prod.
+    // Where this app is served: http://localhost:4200 locally, https://assistant.16ahead.com in prod.
     PLATFORM_URL: 'http://localhost:4200',
     VERSION: require('../../package.json').version,
     // Firebase console -> taliferrotech -> Project settings -> Your apps -> Web app config.

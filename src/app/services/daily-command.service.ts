@@ -325,8 +325,8 @@ export class DailyCommandService {
         id: 'onboarding-profile',
         title: profileReady ? 'Profile complete' : 'Complete your profile',
         reason: profileReady
-          ? 'TODD already has your core identity and business context. You can revisit this any time if your positioning changes.'
-          : 'Tell TODD who you are, what your company does, and what kind of help you want so every draft and recommendation starts from real context.',
+          ? '16Ahead already has your core identity and business context. You can revisit this any time if your positioning changes.'
+          : 'Tell 16Ahead who you are, what your company does, and what kind of help you want so every draft and recommendation starts from real context.',
         route: '/update-profile?guided=profile&forceProfileSetup=1',
         actionLabel: profileReady ? 'Review Profile' : 'Finish Profile Setup',
         priority: 'high',
@@ -336,9 +336,9 @@ export class DailyCommandService {
       },
       {
         id: 'onboarding-revenue',
-        title: stripeNotice ? 'Connect your revenue source' : 'Choose how TODD should help',
+        title: stripeNotice ? 'Connect your revenue source' : 'Choose how 16Ahead should help',
         reason: stripeNotice?.message
-          || 'Tell TODD how hands-on you want it to be with momentum before you turn on deeper operational behavior.',
+          || 'Tell 16Ahead how hands-on you want it to be with momentum before you turn on deeper operational behavior.',
         route: stripeNotice ? '/billing' : '/daily-momentum?tab=operator',
         actionLabel: stripeNotice?.actionLabel || ( stripeNotice ? 'Open Billing' : 'Open Operator Controls' ),
         priority: 'medium',
@@ -350,8 +350,8 @@ export class DailyCommandService {
         id: 'onboarding-calendar',
         title: calendarConnected && !calendarNeedsSetup ? 'Review your calendar connection' : 'Connect a calendar',
         reason: calendarConnected && !calendarNeedsSetup
-          ? 'Your calendar is already connected. Review how TODD will use meeting activity in your daily guidance.'
-          : viewModel.calendarConnectionNotice?.message || 'Connect a calendar when you want TODD to understand meeting activity and schedule pressure.',
+          ? 'Your calendar is already connected. Review how 16Ahead will use meeting activity in your daily guidance.'
+          : viewModel.calendarConnectionNotice?.message || 'Connect a calendar when you want 16Ahead to understand meeting activity and schedule pressure.',
         route: '/daily-momentum?tab=operator',
         actionLabel: viewModel.calendarConnectionNotice?.actionLabel || ( calendarConnected && !calendarNeedsSetup ? 'Review Calendar Setup' : 'Connect Calendar' ),
         priority: 'medium',
@@ -362,7 +362,7 @@ export class DailyCommandService {
       {
         id: 'onboarding-contacts',
         title: 'Need to import contacts?',
-        reason: 'Bring in a CSV or add a few people manually so TODD has real relationships to organize and support.',
+        reason: 'Bring in a CSV or add a few people manually so 16Ahead has real relationships to organize and support.',
         route: '/contact-import',
         actionLabel: 'Import Contacts',
         priority: 'medium',
@@ -372,8 +372,8 @@ export class DailyCommandService {
       },
       {
         id: 'onboarding-inbox',
-        title: 'Would you like to see your email in TODD?',
-        reason: 'Connect inbox access when you want TODD to help read, draft, and track email work from one place.',
+        title: 'Would you like to see your email in 16Ahead?',
+        reason: 'Connect inbox access when you want 16Ahead to help read, draft, and track email work from one place.',
         route: '/inbox-access',
         actionLabel: 'Open Inbox Access',
         priority: 'medium',
@@ -387,7 +387,7 @@ export class DailyCommandService {
       checklistItems.push( {
         id: 'onboarding-sender',
         title: 'Finish sending setup',
-        reason: 'TODD should not claim outreach work until your sender has actually been provisioned from Admin Control.',
+        reason: '16Ahead should not claim outreach work until your sender has actually been provisioned from Admin Control.',
         route: '/admin',
         actionLabel: 'Open Admin Control',
         priority: 'high',
@@ -401,7 +401,7 @@ export class DailyCommandService {
       checklistItems.push( {
         id: 'onboarding-social',
         title: 'Connect social accounts',
-        reason: 'TODD should not talk about drafts, publishing, or social momentum until at least one real account is connected.',
+        reason: '16Ahead should not talk about drafts, publishing, or social momentum until at least one real account is connected.',
         route: '/outreach/social/accounts',
         actionLabel: 'Open Connected Accounts',
         priority: 'medium',
@@ -417,8 +417,8 @@ export class DailyCommandService {
         label: 'Profile context',
         value: profileReady ? 'Ready' : 'Needed',
         detail: profileReady
-          ? 'TODD already has your core business context.'
-          : 'Share your name, company, and business description so TODD can personalize correctly.',
+          ? '16Ahead already has your core business context.'
+          : 'Share your name, company, and business description so 16Ahead can personalize correctly.',
         tone: profileReady ? 'positive' : 'attention'
       },
       {
@@ -426,8 +426,8 @@ export class DailyCommandService {
         label: 'Revenue source',
         value: stripeNotice ? 'Needed' : 'Ready',
         detail: stripeNotice
-          ? 'Connect Stripe before TODD starts talking about revenue pressure or progress.'
-          : 'Revenue inputs are ready for TODD to use.',
+          ? 'Connect Stripe before 16Ahead starts talking about revenue pressure or progress.'
+          : 'Revenue inputs are ready for 16Ahead to use.',
         tone: stripeNotice ? 'attention' : 'positive'
       },
       {
@@ -435,7 +435,7 @@ export class DailyCommandService {
         label: 'Calendar',
         value: calendarConnected && !calendarNeedsSetup ? 'Connected' : 'Optional',
         detail: calendarConnected && !calendarNeedsSetup
-          ? 'TODD can use meeting activity as part of its guidance.'
+          ? '16Ahead can use meeting activity as part of its guidance.'
           : 'Connect a calendar when you want meeting-aware recommendations.',
         tone: calendarConnected && !calendarNeedsSetup ? 'positive' : 'info'
       },
@@ -445,7 +445,7 @@ export class DailyCommandService {
         value: senderReady ? 'Ready' : 'Needed',
         detail: senderReady
           ? 'Outreach sender provisioning is ready.'
-          : 'Finish sender provisioning before TODD claims any outreach execution.',
+          : 'Finish sender provisioning before 16Ahead claims any outreach execution.',
         tone: senderReady ? 'positive' : 'attention'
       },
       {
@@ -454,7 +454,7 @@ export class DailyCommandService {
         value: socialReady ? 'Connected' : 'Needed',
         detail: socialReady
           ? 'At least one real social account is connected.'
-          : 'Connect a real social account before TODD claims social drafts or publishing work.',
+          : 'Connect a real social account before 16Ahead claims social drafts or publishing work.',
         tone: socialReady ? 'positive' : 'info'
       }
     ];
@@ -465,7 +465,7 @@ export class DailyCommandService {
         label: 'Profile check',
         summary: profileReady
           ? 'Core profile fields are already in place.'
-          : 'TODD is still missing the business context it uses to personalize drafts and decisions.',
+          : '16Ahead is still missing the business context it uses to personalize drafts and decisions.',
         tone: profileReady ? 'positive' : 'attention'
       },
       {
@@ -473,35 +473,35 @@ export class DailyCommandService {
         label: calendarConnected ? 'Calendar connected' : 'Calendar not connected',
         summary: calendarConnected
           ? this.buildConnectedCalendarSummary( calendarStatus )
-          : 'Connect a calendar when you want TODD to understand meetings and schedule pressure.',
+          : 'Connect a calendar when you want 16Ahead to understand meetings and schedule pressure.',
         tone: calendarConnected ? 'positive' : 'info'
       },
       {
         id: 'onboarding-evidence-contacts',
         label: 'Contacts import',
-        summary: 'Import contacts when you want TODD to organize people, follow-up opportunities, and relationship coverage.',
+        summary: 'Import contacts when you want 16Ahead to organize people, follow-up opportunities, and relationship coverage.',
         tone: 'info'
       },
       {
         id: 'onboarding-evidence-inbox',
         label: 'Inbox access',
-        summary: 'Open Inbox Access if you want TODD to help you see and work your email inside the platform.',
+        summary: 'Open Inbox Access if you want 16Ahead to help you see and work your email inside the platform.',
         tone: 'info'
       },
       {
         id: 'onboarding-evidence-sender',
         label: senderReady ? 'Sending provisioned' : 'Sending not provisioned',
         summary: senderReady
-          ? 'Admin provisioning is in place, so TODD can truthfully talk about outreach execution.'
-          : 'TODD is still missing sender provisioning, so outreach claims should stay off the Today screen.',
+          ? 'Admin provisioning is in place, so 16Ahead can truthfully talk about outreach execution.'
+          : '16Ahead is still missing sender provisioning, so outreach claims should stay off the Today screen.',
         tone: senderReady ? 'positive' : 'attention'
       },
       {
         id: 'onboarding-evidence-social',
         label: socialReady ? 'Social connected' : 'Social not connected',
         summary: socialReady
-          ? 'TODD has at least one real social account to work with.'
-          : 'TODD should stay quiet about social drafts and publishing until a real account exists.',
+          ? '16Ahead has at least one real social account to work with.'
+          : '16Ahead should stay quiet about social drafts and publishing until a real account exists.',
         tone: socialReady ? 'positive' : 'info'
       }
     ];
@@ -515,7 +515,7 @@ export class DailyCommandService {
     return {
       mode: 'onboarding',
       goalHeadline: 'New users start at zero here until the real systems are connected.',
-      todaySummary: 'Right now TODD should stay honest: finish setup, connect the systems you actually want in play, and then the Today screen can switch from guidance to real operating momentum.',
+      todaySummary: 'Right now 16Ahead should stay honest: finish setup, connect the systems you actually want in play, and then the Today screen can switch from guidance to real operating momentum.',
       commandDeck,
       instrumentation,
       moduleReadiness,
@@ -587,7 +587,7 @@ export class DailyCommandService {
         status: 'needs_you',
         source: 'setup',
         autonomyLevel: 'requires_approval',
-        autonomyNote: 'TODD cannot carry this path until the missing setup is cleared.',
+        autonomyNote: '16Ahead cannot carry this path until the missing setup is cleared.',
         proof: this.joinProofItems( viewModel.stripeConnectionNotice.items )
       } );
     }
@@ -603,7 +603,7 @@ export class DailyCommandService {
         status: 'needs_you',
         source: 'setup',
         autonomyLevel: 'requires_approval',
-        autonomyNote: 'TODD needs meeting-tracking access before it can verify calendar outcomes on its own.',
+        autonomyNote: '16Ahead needs meeting-tracking access before it can verify calendar outcomes on its own.',
         proof: this.joinProofItems( viewModel.calendarConnectionNotice.items )
       } );
     }
@@ -632,7 +632,7 @@ export class DailyCommandService {
       items.push( {
         id: 'setup-sender-gate',
         title: 'Finish outreach sender provisioning',
-        reason: 'TODD should not claim outreach work until the sender is actually provisioned from Admin Control.',
+        reason: '16Ahead should not claim outreach work until the sender is actually provisioned from Admin Control.',
         route: '/admin',
         actionLabel: 'Open Admin Control',
         priority: 'high',
@@ -647,7 +647,7 @@ export class DailyCommandService {
       items.push( {
         id: 'setup-social-gate',
         title: 'Connect a social account before enabling social momentum',
-        reason: 'TODD should not draft or publish social work for a user with no connected social accounts.',
+        reason: '16Ahead should not draft or publish social work for a user with no connected social accounts.',
         route: '/outreach/social/accounts',
         actionLabel: 'Open Connected Accounts',
         priority: 'medium',
@@ -732,14 +732,14 @@ export class DailyCommandService {
       items.push( {
         id: 'hot-signal-alert',
         title: 'Review high-intent outreach signal',
-        reason: String( alertDrivenSignal.message || alertDrivenSignal.reason || 'TODD found a live outreach signal that needs fast follow-up.' ).trim(),
+        reason: String( alertDrivenSignal.message || alertDrivenSignal.reason || '16Ahead found a live outreach signal that needs fast follow-up.' ).trim(),
         route: '/signal-engine',
         actionLabel: 'Open Outbox Cockpit',
         priority: 'high',
         status: 'ready',
         source: 'signal',
         autonomyLevel: 'auto',
-        autonomyNote: 'TODD can keep watching this signal stream without waiting for you.',
+        autonomyNote: '16Ahead can keep watching this signal stream without waiting for you.',
         proof: String( alertDrivenSignal.recommendedFix || '' ).trim() || undefined
       } );
     }
@@ -779,8 +779,8 @@ export class DailyCommandService {
         id: 'social-drafts-review',
         title: `${draftCount} social draft${draftCount === 1 ? '' : 's'} prepared`,
         reason: socialPostingMode === 'auto'
-          ? 'TODD already prepared the social work. Publishing is the only remaining gate between these drafts and autonomous momentum.'
-          : 'TODD already prepared the social work. Your current policy is still making human approval the bottleneck before publishing.',
+          ? '16Ahead already prepared the social work. Publishing is the only remaining gate between these drafts and autonomous momentum.'
+          : '16Ahead already prepared the social work. Your current policy is still making human approval the bottleneck before publishing.',
         route: '/outreach/social/calendar',
         actionLabel: socialPostingMode === 'auto' ? 'Review Drafts' : 'Review autonomy gate',
         priority: 'high',
@@ -797,7 +797,7 @@ export class DailyCommandService {
         id: 'social-publish-queue',
         title: `${approvedCount} approved social post${approvedCount === 1 ? '' : 's'} queued`,
         reason: socialPostingMode === 'auto'
-          ? 'TODD has approved social work ready and should be carrying the publish step with minimal human friction.'
+          ? '16Ahead has approved social work ready and should be carrying the publish step with minimal human friction.'
           : 'Approved visibility work is queued, but your current posting policy still puts a human gate in front of momentum.',
         route: '/outreach/social',
         actionLabel: 'Open Social Queue',
@@ -806,8 +806,8 @@ export class DailyCommandService {
         source: 'campaign_gap',
         autonomyLevel: socialAutonomyLevel,
         autonomyNote: socialPostingMode === 'auto'
-          ? 'Current policy: auto. TODD should be allowed to carry the publish step once approval timing rules are satisfied.'
-          : 'Current policy: requires approval before TODD can publish these posts.',
+          ? 'Current policy: auto. 16Ahead should be allowed to carry the publish step once approval timing rules are satisfied.'
+          : 'Current policy: requires approval before 16Ahead can publish these posts.',
         proof: `${approvedCount} approved queue item${approvedCount === 1 ? '' : 's'}`
       } );
     }
@@ -818,7 +818,7 @@ export class DailyCommandService {
         title: 'Restart outreach momentum today',
         reason: String(
           campaignGapBlocker
-          || 'TODD does not see enough recent campaign or follow-up activity to support today\'s goal.'
+          || '16Ahead does not see enough recent campaign or follow-up activity to support today\'s goal.'
         ).trim(),
         route: '/outreach/app',
         actionLabel: 'Open Outreach',
@@ -827,7 +827,7 @@ export class DailyCommandService {
         source: 'campaign_gap',
         autonomyLevel: this.getApprovalModeForCategory( viewModel, 'outreach_sending' ) === 'auto' ? 'auto_after_timeout' : 'requires_approval',
         autonomyNote: this.getApprovalModeForCategory( viewModel, 'outreach_sending' ) === 'auto'
-          ? 'Current policy says TODD should be carrying the send step, but the current engine still pauses at the final gate.'
+          ? 'Current policy says 16Ahead should be carrying the send step, but the current engine still pauses at the final gate.'
           : 'Current policy still makes outreach sending wait for you.',
         proof: lowSocialCoverage ? 'No recent social coverage' : undefined
       } );
@@ -837,14 +837,14 @@ export class DailyCommandService {
       items.push( {
         id: 'goal-recovery-review',
         title: 'Review the strongest revenue recovery path',
-        reason: 'Today\'s goal is still behind, so TODD wants the day anchored to the highest-confidence recovery lane.',
+        reason: 'Today\'s goal is still behind, so 16Ahead wants the day anchored to the highest-confidence recovery lane.',
         route: '/daily-momentum',
         actionLabel: 'Open Daily Momentum',
         priority: 'medium',
         status: 'ready',
         source: 'goal_recovery',
         autonomyLevel: 'auto',
-        autonomyNote: 'TODD can keep evaluating recovery paths even when no single manual action is selected yet.',
+        autonomyNote: '16Ahead can keep evaluating recovery paths even when no single manual action is selected yet.',
         proof: `${viewModel.snapshot.gapRemaining} gap remaining`
       } );
     }
@@ -933,17 +933,17 @@ export class DailyCommandService {
       platformLabel: providerLabel,
       status: draftCount > 0 ? 'drafts_ready' : 'strategy_ready',
       statusLabel: draftCount > 0 ? 'Drafts ready' : 'Strategy ready',
-      diagnosis: strategySummary || `TODD has enough ${providerLabel} context to choose the next growth move instead of leaving you with a blank page.`,
-      toddNextMove: nextMove || `Prepare one ${recommendedPostType} for ${providerLabel} so TODD can turn the strategy into a real growth test today.`,
+      diagnosis: strategySummary || `16Ahead has enough ${providerLabel} context to choose the next growth move instead of leaving you with a blank page.`,
+      toddNextMove: nextMove || `Prepare one ${recommendedPostType} for ${providerLabel} so 16Ahead can turn the strategy into a real growth test today.`,
       userActionTitle: draftCount > 0
         ? `Review ${draftCount} prepared ${providerLabel} draft${draftCount === 1 ? '' : 's'}`
         : `Prepare today's ${providerLabel} ${recommendedPostType}`,
       userActionInstruction: draftCount > 0
-        ? 'Open the prepared drafts, keep the strongest one, and approve it so TODD can carry the publishing step next.'
-        : `Open Social Source and let TODD prepare the next ${providerLabel} post from the active growth strategy.`,
+        ? 'Open the prepared drafts, keep the strongest one, and approve it so 16Ahead can carry the publishing step next.'
+        : `Open Social Source and let 16Ahead prepare the next ${providerLabel} post from the active growth strategy.`,
       userActionReason: draftCount > 0
-        ? 'TODD already turned the strategy into drafts, so the only human step left is to choose the best one and let it move.'
-        : strategySummary || `The current social strategy is aimed at ${goalLabel.toLowerCase()}, so TODD should turn it into one concrete post instead of leaving the plan abstract.`,
+        ? '16Ahead already turned the strategy into drafts, so the only human step left is to choose the best one and let it move.'
+        : strategySummary || `The current social strategy is aimed at ${goalLabel.toLowerCase()}, so 16Ahead should turn it into one concrete post instead of leaving the plan abstract.`,
       userActionLabel: draftCount > 0 ? 'Review drafts' : 'Prepare post',
       route,
       nextCheckLabel: null,
@@ -981,7 +981,7 @@ export class DailyCommandService {
         status: 'needs_you',
         source: 'overdue_move',
         autonomyLevel: 'requires_approval',
-        autonomyNote: 'Moves still depend on explicit human handling unless TODD is allowed to execute them automatically.',
+        autonomyNote: 'Moves still depend on explicit human handling unless 16Ahead is allowed to execute them automatically.',
         proof: overdueTasks.slice( 0, 2 ).map( task => task.title ).filter( Boolean ).join( ' | ' ) || undefined
       }
     ];
@@ -992,14 +992,14 @@ export class DailyCommandService {
       {
         id: 'fallback-daily-momentum',
         title: 'Review today\'s momentum picture',
-        reason: 'TODD did not find a single dominant interruption, so start with the current momentum board and pressure summary.',
+        reason: '16Ahead did not find a single dominant interruption, so start with the current momentum board and pressure summary.',
         route: '/daily-momentum',
         actionLabel: 'Open Daily Momentum',
         priority: 'medium',
         status: 'ready',
         source: 'fallback',
         autonomyLevel: 'auto',
-        autonomyNote: 'TODD is still evaluating the strongest route without waiting for a manual trigger.',
+        autonomyNote: '16Ahead is still evaluating the strongest route without waiting for a manual trigger.',
         proof: viewModel.snapshot?.statusLabel || undefined
       }
     ];
@@ -1008,14 +1008,14 @@ export class DailyCommandService {
       items.push( {
         id: 'fallback-outreach',
         title: 'Check outreach readiness',
-        reason: 'A quick review of active outreach keeps the day from drifting while TODD keeps watching for stronger signals.',
+        reason: 'A quick review of active outreach keeps the day from drifting while 16Ahead keeps watching for stronger signals.',
         route: '/signal-engine',
         actionLabel: 'Open Outbox Cockpit',
         priority: 'low',
         status: 'ready',
         source: 'fallback',
         autonomyLevel: 'auto',
-        autonomyNote: 'TODD can keep watching outreach readiness and queued work in the background.'
+        autonomyNote: '16Ahead can keep watching outreach readiness and queued work in the background.'
       } );
     } else {
       items.push( {
@@ -1028,7 +1028,7 @@ export class DailyCommandService {
         status: 'needs_you',
         source: 'fallback',
         autonomyLevel: 'requires_approval',
-        autonomyNote: 'TODD is holding outreach claims until sending is really ready.'
+        autonomyNote: '16Ahead is holding outreach claims until sending is really ready.'
       } );
     }
 
@@ -1047,24 +1047,24 @@ export class DailyCommandService {
     const status = viewModel.snapshot?.status || 'unknown';
 
     if ( status === 'met' ) {
-      return `Today's goal of ${goal} is covered. TODD is protecting momentum and setting up tomorrow.`;
+      return `Today's goal of ${goal} is covered. 16Ahead is protecting momentum and setting up tomorrow.`;
     }
 
     if ( status === 'on_track' ) {
-      return `Today's goal is ${goal}. Revenue is at ${revenue}, and TODD says the day is on track.`;
+      return `Today's goal is ${goal}. Revenue is at ${revenue}, and 16Ahead says the day is on track.`;
     }
 
     if ( status === 'behind' ) {
       return `Today's goal is ${goal}. Revenue is at ${revenue}, with ${gap} still to recover.`;
     }
 
-    return `Today's goal is ${goal}. TODD is still validating the current pressure and best path forward.`;
+    return `Today's goal is ${goal}. 16Ahead is still validating the current pressure and best path forward.`;
   }
 
   private buildTodaySummary ( viewModel: DailyMomentumViewModel, engineState: ToddMomentumEngineState | null, checklist: DailyCommandItem[], outcomes: DailyCommandOutcome[] ): string {
     const numericGoal = this.parseCurrencyAmount( viewModel.snapshot?.goalAmount );
     if ( numericGoal <= 0 ) {
-      return 'TODD is still in setup mode here: connect the real systems first, then Today can switch from orientation to truthful operating momentum.';
+      return '16Ahead is still in setup mode here: connect the real systems first, then Today can switch from orientation to truthful operating momentum.';
     }
 
     const topAction = checklist[0];
@@ -1084,7 +1084,7 @@ export class DailyCommandService {
     return [outcomeSummary, autonomySummary, accountability
       || engineSummary
       || topAction?.reason
-      || 'TODD is watching the day, ranking the work, and keeping the next move visible.']
+      || '16Ahead is watching the day, ranking the work, and keeping the next move visible.']
       .filter( Boolean )
       .join( ' ' );
   }
@@ -1119,7 +1119,7 @@ export class DailyCommandService {
         id: 'outcome-emails-sent',
         label: 'Follow-ups sent',
         value: String( emailsSent ),
-        detail: 'TODD already pushed live outreach instead of leaving the day in review mode.',
+        detail: '16Ahead already pushed live outreach instead of leaving the day in review mode.',
         tone: 'positive'
       } );
     }
@@ -1149,7 +1149,7 @@ export class DailyCommandService {
         id: 'outcome-actions-executed',
         label: 'Momentum moves executed',
         value: String( successfulActions ),
-        detail: 'TODD already carried finished execution steps instead of only recommending work.',
+        detail: '16Ahead already carried finished execution steps instead of only recommending work.',
         tone: 'positive'
       } );
     }
@@ -1197,7 +1197,7 @@ export class DailyCommandService {
       .map( ( item: any, index: number ) => ( {
         id: `receipt-${index}`,
         label: String( item?.title || item?.type || 'Momentum receipt' ).trim(),
-        summary: String( item?.summary || item?.detail || item?.status || 'TODD recorded execution activity.' ).trim(),
+        summary: String( item?.summary || item?.detail || item?.status || '16Ahead recorded execution activity.' ).trim(),
         tone: this.mapReceiptTone( String( item?.tone || item?.status || '' ) ),
         route: String( item?.route || '' ).trim() || undefined
       } ) );
@@ -1280,10 +1280,10 @@ export class DailyCommandService {
     const attentionCount = moduleReadiness.filter( module => module.state === 'attention' ).length;
     const approvals = checklistItems.filter( item => item.autonomyLevel === 'requires_approval' && item.status === 'needs_you' ).length;
     const numericGoal = this.parseCurrencyAmount( viewModel.snapshot?.goalAmount );
-    const title = mode === 'onboarding' ? 'Today cockpit' : 'TODD operating cockpit';
+    const title = mode === 'onboarding' ? 'Today cockpit' : '16Ahead operating cockpit';
     const subtitle = mode === 'onboarding'
-      ? 'TODD is still earning autonomy. These instruments show which systems are ready, which ones are waiting on setup, and what to unlock next.'
-      : 'TODD is monitoring the six momentum systems, surfacing what is healthy, and calling out the few human actions that still slow the day down.';
+      ? '16Ahead is still earning autonomy. These instruments show which systems are ready, which ones are waiting on setup, and what to unlock next.'
+      : '16Ahead is monitoring the six momentum systems, surfacing what is healthy, and calling out the few human actions that still slow the day down.';
     const modeLabel = mode === 'onboarding'
       ? 'Setup'
       : blockedCount > 0
@@ -1293,7 +1293,7 @@ export class DailyCommandService {
           : 'Operational';
 
     return {
-      eyebrow: 'TODD Command Deck',
+      eyebrow: '16Ahead Command Deck',
       title,
       subtitle,
       modeLabel,
@@ -1320,9 +1320,9 @@ export class DailyCommandService {
       readinessPercent: Math.round( ( readyCount / Math.max( moduleReadiness.length, 1 ) ) * 100 ),
       modeLabel: mode === 'onboarding' ? 'Setup mode' : blockedCount > 0 ? 'Autonomy constrained' : 'Operating lane',
       modeDetail: mode === 'onboarding'
-        ? 'TODD is still waiting for real systems and permissions before it should make stronger operating claims.'
+        ? '16Ahead is still waiting for real systems and permissions before it should make stronger operating claims.'
         : blockedCount > 0
-          ? 'One or more systems are blocked, so TODD is holding back claims until those dependencies are real.'
+          ? 'One or more systems are blocked, so 16Ahead is holding back claims until those dependencies are real.'
           : attentionCount > 0 || approvalCount > 0
             ? 'Most systems are live, but a few attention points are still limiting autonomy.'
             : 'All six systems are in a healthy operating state right now.',
@@ -1393,8 +1393,8 @@ export class DailyCommandService {
         label: 'Network',
         state: mode === 'onboarding' && hasNetworkAction ? 'attention' : 'ready',
         detail: mode === 'onboarding' && hasNetworkAction
-          ? 'TODD still needs real contacts or coverage before Network can become a dependable operating lane.'
-          : 'Network has enough truth for TODD to reason about people coverage without pretending more than it knows.',
+          ? '16Ahead still needs real contacts or coverage before Network can become a dependable operating lane.'
+          : 'Network has enough truth for 16Ahead to reason about people coverage without pretending more than it knows.',
         route: '/contact-list',
         progressPercent: mode === 'onboarding' && hasNetworkAction ? 45 : 100,
         progressLabel: mode === 'onboarding' && hasNetworkAction ? 'Contacts still needed' : 'Network ready',
@@ -1412,7 +1412,7 @@ export class DailyCommandService {
             ? 'attention'
             : 'ready',
         detail: !integrationState.hasProvisionedSender
-          ? 'Sender provisioning is still missing, so TODD should not claim email execution or reply handling yet.'
+          ? 'Sender provisioning is still missing, so 16Ahead should not claim email execution or reply handling yet.'
           : checklistItems.some( item => item.module === 'outreach' && item.status !== 'ready' )
             ? 'Outreach can operate, but approvals or live follow-up pressure still need a human decision.'
             : 'Sender provisioning is healthy and no live outreach blocker is stopping autonomy right now.',
@@ -1433,10 +1433,10 @@ export class DailyCommandService {
             ? 'attention'
             : 'ready',
         detail: !integrationState.hasConnectedSocialAccounts
-          ? 'No real social account is connected, so TODD should stay quiet about social drafts, queueing, or publishing.'
+          ? 'No real social account is connected, so 16Ahead should stay quiet about social drafts, queueing, or publishing.'
           : checklistItems.some( item => item.module === 'social' && item.status !== 'ready' )
             ? 'Social accounts are live, but human review is still the main bottleneck before momentum can carry forward.'
-            : 'At least one real social account is healthy, so TODD can truthfully monitor social momentum.',
+            : 'At least one real social account is healthy, so 16Ahead can truthfully monitor social momentum.',
         route: '/outreach/social/accounts',
         progressPercent: !integrationState.hasConnectedSocialAccounts ? 15 : checklistItems.some( item => item.module === 'social' && item.status !== 'ready' ) ? 60 : 100,
         progressLabel: !integrationState.hasConnectedSocialAccounts ? 'Connect account' : checklistItems.some( item => item.module === 'social' && item.status !== 'ready' ) ? 'Approval gated' : 'Social ready',
@@ -1450,7 +1450,7 @@ export class DailyCommandService {
         label: 'Moves',
         state: overdueTaskCount > 0 ? 'attention' : 'ready',
         detail: overdueTaskCount > 0
-          ? 'Open moves are overdue, so TODD still needs you to close or reschedule the human work it cannot silently finish.'
+          ? 'Open moves are overdue, so 16Ahead still needs you to close or reschedule the human work it cannot silently finish.'
           : 'No overdue moves are dragging momentum right now.',
         route: '/tasks',
         progressPercent: overdueTaskCount > 0 ? 58 : 100,
@@ -1467,9 +1467,9 @@ export class DailyCommandService {
           ? hasDocsAction ? 'attention' : 'ready'
           : 'blocked',
         detail: !hasProfile
-          ? 'Without real business context, TODD has nowhere trustworthy to anchor operating notes and document reasoning.'
+          ? 'Without real business context, 16Ahead has nowhere trustworthy to anchor operating notes and document reasoning.'
           : hasDocsAction
-            ? 'A docs-related action still needs attention before TODD can treat this context as fully current.'
+            ? 'A docs-related action still needs attention before 16Ahead can treat this context as fully current.'
             : 'No document blocker is limiting autonomy right now.',
         route: '/docs',
         progressPercent: !hasProfile ? 25 : hasDocsAction ? 65 : 100,
@@ -1544,7 +1544,7 @@ export class DailyCommandService {
 
     return {
       state: 'ready',
-      detail: 'Pulse has recent survey activity and response signal available for TODD to use.',
+      detail: 'Pulse has recent survey activity and response signal available for 16Ahead to use.',
       progressPercent: 100,
       progressLabel: 'Pulse ready',
       proof: 'Recent survey activity and responses detected'
@@ -1749,7 +1749,7 @@ export class DailyCommandService {
     return {
       id: `${prefix}-${action.actionPlanId || action.actionType || action.label || 'item'}`.toLowerCase().replace( /[^a-z0-9-]+/g, '-' ),
       title: action.label || fallbackTitle,
-      reason: action.approvalSummary || action.preparedSummary || action.detail || 'TODD prepared the next move here.',
+      reason: action.approvalSummary || action.preparedSummary || action.detail || '16Ahead prepared the next move here.',
       route: action.route || '/daily-momentum',
       actionLabel: action.approvalLabel || action.reviewLabel || this.toRouteActionLabel( action.route, 'Open now' ),
       priority,
@@ -1804,7 +1804,7 @@ export class DailyCommandService {
       return `Calendar connected${providerLabel} — meeting tracking available.`;
     }
 
-    return `Calendar connected${providerLabel}, but TODD still needs calendar read access to track meetings.`;
+    return `Calendar connected${providerLabel}, but 16Ahead still needs calendar read access to track meetings.`;
   }
 
   private toOperatorAlertChecklistItem ( alert: MomentumOpenAlert | undefined ): DailyCommandItem | null {
@@ -1816,7 +1816,7 @@ export class DailyCommandService {
       return {
         id: 'attention-temporary-momentum-delay',
         title: 'Temporary system delay',
-        reason: 'TODD hit a temporary delay while checking today\'s momentum. Wait a minute, then check again.',
+        reason: '16Ahead hit a temporary delay while checking today\'s momentum. Wait a minute, then check again.',
         route: '/daily-momentum',
         actionLabel: 'Open Daily Momentum',
         priority: 'high',
@@ -1839,7 +1839,7 @@ export class DailyCommandService {
         status: 'needs_you',
         source: 'setup',
         autonomyLevel: 'requires_approval',
-        autonomyNote: 'TODD cannot keep sending until tenant setup is complete.',
+        autonomyNote: '16Ahead cannot keep sending until tenant setup is complete.',
         proof: String( alert.recommendedFix || '' ).trim() || undefined
       };
     }
@@ -1855,7 +1855,7 @@ export class DailyCommandService {
         status: 'needs_you',
         source: 'setup',
         autonomyLevel: 'requires_approval',
-        autonomyNote: 'TODD needs mailbox access before it can keep carrying reply and monitoring work.',
+        autonomyNote: '16Ahead needs mailbox access before it can keep carrying reply and monitoring work.',
         proof: String( alert.recommendedFix || '' ).trim() || undefined
       };
     }
@@ -1864,14 +1864,14 @@ export class DailyCommandService {
       return {
         id: 'attention-email-review',
         title: 'Review email status',
-        reason: 'TODD found an email-related issue that needs a quick review before the next automated step.',
+        reason: '16Ahead found an email-related issue that needs a quick review before the next automated step.',
         route: '/daily-momentum',
         actionLabel: 'Open Daily Momentum',
         priority: 'medium',
         status: 'needs_you',
         source: 'attention',
         autonomyLevel: 'requires_approval',
-        autonomyNote: 'TODD found an email gate that still requires a human fix.',
+        autonomyNote: '16Ahead found an email gate that still requires a human fix.',
         proof: String( alert.recommendedFix || '' ).trim() || undefined
       };
     }
@@ -1926,24 +1926,24 @@ export class DailyCommandService {
     const combined = `${alert?.message || ''} ${alert?.reason || ''} ${alert?.recommendedFix || ''}`.toLowerCase();
 
     if ( /domain|dkim|spf|dmarc|authenticated domain/.test( combined ) ) {
-      return 'TODD needs the verified sending domain finished before automated sending can continue.';
+      return '16Ahead needs the verified sending domain finished before automated sending can continue.';
     }
 
     if ( /sendgrid|single sender|provisioning/.test( combined ) ) {
-      return 'TODD needs the tenant sending setup confirmed in admin before automated sending can continue.';
+      return '16Ahead needs the tenant sending setup confirmed in admin before automated sending can continue.';
     }
 
-    return 'TODD needs a sender configured for automated outreach before it can keep sending on its own.';
+    return '16Ahead needs a sender configured for automated outreach before it can keep sending on its own.';
   }
 
   private buildMailboxConfigurationReason ( alert: MomentumOpenAlert | undefined ): string {
     const combined = `${alert?.message || ''} ${alert?.reason || ''} ${alert?.recommendedFix || ''}`.toLowerCase();
 
     if ( /sync|inbox/.test( combined ) ) {
-      return 'TODD needs the connected mailbox checked so inbox sync can continue.';
+      return '16Ahead needs the connected mailbox checked so inbox sync can continue.';
     }
 
-    return 'TODD needs the connected mailbox rechecked before email monitoring can continue.';
+    return '16Ahead needs the connected mailbox rechecked before email monitoring can continue.';
   }
 
   private normalizeGoalSnapshot ( viewModel: DailyMomentumViewModel, selectedGoalAmount: number ): DailyMomentumViewModel {
@@ -2031,25 +2031,25 @@ export class DailyCommandService {
 
   private buildApprovalOutcomeReason ( action: DailyMomentumApprovalAction, category: string ): string {
     if ( category === 'outreach_sending' ) {
-      return 'TODD already prepared the outreach batch. The only thing slowing momentum now is the explicit send approval gate.';
+      return '16Ahead already prepared the outreach batch. The only thing slowing momentum now is the explicit send approval gate.';
     }
     if ( category === 'social_drafting' ) {
-      return 'TODD already created the social work. The only thing slowing momentum now is the review gate before it can keep moving.';
+      return '16Ahead already created the social work. The only thing slowing momentum now is the review gate before it can keep moving.';
     }
     if ( category === 'social_posting' ) {
-      return 'TODD already has approved social work in queue. Publishing is still waiting at the final human gate.';
+      return '16Ahead already has approved social work in queue. Publishing is still waiting at the final human gate.';
     }
-    return action.description || action.missingApproval || 'TODD prepared work that still needs a human gate cleared.';
+    return action.description || action.missingApproval || '16Ahead prepared work that still needs a human gate cleared.';
   }
 
   private buildApprovalAutonomyNote ( category: string ): string {
     if ( category === 'outreach_sending' ) {
-      return 'Current policy: requires approval before TODD can send or queue outreach.';
+      return 'Current policy: requires approval before 16Ahead can send or queue outreach.';
     }
     if ( category === 'social_drafting' || category === 'social_posting' ) {
       return 'Current policy: social momentum is still approval-gated instead of being allowed to carry forward on its own.';
     }
-    return 'Current policy: TODD is waiting at a manual gate.';
+    return 'Current policy: 16Ahead is waiting at a manual gate.';
   }
 
   private resolveAutonomyLevelForAction ( action: DailyMomentumActionRow, source: DailyCommandSource ): DailyCommandAutonomyLevel {
@@ -2062,13 +2062,13 @@ export class DailyCommandService {
   private buildActionAutonomyNote ( action: DailyMomentumActionRow, source: DailyCommandSource ): string {
     const state = String( action.state || '' ).trim().toLowerCase();
     if ( state === 'auto_executed' || state === 'completed' ) {
-      return 'TODD already carried this step without stopping at a human checkpoint.';
+      return '16Ahead already carried this step without stopping at a human checkpoint.';
     }
     if ( state === 'queued' ) {
-      return 'TODD already moved this into the live queue.';
+      return '16Ahead already moved this into the live queue.';
     }
     if ( state === 'prepared_by_todd' || source === 'signal' ) {
-      return 'TODD has enough signal to keep carrying this path. The next product step should reduce human waiting here.';
+      return '16Ahead has enough signal to keep carrying this path. The next product step should reduce human waiting here.';
     }
     return 'This path is still waiting on a human checkpoint.';
   }
@@ -2102,7 +2102,7 @@ export class DailyCommandService {
     return {
       id: `audit-${index}`,
       label: item.label || 'Momentum check',
-      summary: item.detail || item.proofLine || 'TODD checked part of today\'s operating picture.',
+      summary: item.detail || item.proofLine || '16Ahead checked part of today\'s operating picture.',
       tone: item.state === 'attention' ? 'attention' : 'info'
     };
   }
@@ -2346,9 +2346,9 @@ export class DailyCommandService {
   private buildSocialGrowthDiagnosis ( post: SocialPost, recoveryDraft: SocialPost | null ): string {
     const status = this.resolveSocialGrowthDirectorStatus( post, recoveryDraft );
     if ( status === 'recovery_draft_ready' ) {
-      return 'The original post missed its first signal window, and TODD already staged a stronger recovery draft for review.';
+      return 'The original post missed its first signal window, and 16Ahead already staged a stronger recovery draft for review.';
     }
-    return String( post?.growthState?.diagnosis || post?.growthState?.reason || 'TODD is reading the current social lane and choosing the next growth move.' ).trim();
+    return String( post?.growthState?.diagnosis || post?.growthState?.reason || '16Ahead is reading the current social lane and choosing the next growth move.' ).trim();
   }
 
   private describeToddNextSocialMove ( post: SocialPost, pendingAction: NonNullable<SocialPost['requiredActions']>[number] | null, recoveryDraft: SocialPost | null ): string {
@@ -2356,23 +2356,23 @@ export class DailyCommandService {
 
     switch ( status ) {
       case 'needs_human_engagement':
-        return 'Reply to the warm comments now so TODD can measure whether this post is pulling real conversation.';
+        return 'Reply to the warm comments now so 16Ahead can measure whether this post is pulling real conversation.';
       case 'needs_amplification':
-        return 'Give this post one manual distribution push so TODD can decide whether it needs another round or a stronger rewrite.';
+        return 'Give this post one manual distribution push so 16Ahead can decide whether it needs another round or a stronger rewrite.';
       case 'awaiting_signal':
-        return 'Let TODD collect the first performance numbers before it decides whether to push harder, reply, or rewrite.';
+        return 'Let 16Ahead collect the first performance numbers before it decides whether to push harder, reply, or rewrite.';
       case 'needs_recovery':
-        return 'This post missed its first traction window, so TODD should prepare a stronger second version.';
+        return 'This post missed its first traction window, so 16Ahead should prepare a stronger second version.';
       case 'recovery_draft_ready':
         return 'The stronger recovery version is ready. Review it and release it if it feels right.';
       case 'winner_expand_now':
-        return 'This topic is working. TODD should turn it into the next follow-up post while attention is still warm.';
+        return 'This topic is working. 16Ahead should turn it into the next follow-up post while attention is still warm.';
       case 'ready_to_publish':
         return 'This post is ready. The only thing left is to release it in the next publish window.';
       default:
         return pendingAction
-          ? 'TODD already picked the next move and prepared the step it still needs from you.'
-          : 'TODD is watching the live social lane and will keep updating the next growth move.';
+          ? '16Ahead already picked the next move and prepared the step it still needs from you.'
+          : '16Ahead is watching the live social lane and will keep updating the next growth move.';
     }
   }
 
@@ -2407,7 +2407,7 @@ export class DailyCommandService {
   ): string | null {
     const status = this.resolveSocialGrowthDirectorStatus( post, recoveryDraft );
     if ( status === 'recovery_draft_ready' ) {
-      return 'TODD already handled the rewrite step, so the only human move left is to review and release the stronger recovery version.';
+      return '16Ahead already handled the rewrite step, so the only human move left is to review and release the stronger recovery version.';
     }
     return pendingAction ? String( pendingAction.reason || '' ).trim() || null : null;
   }
@@ -2492,7 +2492,7 @@ export class DailyCommandService {
       return null;
     }
 
-    return `Next TODD check: ${parsed.toLocaleString( 'en-US', {
+    return `Next 16Ahead check: ${parsed.toLocaleString( 'en-US', {
       month: 'short',
       day: 'numeric',
       hour: 'numeric',

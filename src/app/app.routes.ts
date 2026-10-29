@@ -31,7 +31,7 @@ export const routes: Routes = [
       import( './features/help/todd/todd.component' ).then(
         ( m ) => m.ToddComponent
       ),
-    title: 'Ask TODD',
+    title: 'General Assistant',
   },
   {
     // The universal menu's Awards link: the home page with the awards sheet open.
@@ -41,17 +41,17 @@ export const routes: Routes = [
       import( './features/help/todd/todd.component' ).then(
         ( m ) => m.ToddComponent
       ),
-    title: 'Ask TODD Awards',
+    title: 'General Assistant Awards',
   },
   {
     // Missions (design_handoff_todd_missions): ask, get a plan, start it.
     path: 'missions',
-    title: 'Missions | Ask TODD',
+    title: 'Missions | General Assistant',
     loadComponent: () => import( './features/missions/missions-pages.component' ).then( ( m ) => m.AskMissionsPageComponent ),
   },
   {
     path: 'playbooks',
-    title: 'Playbooks | Ask TODD',
+    title: 'Playbooks | General Assistant',
     loadComponent: () => import( './features/missions/missions-pages.component' ).then( ( m ) => m.PlaybooksPageComponent ),
   },
   {

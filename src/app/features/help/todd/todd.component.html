@@ -3,9 +3,9 @@
     <section class="todd-focused-conversation" [class.todd-focused-conversation--started]="messages.length > 0">
       <div class="todd-welcome ask-home" *ngIf="messages.length === 0">
         <span class="ask-home__logo"><img src="assets/ask-todd-logo.png" alt="" /></span>
-        <h1 class="ask-home__title">Ask TODD</h1>
+        <h1 class="ask-home__title">General Assistant</h1>
         <div class="ask-search">
-          <textarea #assistantInput appAutoGrow rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask anything about TODD…" aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
+          <textarea #assistantInput appAutoGrow rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask anything about 16Ahead…" aria-label="General Assistant" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
           <button type="button" class="ask-search__go" (click)="askAssistant()" [disabled]="askToddTourInputLocked">Ask <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
           <ul class="todd-route-suggestions" *ngIf="routeSuggestions.length" role="listbox" aria-label="Matching pages">
             <li *ngFor="let suggestion of routeSuggestions" role="option" (click)="selectRouteSuggestion(suggestion)">
@@ -16,8 +16,8 @@
           </ul>
         </div>
         <div class="ask-chips" aria-label="Suggested questions">
-          <button type="button" (click)="onQuickPill('What is TODD?')">What is TODD?</button>
-          <button type="button" (click)="onQuickPill('How can TODD help me?')">How can TODD help me?</button>
+          <button type="button" (click)="onQuickPill('What is 16Ahead?')">What is 16Ahead?</button>
+          <button type="button" (click)="onQuickPill('How can 16Ahead help me?')">How can 16Ahead help me?</button>
           <button type="button" (click)="onQuickPill('What is a Momentum System?')">What is a Momentum System?</button>
         </div>
         <p class="tt-made-by tt-made-by--center"><a appAlsoFromUs></a></p>
@@ -25,8 +25,8 @@
       <div class="todd-focused-history" *ngIf="messages.length > 0">
         <div #history class="todd-chat-history todd-chat-history-active todd-chat-history-full" data-demo="assistant-history">
           <!-- <div *ngIf="!isLoading && messages.length === 0 && !proactiveMomentumAction && !proactiveMomentumChecklist && !proactiveShowcasePrompt && !suggestedProductAction && !suggestedVideo" class="todd-empty-prompt"> Ask TODD what needs to move next. </div> -->
-          <div *ngIf="proactiveShowcasePrompt && !isLoading" class="todd-product-card todd-showcase-card" aria-label="TODD showcase prompt" data-demo="assistant-proactive">
-            <div class="todd-product-card-eyebrow">Let TODD show off</div>
+          <div *ngIf="proactiveShowcasePrompt && !isLoading" class="todd-product-card todd-showcase-card" aria-label="16Ahead showcase prompt" data-demo="assistant-proactive">
+            <div class="todd-product-card-eyebrow">Let 16Ahead show off</div>
             <div class="todd-product-card-header">
               <div class="todd-product-card-title">
                 {{ proactiveShowcasePrompt.headline }}
@@ -76,9 +76,9 @@
             </div>
             <iframe class="todd-embedded-app-frame" [src]="embeddedAppUrl" [title]="embeddedAppLabel" (load)="scrollToEmbeddedApp()"></iframe>
           </section>
-          <div *ngIf="isLoading" class="bubble assistant bubble-thinking" aria-live="polite" aria-label="TODD is thinking">
+          <div *ngIf="isLoading" class="bubble assistant bubble-thinking" aria-live="polite" aria-label="16Ahead is thinking">
             <div class="bubble-inner bubble-inner-thinking">
-              <span class="thinking-label">TODD is thinking <i class="fa-solid fa-circle-notch fa-spin"></i> </span>
+              <span class="thinking-label">16Ahead is thinking <i class="fa-solid fa-circle-notch fa-spin"></i> </span>
               <span class="thinking-dots" aria-hidden="true">
                 <span></span>
                 <span></span>
@@ -107,18 +107,18 @@
             </div>
           </div>
           <div *ngIf="proactiveMomentumChecklist && !isLoading" class="todd-product-card todd-momentum-approval-card" aria-label="Momentum approval checklist">
-            <div class="todd-product-card-eyebrow">TODD Needs Permission</div>
+            <div class="todd-product-card-eyebrow">16Ahead Needs Permission</div>
             <div class="todd-product-card-title todd-momentum-approval-title">{{ proactiveMomentumChecklist.headline }}</div>
             <div class="todd-product-card-description">{{ proactiveMomentumChecklist.summary }}</div>
             <div class="todd-momentum-approval-grid">
               <div>
-                <div class="todd-momentum-approval-label">What TODD tried</div>
+                <div class="todd-momentum-approval-label">What 16Ahead tried</div>
                 <ul class="todd-momentum-approval-list">
                   <li *ngFor="let item of proactiveMomentumChecklist.tried">{{ item }}</li>
                 </ul>
               </div>
               <div>
-                <div class="todd-momentum-approval-label">What blocked TODD</div>
+                <div class="todd-momentum-approval-label">What blocked 16Ahead</div>
                 <ul class="todd-momentum-approval-list todd-momentum-approval-list--blocked">
                   <li *ngFor="let item of proactiveMomentumChecklist.blockedBy">{{ item }}</li>
                 </ul>
@@ -180,7 +180,7 @@
           <button type="button" class="todd-video-modal-close" aria-label="Close video" (click)="closeActiveVideo()"><i class="fa-solid fa-xmark"></i></button>
           <div class="todd-video-modal-header">{{ activeVideo.description }}</div>
           <div class="todd-video-frame-wrap" [ngClass]="activeVideo.orientation === 'short' ? 'short' : 'wide'">
-            <iframe *ngIf="activeVideoEmbedUrl" class="todd-video-frame" [src]="activeVideoEmbedUrl" title="TODD video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <iframe *ngIf="activeVideoEmbedUrl" class="todd-video-frame" [src]="activeVideoEmbedUrl" title="16Ahead video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           </div>
         </div>
       </div>
@@ -189,8 +189,8 @@
           <button type="button" *ngFor="let q of followUps" (click)="onQuickPill(q)">{{ q }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10M7 17 17 7"/></svg></button>
         </div>
         <div class="todd-compact-composer ask-composer">
-          <textarea appAutoGrow rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask a follow-up…" aria-label="Ask TODD" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
-          <button type="button" class="ask-send" [class.is-ready]="assistantPrompt.trim()" (click)="askAssistant()" [disabled]="askToddTourInputLocked" aria-label="Ask TODD"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+          <textarea appAutoGrow rows="1" [(ngModel)]="assistantPrompt" (ngModelChange)="onAssistantPromptChange()" placeholder="Ask a follow-up…" aria-label="General Assistant" (keydown.enter)="askAssistant()" (keydown.escape)="dismissRouteSuggestions()" [disabled]="askToddTourInputLocked"></textarea>
+          <button type="button" class="ask-send" [class.is-ready]="assistantPrompt.trim()" (click)="askAssistant()" [disabled]="askToddTourInputLocked" aria-label="General Assistant"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
         <ul class="todd-route-suggestions todd-route-suggestions--compact" *ngIf="routeSuggestions.length" role="listbox" aria-label="Matching pages">
           <li *ngFor="let suggestion of routeSuggestions" role="option" (click)="selectRouteSuggestion(suggestion)">
             <img [src]="suggestion.icon" alt="" aria-hidden="true" />

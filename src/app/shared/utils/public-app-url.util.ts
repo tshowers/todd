@@ -21,12 +21,14 @@ function getOrigin (): string {
 function isStagingHost (): boolean {
   const hostname = getHostname();
   return hostname === 'staging.taliferro.tech'
+    || hostname === 'staging.16ahead.com'
     || hostname === 'todd-staging.web.app';
 }
 
 function isSayitHost (): boolean {
   const hostname = getHostname();
   return hostname === 'sayit.taliferro.tech'
+    || hostname === 'sayit.16ahead.com'
     || hostname === 'todd-sayit.web.app';
 }
 
@@ -35,49 +37,49 @@ export function getToddHomeUrl (): string {
     return getOrigin();
   }
 
-  return String( environment.PLATFORM_URL || 'https://todd.taliferro.tech' )
+  return String( environment.PLATFORM_URL || 'https://app.16ahead.com' )
     .trim()
     .replace( /\/$/, '' );
 }
 
 export function getFindHomeUrl (): string {
-  return 'https://find.taliferro.tech';
+  return 'https://find.16ahead.com';
 }
 
 export function getSignatureBuilderUrl (): string {
-  return 'https://signature.taliferro.tech';
+  return 'https://signature.16ahead.com';
 }
 
 export function getMayaHomeUrl (): string {
-  return 'https://maya.taliferro.tech';
+  return 'https://marketing.16ahead.com';
 }
 
 export function getLeadVaultHomeUrl (): string {
-  return 'https://lead-vault.taliferro.tech';
+  return 'https://lead-vault.16ahead.com';
 }
 
 export function getNetworkHomeUrl (): string {
-  return 'https://network.taliferro.tech';
+  return 'https://network.16ahead.com';
 }
 
 export function getPulseHomeUrl (): string {
-  return 'https://pulse.taliferro.tech';
+  return 'https://pulse.16ahead.com';
 }
 
 export function getOutreachHomeUrl (): string {
-  return 'https://outreach.taliferro.tech';
+  return 'https://outreach.16ahead.com';
 }
 
 export function getMovesHomeUrl (): string {
-  return 'https://moves.taliferro.tech';
+  return 'https://moves.16ahead.com';
 }
 
 export function getSocialHomeUrl (): string {
-  return 'https://social.taliferro.tech';
+  return 'https://social.16ahead.com';
 }
 
 export function getDocsHomeUrl (): string {
-  return 'https://docs.taliferro.tech';
+  return 'https://docs.16ahead.com';
 }
 
 /**
@@ -130,7 +132,7 @@ export function getSayitHomeUrl (): string {
     return `${getOrigin()}/say-it/app`;
   }
 
-  return 'https://sayit.taliferro.tech';
+  return 'https://sayit.16ahead.com';
 }
 
 export function buildSayitShareUrl (
