@@ -44,10 +44,16 @@
               <button type="button" class="quick-guidance-pill" (click)="dismissShowcasePrompt()"> Not now </button>
             </div>
           </div>
-          <div *ngFor="let m of messages; let i = index" class="bubble" [ngClass]="{ 'user': m.role === 'user', 'assistant': m.role === 'assistant' }">
+          <div *ngFor="let m of messages; let i = index" class="bubble" [ngClass]="{ 'user': m.role === 'user', 'assistant': m.role === 'assistant' }" [hidden]="m.fromChoices">
             <ng-container *ngIf="m.role === 'assistant'"><img class="ask-answer__avatar brand-mark--light" src="assets/brand/products/svg/light/02-general-assistant.svg" alt="" /><img class="ask-answer__avatar brand-mark--dark" src="assets/brand/products/svg/dark/02-general-assistant.svg" alt="" /></ng-container>
             <div class="ask-answer__body">
               <div class="bubble-inner" [innerHTML]="m.content"></div>
+              <div class="chat-choice" *ngFor="let choice of m.choices">
+                <p class="chat-choice__question">{{ choice.question }}</p>
+                <div class="chat-choice__options" role="group" [attr.aria-label]="choice.question">
+                  <button type="button" class="chat-choice__pill" *ngFor="let option of choice.options" [class.is-picked]="choice.picked === option" [attr.aria-pressed]="choice.picked === option" [disabled]="!m.choicesOpen || isLoading" (click)="pickChoice(m, choice, option)"><svg *ngIf="choice.picked === option" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>{{ option }}</button>
+                </div>
+              </div>
               <div class="ask-answer__actions" *ngIf="m.role === 'assistant' && isLatestAnswer(i) && !isLoading">
                 <button type="button" (click)="copyAnswer(i)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>{{ copiedIndex === i ? 'Copied' : 'Copy' }}</button>
                 <button type="button" (click)="exportTranscript()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Download</button>

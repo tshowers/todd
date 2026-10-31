@@ -101,6 +101,24 @@ interface ToddProductHandoff {
   url: string;
 }
 
+/** A question with a few likely answers, shown as option pills under an answer. */
+interface ChatChoice {
+  question: string;
+  options: string[];
+  /** The answer tapped, once there is one. */
+  picked?: string;
+}
+
+interface ChatTurn {
+  role: 'user' | 'assistant';
+  content: string;
+  choices?: ChatChoice[];
+  /** The pills can still be tapped: the latest answer, until it's answered. */
+  choicesOpen?: boolean;
+  /** A question made by tapping pills; the pills already show it, so it has no bubble. */
+  fromChoices?: boolean;
+}
+
 @Component( {
   selector: 'app-todd',
   standalone: true,
@@ -142,7 +160,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
 
 
-  messages: Array<{ role: 'user' | 'assistant'; content: string; }> = [];
+  messages: ChatTurn[] = [];
 
   assistantPrompt: string = '';
   routeSuggestions: CommandPaletteResult[] = [];
@@ -476,7 +494,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     } );
   }
 
-  async askAssistant (): Promise<void> {
+  async askAssistant ( { fromChoices = false }: { fromChoices?: boolean; } = {} ): Promise<void> {
     this.suggestedProductAction = null;
     this.productHandoff = null;
     const prompt = ( this.assistantPrompt || '' ).trim();
@@ -490,7 +508,9 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
       this.askSubscription.unsubscribe();
     }
 
-    this.onMessage( { role: 'user', content: prompt } );
+    // Any new question, typed or tapped, closes the pills above it.
+    this.messages.forEach( ( message ) => message.choicesOpen = false );
+    this.onMessage( { role: 'user', content: prompt, fromChoices } );
     this.assistantPrompt = '';
     this.routeSuggestions = [];
     this.isLoading = true;
@@ -530,10 +550,13 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
           const presentation = this.extractAssistantPresentation( reply );
           const route = this.extractAssistantRoute( reply );
           const productHandoff = this.extractProductHandoff( reply, prompt );
+          const choices = this.extractChoices( reply );
           const category = this.resolveSuggestedProductCategory( prompt, assistantText );
           this.logger.info( 'TODD normalized assistant html', assistantText );
           this.onMessage( {
             role: 'assistant',
+            choices,
+            choicesOpen: choices.length > 0,
             // A handoff can come with a real answer (a mission, "how can 16Ahead
             // help?"); keep it, and fall back to the one-liner only when there's none.
             content: assistantText
@@ -976,6 +999,25 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
 
     const normalizedReply = this.unwrapReplyPayload( reply );
     return this.assistantBoxUtilityService.normalizeModelOutputToHtml( normalizedReply );
+  }
+
+  /** Questions with a few likely answers, shown as option pills under the answer. */
+  private extractChoices ( reply: any ): ChatChoice[] {
+    const choices = reply?.response?.choices;
+    if ( !Array.isArray( choices ) ) return [];
+    return choices
+      .filter( ( choice: any ) => choice && typeof choice.question === 'string' && Array.isArray( choice.options ) && choice.options.length >= 2 )
+      .map( ( choice: any ) => ( { question: choice.question, options: choice.options.map( ( option: any ) => String( option ) ) } ) );
+  }
+
+  /** A tapped pill. Once every question has an answer, the answers go as the next question. */
+  pickChoice ( message: ChatTurn, choice: ChatChoice, option: string ): void {
+    if ( !message.choicesOpen || this.isLoading ) return;
+    choice.picked = option;
+    const choices = message.choices || [];
+    if ( choices.some( ( item ) => !item.picked ) ) return;
+    this.assistantPrompt = choices.map( ( item ) => `${ item.question } ${ item.picked }` ).join( '\n' );
+    void this.askAssistant( { fromChoices: true } );
   }
 
   private extractAssistantPresentation ( reply: any ): ToddAssistantPresentation | null {
@@ -1691,7 +1733,7 @@ export class ToddComponent extends TopDogComponent implements OnInit, OnDestroy,
     } );
   }
 
-  onMessage ( msg: { role: 'user' | 'assistant'; content: string; } ) {
+  onMessage ( msg: ChatTurn ) {
     this.messages.push( msg );
 
 

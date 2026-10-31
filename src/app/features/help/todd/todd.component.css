@@ -2393,6 +2393,19 @@
 }
 .ask-chips button:hover, .ask-followups button:hover { filter: brightness(.96); }
 
+/* Option pills: a question with a few likely answers (design: overnight videos, "What price range?"). */
+.todd-focused-history .bubble[hidden] { display: none; }
+.chat-choice { margin-top: 14px; }
+.chat-choice__question { margin: 0 0 8px; color: var(--text); font: 700 16px/1.35 var(--font); }
+.chat-choice__options { display: flex; flex-wrap: wrap; gap: 8px; }
+.chat-choice__pill { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 15px; border: 0; border-radius: 999px; background: var(--surface); color: var(--text); font: 600 14px var(--font); cursor: pointer; }
+.chat-choice__pill:hover:not(:disabled) { background: var(--surface2); }
+.chat-choice__pill:focus-visible { outline: 2px solid var(--t-green-fg); outline-offset: 2px; }
+.chat-choice__pill.is-picked { background: var(--text); color: var(--bg); }
+.chat-choice__pill:disabled:not(.is-picked) { color: var(--muted); cursor: default; }
+.chat-choice__pill:disabled.is-picked { cursor: default; }
+.chat-choice__pill svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+
 /* Answers (10b): no boxes. User questions are dark bubbles. */
 .todd-focused-history { width: min(100%, 820px); margin: 0 auto; padding: 16px 0 200px; }
 .todd-chat-history { display: flex; flex-direction: column; gap: 22px; background: transparent !important; border: 0 !important; box-shadow: none !important; }
