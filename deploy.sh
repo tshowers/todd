@@ -32,3 +32,15 @@ echo "Deploying Ask Todd to Firebase Hosting site ask-todd..."
 firebase deploy --project taliferrotech --only hosting:ask-todd
 
 echo "Ask Todd hosting deploy complete."
+
+# Deploy succeeded, so the abort message no longer applies; a failed push
+# is reported but doesn't undo or misreport the live deploy.
+trap - ERR
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+echo "Pushing ${BRANCH} to GitHub..."
+if git push origin "${BRANCH}"; then
+  echo "Push complete."
+else
+  echo "WARNING: deploy is live, but git push failed - run 'git push origin ${BRANCH}' manually." >&2
+  exit 1
+fi
